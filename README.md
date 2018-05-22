@@ -26,7 +26,7 @@ The core are the minimal files that make up the CMS. The following files belong 
 * `./system/recommends.php` contains constants that SHOULD be used by handlers, plugins and themes for interoperability
 * `./system/system.php` constains core functions that SHALL NOT be used by handlers, plugins and themes
 * `./system/user.php` constains core functions that MAY be used by handlers, plugins and themes
-* `./system/core/Base.class.php` contains the base class to provides a magic function feacture
+* `./system/core/Base.class.php` contains the base class that provides a magic function feacture
 * `./system/core/Config.class.php` contains the config class that is used by the user to configure the CMS
 * `./system/core/Content.class.php` contains the content class that is used to represent content files
 * `./system/core/Debug.class.php` contains the debug class that is used to implement debugging

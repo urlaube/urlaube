@@ -7,7 +7,7 @@
     urlau.be CMS.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -366,7 +366,7 @@
               $result = _stopBuffer(static::$oblevel);
 
               // filter the output
-              $result = Plugins::run(FILTER_OUTPUT, $result);
+              $result = Plugins::run(FILTER_OUTPUT, true, $result);
             }
 
             // call the after-main plugins

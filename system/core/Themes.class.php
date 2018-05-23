@@ -7,7 +7,7 @@
     It loads the themes and activates the selected theme when requested by the active handler.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -124,6 +124,9 @@
 
       public static function run() {
         $result = false;
+
+        // filter the content before calling the theme
+        Main::CONTENT(Plugins::run(FILTER_CONTENT, true, Main::CONTENT()));
 
         // call the before-theme plugins
         Plugins::run(BEFORE_THEME);

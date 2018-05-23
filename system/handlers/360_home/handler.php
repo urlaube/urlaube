@@ -7,7 +7,7 @@
     home handler lists all pages that are not flagged to be hidden from the home page.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

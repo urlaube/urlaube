@@ -7,7 +7,7 @@
     feeds.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -56,7 +56,7 @@
                 }
               }
               if ($content_item->isset(CONTENT)) {
-                $result .= "      <description>".html(Markdown::apply($content_item)->get(CONTENT))."</description>".NL;
+                $result .= "      <description>".html($content_item->get(CONTENT))."</description>".NL;
               }
 
               $result .= "    </item>".NL;

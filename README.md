@@ -96,6 +96,7 @@ The register method has to following parameters:
 The following core event names SHALL be used for now:
 * `BEFORE_MAIN` is called before the core is run
 * `BEFORE_HANDLER` is called before the handlers are run
+* `FILTER_CONTENT` is called when `Themes::run()` is executed
 * `BEFORE_THEME` is called before the theme is run
 * `AFTER_THEME` is called after the theme has finished running
 * `AFTER_HANDLER` is called after the handlers have finished running

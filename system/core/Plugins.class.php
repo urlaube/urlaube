@@ -7,7 +7,7 @@
     this class. It loads the plugins and activates them depending on the currently required actions.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -115,11 +115,11 @@
 
       // search for all plugins that match the event
       // call the plugins' methods if there's a match
-      public static function run($event, $argument = null, $return_array = false) {
-        if ($return_array) {
-          $result = array();
+      public static function run($event, $filter = false, $value = null, ...$arguments) {
+        if ($filter) {
+          $result = $value;
         } else {
-          $result = $argument;
+          $result[] = array();
         }
 
         foreach (static::$plugins as $plugins_item) {
@@ -128,14 +128,16 @@
             static::$active = $plugins_item[PLUGIN_ENTITY];
 
             // call the plugin
-            if ($return_array) {
-              $result[] = callMethod($plugins_item[PLUGIN_ENTITY],
-                                     $plugins_item[PLUGIN_FUNCTION],
-                                     $argument);
-            } else {
+            if ($filter) {
+              // if this is a filter call then reiterate the $result
               $result = callMethod($plugins_item[PLUGIN_ENTITY],
                                    $plugins_item[PLUGIN_FUNCTION],
-                                   $argument);
+                                   $result, ...$arguments);
+            } else {
+              // if this isn't a filter call then collect the return values
+              $result[] = callMethod($plugins_item[PLUGIN_ENTITY],
+                                     $plugins_item[PLUGIN_FUNCTION],
+                                     $value, ...$arguments);
             }
 
             // unset the active plugin

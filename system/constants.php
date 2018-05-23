@@ -7,7 +7,7 @@
     strings.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -22,10 +22,10 @@
   // define Urlaube information
   define("URLAUBE_NAME",        "Urlaube");
   define("URLAUBE_URL",         "https://urlau.be/");
-  define("URLAUBE_VERSION",     "0.1a0");
+  define("URLAUBE_VERSION",     "0.1a1");
   define("URLAUBE_BUILD",       "");
   define("URLAUBE_CODENAME",    "Freizeit");
-  define("URLAUBE_RELEASEDATE", "");
+  define("URLAUBE_RELEASEDATE", "23.05.2018");
 
   // define shortcodes
   define("BR",  "<br />");
@@ -102,7 +102,8 @@
 
   // define core plugin filter hooks
   // FILTER_* plugins get content and shall filter it
-  define("FILTER_OUTPUT", "filter_output");
+  define("FILTER_CONTENT", "filter_content");
+  define("FILTER_OUTPUT",  "filter_output");
 
   // DERIVED CONSTANTS
 

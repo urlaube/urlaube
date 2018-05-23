@@ -7,7 +7,7 @@
     feed archive handler produces an RSS 2.0 feed of the first content page of a certain type.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -92,6 +92,10 @@
               // set the content type
               header("Content-Type: application/rss+xml");
 
+              // filter the content before calling the feed generation
+              $content = Plugins::run(FILTER_CONTENT, true, $content);
+
+              // generate and output the feed
               print(Feed::generate($content));
 
               // we handled this page

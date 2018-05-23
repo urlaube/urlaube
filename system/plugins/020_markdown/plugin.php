@@ -7,7 +7,7 @@
     to HTML-encoded content.
 
     @package urlaube\urlaube
-    @version 0.1a0
+    @version 0.1a1
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -37,10 +37,12 @@
           if (is_array($content)) {
             // iterate through all content items
             foreach ($content as $content_item) {
-              if ($content_item->isset(CONTENT)) {
-                // do not use markdown if markdown field is set to false
-                if ((!$content_item->isset(MARKDOWN)) || (!isfalse($content_item->get(MARKDOWN)))) {
-                  $content_item->set(CONTENT, $parsedown->text($content_item->get(CONTENT)));
+              if ($content_item instanceof Content) {
+                if ($content_item->isset(CONTENT)) {
+                  // do not use markdown if markdown field is set to false
+                  if ((!$content_item->isset(MARKDOWN)) || (!isfalse($content_item->get(MARKDOWN)))) {
+                    $content_item->set(CONTENT, $parsedown->text($content_item->get(CONTENT)));
+                  }
                 }
               }
             }
@@ -50,10 +52,8 @@
         return $content;
       }
 
-      public static function handle() {
-        Main::CONTENT(static::apply(Main::CONTENT()));
-
-        return true;
+      public static function handle($content) {
+        return static::apply($content);
       }
 
     }
@@ -62,6 +62,6 @@
     require_once(__DIR__."/vendors/parsedown/Parsedown.php");
 
     // register plugin
-    Plugins::register("Markdown", "handle", BEFORE_THEME);
+    Plugins::register("Markdown", "handle", FILTER_CONTENT);
   }
 

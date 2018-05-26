@@ -1,15 +1,15 @@
 <?php
 
   /**
-    This is the HomeHandler class of the urlau.be CMS.
+    This is the AuthorHandler class of the urlau.be CMS.
 
-    This file contains the HomeHandler class of the urlau.be CMS. The
-    home handler lists all pages that are not flagged to be hidden from the home page.
+    This file contains the AuthorHandler class of the urlau.be CMS. The
+    author handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
-    @since   0.1a0
+    @since   0.1a2
   */
 
   // ===== DO NOT EDIT HERE =====
@@ -17,8 +17,8 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("HomeHandler")) {
-    class HomeHandler implements Handler {
+  if (!class_exists("AuthorHandler")) {
+    class AuthorHandler implements Handler {
 
       // INTERFACE FUNCTIONS
 
@@ -26,6 +26,11 @@
         $result = null;
 
         if (is_array($info)) {
+          $author = null;
+          if (isset($info[AUTHOR]) && is_string($info[AUTHOR])) {
+            $author = $info[AUTHOR];
+          }
+
           $page = 1;
           if (isset($info[PAGE]) && is_numeric($info[PAGE])) {
             if (0 < $info[PAGE]) {
@@ -34,13 +39,13 @@
           }
 
           $result = File::loadContentDir(USER_CONTENT_PATH, false,
-                                         function ($content) {
+                                         function ($content) use ($author) {
                                            $result = null;
 
                                            // check that $content is not hidden
                                            if (!ishidden($content)) {
-                                             // check that $content is not hidden from home
-                                             if (!ishiddenfromhome($content)) {
+                                             // check that $content has the $author
+                                             if (hasauthor($content, $author)) {
                                                $result = $content;
                                              }
                                            }
@@ -49,12 +54,12 @@
                                          },
                                          true);
 
-          // sort entries by DATE
-          $result = sortcontent($result, DATE,
-                                function($left, $right) {
-                                  // reverse-sort
-                                  return -datecmp($left, $right);
-                                });
+         // sort entries by DATE
+         $result = sortcontent($result, DATE,
+                               function($left, $right) {
+                                 // reverse-sort
+                                 return -datecmp($left, $right);
+                               });
 
           // set pagination information
           Main::PAGEMAX(ceil(count($result)/Main::PAGESIZE()));
@@ -69,9 +74,13 @@
       }
 
       public static function getUri($info) {
-        $result = Main::ROOTURI();
+        $result = Main::ROOTURI()."author".US;
 
         if (is_array($info)) {
+          if (isset($info[AUTHOR]) && is_string($info[AUTHOR])) {
+            $result .= urlencode(strtolower($info[AUTHOR])).US;
+          }
+
           if (isset($info[PAGE]) && is_numeric($info[PAGE])) {
             if (1 !== $info[PAGE]) {
               $result .= "page=".$info[PAGE].US;
@@ -85,14 +94,19 @@
       public static function parseUri($uri) {
         $result = null;
 
-        if (1 === preg_match("@^\/(?:page\=([0-9]+)\/)?$@",
+        if (1 === preg_match("@^\/author\/([0-9A-Za-z\_\-]+)\/(?:page\=([0-9]+)\/)?$@",
                              $uri, $matches)) {
           $result = array();
 
-          // get the requested page number
+          // get the requested author name
           if (2 <= count($matches)) {
-            if (is_numeric($matches[1])) {
-              $result[PAGE] = intval($matches[1]);
+            $result[AUTHOR] = $matches[1];
+          }
+
+          // get the requested page number
+          if (3 <= count($matches)) {
+            if (is_numeric($matches[2])) {
+              $result[PAGE] = intval($matches[2]);
             }
           }
         }
@@ -105,7 +119,7 @@
       public static function handle() {
         $result = false;
 
-        if (!Handlers::get(DEACTIVATE_HOME)) {
+        if (!Handlers::get(DEACTIVATE_AUTHOR)) {
           $info = static::parseUri(Main::RELATIVEURI());
           if (null !== $info) {
             // check if the URI is correct
@@ -138,11 +152,11 @@
     }
 
     // activate handler by default
-    Handlers::preset(DEACTIVATE_HOME, false);
+    Handlers::preset(DEACTIVATE_AUTHOR, false);
 
     // register handler
-    Handlers::register("HomeHandler", "handle",
-                       "@^\/(?:page\=([0-9]+)\/)?$@",
+    Handlers::register("AuthorHandler", "handle",
+                       "@^\/author\/([0-9A-Za-z\_\-]+)\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }
 

@@ -7,7 +7,7 @@
     urlau.be CMS.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

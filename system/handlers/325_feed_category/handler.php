@@ -1,13 +1,13 @@
 <?php
 
   /**
-    This is the FeedHomeHandler class of the urlau.be CMS.
+    This is the FeedCategoryHandler class of the urlau.be CMS.
 
-    This file contains the FeedHomeHandler class of the urlau.be CMS. The
-    feed home handler produces an RSS 2.0 feed of the first content page of a certain type.
+    This file contains the FeedCategoryHandler class of the urlau.be CMS. The
+    feed category handler produces an RSS 2.0 feed of the first content page of a certain type.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,25 +17,38 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("FeedHomeHandler")) {
-    class FeedHomeHandler implements Handler {
+  if (!class_exists("FeedCategoryHandler")) {
+    class FeedCategoryHandler implements Handler {
 
       // INTERFACE FUNCTIONS
 
       public static function getContent($info) {
-        return HomeHandler::getContent($info);
+        return CategoryHandler::getContent($info);
       }
 
       public static function getUri($info) {
-        return Main::ROOTURI()."feed".US;
+        $result = Main::ROOTURI()."feed".US."category".US;
+
+        if (is_array($info)) {
+          if (isset($info[CATEGORY]) && is_string($info[CATEGORY])) {
+            $result .= urlencode($info[CATEGORY]).US;
+          }
+        }
+
+        return $result;
       }
 
       public static function parseUri($uri) {
         $result = null;
 
-        if (1 === preg_match("@^\/feed\/$@",
+        if (1 === preg_match("@^\/feed\/category\/([0-9A-Za-z\_\-]+)\/$@",
                              $uri, $matches)) {
           $result = array();
+
+          // get the requested category name
+          if (2 <= count($matches)) {
+            $result[CATEGORY] = $matches[1];
+          }
         }
 
         return $result;
@@ -46,7 +59,7 @@
       public static function handle() {
         $result = false;
 
-        if ((!Handlers::get(DEACTIVATE_HOME)) &&
+        if ((!Handlers::get(DEACTIVATE_CATEGORY)) &&
             (!Handlers::get(DEACTIVATE_FEED))) {
           $info = static::parseUri(Main::RELATIVEURI());
           if (null !== $info) {
@@ -73,11 +86,12 @@
     }
 
     // activate handler by default
-    Handlers::preset(DEACTIVATE_FEED, false);
+    Handlers::preset(DEACTIVATE_CATEGORY, false);
+    Handlers::preset(DEACTIVATE_FEED,     false);
 
     // register handler
-    Handlers::register("FeedHomeHandler", "handle",
-                       "@^\/feed\/$@",
+    Handlers::register("FeedCategoryHandler", "handle",
+                       "@^\/feed\/category\/([0-9A-Za-z\_\-]+)\/$@",
                        [GET], SYSTEM);
   }
 

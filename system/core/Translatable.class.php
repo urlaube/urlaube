@@ -8,7 +8,7 @@
     translation files, storing loaded translations and reading the translated strings.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

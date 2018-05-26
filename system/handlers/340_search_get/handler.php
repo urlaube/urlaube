@@ -1,10 +1,10 @@
 <?php
 
   /**
-    This is the ArchiveHandler class of the urlau.be CMS.
+    This is the SearchGetHandler class of the urlau.be CMS.
 
-    This file contains the ArchiveHandler class of the urlau.be CMS. The
-    archive handler lists all pages that contain a certain date.
+    This file contains the SearchGetHandler class of the urlau.be CMS. The
+    search-get handler lists all pages that contain a certain search keyword.
 
     @package urlaube\urlaube
     @version 0.1a2
@@ -17,8 +17,8 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("ArchiveHandler")) {
-    class ArchiveHandler implements Handler {
+  if (!class_exists("SearchGetHandler")) {
+    class SearchGetHandler implements Handler {
 
       // INTERFACE FUNCTIONS
 
@@ -26,19 +26,9 @@
         $result = null;
 
         if (is_array($info)) {
-          $year = null;
-          if (isset($info[YEAR]) && is_numeric($info[YEAR])) {
-            $year = $info[YEAR];
-          }
-
-          $month = null;
-          if (isset($info[MONTH]) && is_numeric($info[MONTH])) {
-            $month = $info[MONTH];
-          }
-
-          $day = null;
-          if (isset($info[DAY]) && is_numeric($info[DAY])) {
-            $day = $info[DAY];
+          $search = null;
+          if (isset($info[SEARCH]) && is_array($info[SEARCH])) {
+            $search = $info[SEARCH];
           }
 
           $page = 1;
@@ -49,13 +39,18 @@
           }
 
           $result = File::loadContentDir(USER_CONTENT_PATH, false,
-                                         function ($content) use ($year, $month, $day) {
+                                         function ($content) use ($search) {
                                            $result = null;
 
                                            // check that $content is not hidden
                                            if (!ishidden($content)) {
-                                             // check that $content has the $year, $month and $day
-                                             if (hasdate($content, $year, $month, $day)) {
+                                             // check that $content contains $keywords
+                                             if (findkeywords($content, AUTHOR, $search) ||
+                                                 findkeywords($content, CATEGORY, $search) ||
+                                                 findkeywords($content, CONTENT, $search) ||
+                                                 findkeywords($content, DATE, $search) ||
+                                                 findkeywords($content, DESCRIPTION, $search) ||
+                                                 findkeywords($content, TITLE, $search)) {
                                                $result = $content;
                                              }
                                            }
@@ -84,19 +79,11 @@
       }
 
       public static function getUri($info) {
-        $result = Main::ROOTURI()."archive".US;
+        $result = Main::ROOTURI()."search".US;
 
         if (is_array($info)) {
-          if (isset($info[YEAR]) && is_numeric($info[YEAR])) {
-            $result .= $info[YEAR].US;
-
-            if (isset($info[MONTH]) && is_numeric($info[MONTH])) {
-              $result .= $info[MONTH].US;
-
-              if (isset($info[DAY]) && is_numeric($info[DAY])) {
-                $result .= $info[DAY].US;
-              }
-            }
+          if (isset($info[SEARCH]) && is_array($info[SEARCH])) {
+            $result .= urlencode(implode(".", $info[SEARCH])).US;
           }
 
           if (isset($info[PAGE]) && is_numeric($info[PAGE])) {
@@ -112,35 +99,19 @@
       public static function parseUri($uri) {
         $result = null;
 
-        if (1 === preg_match("@^\/archive\/(?:([0-9]+)\/)(?:([0-9]+)\/)?(?:([0-9]+)\/)?(?:page\=([0-9]+)\/)?$@",
+        if (1 === preg_match("@^\/search\/([0-9A-Za-z\_\-\.]+)\/(?:page\=([0-9]+)\/)?$@",
                              $uri, $matches)) {
           $result = array();
 
-          // get the requested archive year
+          // get the requested search string
           if (2 <= count($matches)) {
-            if (is_numeric($matches[1])) {
-              $result[YEAR] = intval($matches[1]);
-            }
-          }
-
-          // get the requested archive month
-          if (3 <= count($matches)) {
-            if (is_numeric($matches[2])) {
-              $result[MONTH] = intval($matches[2]);
-            }
-          }
-
-          // get the requested archive day
-          if (4 <= count($matches)) {
-            if (is_numeric($matches[3])) {
-              $result[DAY] = intval($matches[3]);
-            }
+            $result[SEARCH] = explode(".", $matches[1]);
           }
 
           // get the requested page number
-          if (5 <= count($matches)) {
-            if (is_numeric($matches[4])) {
-              $result[PAGE] = intval($matches[4]);
+          if (3 <= count($matches)) {
+            if (is_numeric($matches[2])) {
+              $result[PAGE] = intval($matches[2]);
             }
           }
         }
@@ -153,7 +124,7 @@
       public static function handle() {
         $result = false;
 
-        if (!Handlers::get(DEACTIVATE_ARCHIVE)) {
+        if (!Handlers::get(DEACTIVATE_SEARCH)) {
           $info = static::parseUri(Main::RELATIVEURI());
           if (null !== $info) {
             // check if the URI is correct
@@ -186,11 +157,11 @@
     }
 
     // activate handler by default
-    Handlers::preset(DEACTIVATE_ARCHIVE, false);
+    Handlers::preset(DEACTIVATE_SEARCH, false);
 
     // register handler
-    Handlers::register("ArchiveHandler", "handle",
-                       "@^\/archive\/(([0-9]+)\/)(?:([0-9]+)\/)?(?:([0-9]+)\/)?(?:page\=([0-9]+)\/)?$@",
+    Handlers::register("SearchGetHandler", "handle",
+                       "@^\/search\/([0-9A-Za-z\_\-\.]+)\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }
 

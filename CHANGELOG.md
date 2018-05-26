@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1a2 (26.05.2018)
+### Bugfixes
+* renumbered system handlers
+* the `ArchiveHandler` now requires at least the year to be set in the URI
+* the `FixUrlHandler` now properly handles urlencoded special characters
+### Features
+* added `AuthorHandler` and `FeedAuthorHandler`
+* renamed `SearchHandler` to `SearchGetHandler`
+* added `SearchPostHandler` that properly redirect to the correct search URI
+
 ## 0.1a1 (23.05.2018)
 ### Bugfixes
 * `010_feed` plugin doesn't call `Markdown::apply()` directly anymore to decouple it from `020_markdown`

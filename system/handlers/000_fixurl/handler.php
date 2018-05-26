@@ -7,7 +7,7 @@
     incorrectly written URLs.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -50,8 +50,8 @@
           }
 
           $fixed = lead(implode(US, $array), US);
-          if ((0 !== strcmp(Main::URI(), $fixed)) &&
-              (0 !== strcmp(Main::URI(), trail($fixed, US)))) {
+          if ((0 !== strcmp(Main::URI(), urldecode($fixed))) &&
+              (0 !== strcmp(Main::URI(), trail(urldecode($fixed), US)))) {
             redirect($fixed);
 
             $result = true;

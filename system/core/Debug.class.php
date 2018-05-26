@@ -6,7 +6,7 @@
     This file contains the Debug class of the urlau.be CMS core. This class provides a simple logging feature.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

@@ -7,7 +7,7 @@
     these functions as they will only change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -132,6 +132,20 @@
   // get the translation
   function gl($string) {
     return Translations::getTranslation($string);
+  }
+
+  // check if the given $content has a certain $author
+  function hasauthor($content, $author) {
+    $result = false;
+
+    if (($content instanceof Content) && is_string($author)) {
+      // check if AUTHOR is set
+      if ($content->isset(AUTHOR)) {
+        $result = (0 === strcasecmp(trim($author), trim($content->get(AUTHOR))));
+      }
+    }
+
+    return $result;
   }
 
   // check if the given $content has a certain $category

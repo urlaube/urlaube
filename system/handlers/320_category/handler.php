@@ -8,7 +8,7 @@
     identifier.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -79,7 +79,7 @@
 
         if (is_array($info)) {
           if (isset($info[CATEGORY]) && is_string($info[CATEGORY])) {
-            $result .= urlencode($info[CATEGORY]).US;
+            $result .= urlencode(strtolower($info[CATEGORY])).US;
           }
 
           if (isset($info[PAGE]) && is_numeric($info[PAGE])) {

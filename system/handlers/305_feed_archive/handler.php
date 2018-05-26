@@ -7,7 +7,7 @@
     feed archive handler produces an RSS 2.0 feed of the first content page of a certain type.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -110,7 +110,8 @@
     }
 
     // activate handler by default
-    Handlers::preset(DEACTIVATE_FEED, false);
+    Handlers::preset(DEACTIVATE_ARCHIVE, false);
+    Handlers::preset(DEACTIVATE_FEED,    false);
 
     // register handler
     Handlers::register("FeedArchiveHandler", "handle",

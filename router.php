@@ -7,7 +7,7 @@
     Usage: `php -S localhost:8080 ./router.php`
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

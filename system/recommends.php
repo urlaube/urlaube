@@ -7,7 +7,7 @@
     theme developers so that they can decide on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -64,6 +64,8 @@
   define("KEYWORDS",   "keywords");   // keywords of the website
   define("LANGUAGE",   "language");   // language of the website
   define("LOGO",       "logo");       // logo URL of the website
+  define("MENU",       "menu");       // menu entries of the website
+  define("PAGENAME",   "pagename");   // name of the current page
   define("TIMEFORMAT", "timeformat"); // formatting of date strings
   // TITLE
 
@@ -74,6 +76,7 @@
   // define configuration to deactivate handlers
   define("DEACTIVATE_ADDSLASH",    "deactivate_addslash");
   define("DEACTIVATE_ARCHIVE",     "deactivate_archive");
+  define("DEACTIVATE_AUTHOR",      "deactivate_author");
   define("DEACTIVATE_CATEGORY",    "deactivate_category");
   define("DEACTIVATE_ERROR",       "deactivate_error");
   define("DEACTIVATE_FAVICON_ICO", "deactivate_favicon_ico");
@@ -87,6 +90,7 @@
   define("DEACTIVATE_SITEMAP_XML", "deactivate_sitemap_xml");
 
   // define handler's pageinfo fields
+  // AUTHOR
   // CATEGORY
   define("DAY",    "day");
   define("MONTH",  "month");

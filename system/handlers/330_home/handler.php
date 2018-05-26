@@ -1,13 +1,13 @@
 <?php
 
   /**
-    This is the SearchHandler class of the urlau.be CMS.
+    This is the HomeHandler class of the urlau.be CMS.
 
-    This file contains the SearchHandler class of the urlau.be CMS. The
-    search handler lists all pages that contain a certain search keyword.
+    This file contains the HomeHandler class of the urlau.be CMS. The
+    home handler lists all pages that are not flagged to be hidden from the home page.
 
     @package urlaube\urlaube
-    @version 0.1a1
+    @version 0.1a2
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,8 +17,8 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("SearchHandler")) {
-    class SearchHandler implements Handler {
+  if (!class_exists("HomeHandler")) {
+    class HomeHandler implements Handler {
 
       // INTERFACE FUNCTIONS
 
@@ -26,11 +26,6 @@
         $result = null;
 
         if (is_array($info)) {
-          $search = null;
-          if (isset($info[SEARCH]) && is_string($info[SEARCH])) {
-            $search = $info[SEARCH];
-          }
-
           $page = 1;
           if (isset($info[PAGE]) && is_numeric($info[PAGE])) {
             if (0 < $info[PAGE]) {
@@ -38,22 +33,14 @@
             }
           }
 
-          // split $search by spaces
-          $keywords = explode(".", $search);
-
           $result = File::loadContentDir(USER_CONTENT_PATH, false,
-                                         function ($content) use ($keywords) {
+                                         function ($content) {
                                            $result = null;
 
                                            // check that $content is not hidden
                                            if (!ishidden($content)) {
-                                             // check that $content contains $keywords
-                                             if (findkeywords($content, AUTHOR, $keywords) ||
-                                                 findkeywords($content, CATEGORY, $keywords) ||
-                                                 findkeywords($content, CONTENT, $keywords) ||
-                                                 findkeywords($content, DATE, $keywords) ||
-                                                 findkeywords($content, DESCRIPTION, $keywords) ||
-                                                 findkeywords($content, TITLE, $keywords)) {
+                                             // check that $content is not hidden from home
+                                             if (!ishiddenfromhome($content)) {
                                                $result = $content;
                                              }
                                            }
@@ -82,13 +69,9 @@
       }
 
       public static function getUri($info) {
-        $result = Main::ROOTURI()."search".US;
+        $result = Main::ROOTURI();
 
         if (is_array($info)) {
-          if (isset($info[SEARCH]) && is_string($info[SEARCH])) {
-            $result .= urlencode($info[SEARCH]).US;
-          }
-
           if (isset($info[PAGE]) && is_numeric($info[PAGE])) {
             if (1 !== $info[PAGE]) {
               $result .= "page=".$info[PAGE].US;
@@ -102,19 +85,14 @@
       public static function parseUri($uri) {
         $result = null;
 
-        if (1 === preg_match("@^\/search\/([0-9A-Za-z\_\-\.]+)\/(?:page\=([0-9]+)\/)?$@",
+        if (1 === preg_match("@^\/(?:page\=([0-9]+)\/)?$@",
                              $uri, $matches)) {
           $result = array();
 
-          // get the requested search string
-          if (2 <= count($matches)) {
-            $result[SEARCH] = $matches[1];
-          }
-
           // get the requested page number
-          if (3 <= count($matches)) {
-            if (is_numeric($matches[2])) {
-              $result[PAGE] = intval($matches[2]);
+          if (2 <= count($matches)) {
+            if (is_numeric($matches[1])) {
+              $result[PAGE] = intval($matches[1]);
             }
           }
         }
@@ -127,7 +105,7 @@
       public static function handle() {
         $result = false;
 
-        if (!Handlers::get(DEACTIVATE_SEARCH)) {
+        if (!Handlers::get(DEACTIVATE_HOME)) {
           $info = static::parseUri(Main::RELATIVEURI());
           if (null !== $info) {
             // check if the URI is correct
@@ -160,11 +138,11 @@
     }
 
     // activate handler by default
-    Handlers::preset(DEACTIVATE_SEARCH, false);
+    Handlers::preset(DEACTIVATE_HOME, false);
 
     // register handler
-    Handlers::register("SearchHandler", "handle",
-                       "@^\/search\/([0-9A-Za-z\_\-\.]+)\/(?:page\=([0-9]+)\/)?$@",
+    Handlers::register("HomeHandler", "handle",
+                       "@^\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }
 

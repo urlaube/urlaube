@@ -1,0 +1,22 @@
+# do not publish user content
+user/config/*
+user/content/*
+user/handlers/*
+user/plugins/*
+user/themes/*
+user/uploads/*
+
+# do not ignore the gitkeep files
+!user/config/.gitkeep
+!user/content/.gitkeep
+!user/handlers/.gitkeep
+!user/plugins/.gitkeep
+!user/themes/.gitkeep
+!user/uploads/.gitkeep
+
+# do not publish macOS blergh
+._*
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes

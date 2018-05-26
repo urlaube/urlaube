@@ -70,15 +70,18 @@ At the moment the Urlaube CMS consists of the following system handlers that are
 * `130_sitemap_xml` handles access to the `sitemap.xml` file by generating a minimal file
 * `200_addslash` adds a trailing slash to the URI
 * `300_archive` provides a paginated archive feature based on the content's `Date` field
-* `310_category` provides a paginated category feature based on the content's `Category` field
-* `320_feed_archive` provides an RSS feed for the archive feature
-* `330_feed_category` provides an RSS feed for the category feature
-* `340_feed_home` provides an RSS feed for the home feature
-* `350_feed_search` provides an RSS feed for the search feature
-* `360_home` provides a paginated home feature like a blog roll
-* `370_search` provides a paginated search feature
-* `380_page` handles access to single pages by converting the URI to the corresponding content file path
-* `400_error` handles all URIs that have not returned content
+* `305_feed_archive` provides an RSS feed for the archive feature
+* `310_author` provides a paginated author feature based on the content's `Author` field
+* `315_feed_author` provides an RSS feed for the author feature
+* `320_category` provides a paginated category feature based on the content's `Category` field
+* `325_feed_category` provides an RSS feed for the category feature
+* `330_home` provides a paginated home feature like a blog roll
+* `335_feed_home` provides an RSS feed for the home feature
+* `340_search_get` provides a paginated search feature
+* `340_search_post` provides the endpoint for search forms
+* `345_feed_search` provides an RSS feed for the search feature
+* `400_page` handles access to single pages by converting the URI to the corresponding content file path
+* `999_error` handles all URIs that have not returned content
 
 Users MAY add their own handlers by putting them in the `./user/handlers/` directory.
 

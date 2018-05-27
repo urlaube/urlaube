@@ -129,7 +129,7 @@
     return $result;
   }
 
-  public function feeduri() {
+  function feeduri() {
     $result = null;
 
     // convert the PAGEINFO to a feed URI

@@ -7,7 +7,7 @@
     search-get handler lists all pages that contain a certain search keyword.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("SearchGetHandler")) {
+  if (!class_exists(SEARCH_GET_HANDLER)) {
     class SearchGetHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -160,7 +160,7 @@
     Handlers::preset(DEACTIVATE_SEARCH, false);
 
     // register handler
-    Handlers::register("SearchGetHandler", "handle",
+    Handlers::register(SEARCH_GET_HANDLER, "handle",
                        "@^\/search\/([0-9A-Za-z\_\-\.]+)\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }

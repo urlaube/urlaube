@@ -7,7 +7,7 @@
     feed home handler produces an RSS 2.0 feed of the first content page of a certain type.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("FeedHomeHandler")) {
+  if (!class_exists(FEED_HOME_HANDLER)) {
     class FeedHomeHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -77,7 +77,7 @@
     Handlers::preset(DEACTIVATE_FEED, false);
 
     // register handler
-    Handlers::register("FeedHomeHandler", "handle",
+    Handlers::register(FEED_HOME_HANDLER, "handle",
                        "@^\/feed\/$@",
                        [GET], SYSTEM);
   }

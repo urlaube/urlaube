@@ -7,7 +7,7 @@
     this class. It loads the handlers and activates them depending on the requested URI.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

@@ -7,7 +7,7 @@
     author handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("AuthorHandler")) {
+  if (!class_exists(AUTHOR_HANDLER)) {
     class AuthorHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -155,7 +155,7 @@
     Handlers::preset(DEACTIVATE_AUTHOR, false);
 
     // register handler
-    Handlers::register("AuthorHandler", "handle",
+    Handlers::register(AUTHOR_HANDLER, "handle",
                        "@^\/author\/([0-9A-Za-z\_\-]+)\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }

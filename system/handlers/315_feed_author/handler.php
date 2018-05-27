@@ -7,7 +7,7 @@
     feed author handler produces an RSS 2.0 feed of the first content page of a certain type.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("FeedAuthorHandler")) {
+  if (!class_exists(FEED_AUTHOR_HANDLER)) {
     class FeedAuthorHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -90,7 +90,7 @@
     Handlers::preset(DEACTIVATE_FEED,   false);
 
     // register handler
-    Handlers::register("FeedAuthorHandler", "handle",
+    Handlers::register(FEED_AUTHOR_HANDLER, "handle",
                        "@^\/feed\/author\/([0-9A-Za-z\_\-]+)\/$@",
                        [GET], SYSTEM);
   }

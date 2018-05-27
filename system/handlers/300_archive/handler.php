@@ -7,7 +7,7 @@
     archive handler lists all pages that contain a certain date.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("ArchiveHandler")) {
+  if (!class_exists(ARCHIVE_HANDLER)) {
     class ArchiveHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -189,7 +189,7 @@
     Handlers::preset(DEACTIVATE_ARCHIVE, false);
 
     // register handler
-    Handlers::register("ArchiveHandler", "handle",
+    Handlers::register(ARCHIVE_HANDLER, "handle",
                        "@^\/archive\/(([0-9]+)\/)(?:([0-9]+)\/)?(?:([0-9]+)\/)?(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }

@@ -7,7 +7,7 @@
     contents for certain typically provided files.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("RobotsTxtHandler")) {
+  if (!class_exists(ROBOTS_TXT_HANDLER)) {
     class RobotsTxtHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -77,7 +77,7 @@
     Handlers::preset(DEACTIVATE_ROBOTS_TXT, false);
 
     // register handler
-    Handlers::register("RobotsTxtHandler", "handle",
+    Handlers::register(ROBOTS_TXT_HANDLER, "handle",
                        "@^\/robots\.txt$@",
                        [GET], BEFORE_ADDSLASH);
   }

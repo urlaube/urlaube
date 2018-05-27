@@ -7,7 +7,7 @@
     these functions as they will only change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -124,6 +124,35 @@
 
         $result = callMethod(Handlers::ACTIVE(), GETURI, $info);
       }
+    }
+
+    return $result;
+  }
+
+  public function feeduri() {
+    $result = null;
+
+    // convert the PAGEINFO to a feed URI
+    switch (Handlers::ACTIVE()) {
+      case ARCHIVE_HANDLER:
+        $result = FeedArchiveHandler::getUri(Main::PAGEINFO());
+        break;
+
+      case AUTHOR_HANDLER:
+        $result = FeedAuthorHandler::getUri(Main::PAGEINFO());
+        break;
+
+      case CATEGORY_HANDLER:
+        $result = FeedCategoryHandler::getUri(Main::PAGEINFO());
+        break;
+
+      case HOME_HANDLER:
+        $result = FeedHomeHandler::getUri(Main::PAGEINFO());
+        break;
+
+      case SEARCH_GET_HANDLER:
+        $result = FeedSearchHandler::getUri(Main::PAGEINFO());
+        break;
     }
 
     return $result;

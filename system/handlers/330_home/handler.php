@@ -7,7 +7,7 @@
     home handler lists all pages that are not flagged to be hidden from the home page.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("HomeHandler")) {
+  if (!class_exists(HOME_HANDLER)) {
     class HomeHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -141,7 +141,7 @@
     Handlers::preset(DEACTIVATE_HOME, false);
 
     // register handler
-    Handlers::register("HomeHandler", "handle",
+    Handlers::register(HOME_HANDLER, "handle",
                        "@^\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }

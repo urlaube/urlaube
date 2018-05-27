@@ -7,7 +7,7 @@
     strings.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -22,10 +22,10 @@
   // define Urlaube information
   define("URLAUBE_NAME",        "Urlaube");
   define("URLAUBE_URL",         "https://urlau.be/");
-  define("URLAUBE_VERSION",     "0.1a2");
+  define("URLAUBE_VERSION",     "0.1a3");
   define("URLAUBE_BUILD",       "");
   define("URLAUBE_CODENAME",    "Freizeit");
-  define("URLAUBE_RELEASEDATE", "26.05.2018");
+  define("URLAUBE_RELEASEDATE", "27.05.2018");
 
   // define shortcodes
   define("BR",  "<br />");

@@ -7,7 +7,7 @@
     contents for certain typically provided files.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("FaviconIcoHandler")) {
+  if (!class_exists(FAVICON_ICO_HANDLER)) {
     class FaviconIcoHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -68,7 +68,7 @@
     Handlers::preset(DEACTIVATE_FAVICON_ICO, false);
 
     // register handler
-    Handlers::register("FaviconIcoHandler", "handle",
+    Handlers::register(FAVICON_ICO_HANDLER, "handle",
                        "@^\/favicon\.ico$@",
                        [GET], BEFORE_ADDSLASH);
   }

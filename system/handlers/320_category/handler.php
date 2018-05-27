@@ -8,7 +8,7 @@
     identifier.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,7 +18,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("CategoryHandler")) {
+  if (!class_exists(CATEGORY_HANDLER)) {
     class CategoryHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -156,7 +156,7 @@
     Handlers::preset(DEACTIVATE_CATEGORY, false);
 
     // register handler
-    Handlers::register("CategoryHandler", "handle",
+    Handlers::register(CATEGORY_HANDLER, "handle",
                        "@^\/category\/([0-9A-Za-z\_\-]+)\/(?:page\=([0-9]+)\/)?$@",
                        [GET], SYSTEM);
   }

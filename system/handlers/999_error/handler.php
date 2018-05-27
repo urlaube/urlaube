@@ -7,7 +7,7 @@
     activated when no fitting handler is found.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("ErrorHandler")) {
+  if (!class_exists(ERROR_HANDLER)) {
     class ErrorHandler extends Translatable implements Handler, Translation {
 
       // INTERFACE FUNCTIONS

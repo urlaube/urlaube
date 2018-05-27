@@ -7,7 +7,7 @@
     It loads the themes and activates the selected theme when requested by the active handler.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

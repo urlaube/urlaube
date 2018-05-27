@@ -6,7 +6,7 @@
     This file contains the defaults of the urlau.be CMS core. These are used to pre-configure core classes.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

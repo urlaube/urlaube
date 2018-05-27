@@ -7,7 +7,7 @@
     generic URL structure for all other handlers.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("AddSlashHandler")) {
+  if (!class_exists(ADDSLASH_HANDLER)) {
     class AddSlashHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -61,7 +61,7 @@
     Handlers::preset(DEACTIVATE_ADDSLASH, false);
 
     // register handler
-    Handlers::register("AddSlashHandler", "handle",
+    Handlers::register(ADDSLASH_HANDLER, "handle",
                        "@^.*$@",
                        [GET, POST], ADDSLASH);
   }

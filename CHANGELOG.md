@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1a3 (27.05.2018)
+### Features
+* added definitions for system handler names
+* introduced `feeduri()` as shortcut to get the correct feed URI
+
 ## 0.1a2 (26.05.2018)
 ### Bugfixes
 * renumbered system handlers

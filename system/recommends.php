@@ -7,7 +7,7 @@
     theme developers so that they can decide on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -72,6 +72,27 @@
   // recommended widget fields
   // CONTENT
   // TITLE
+
+  // define system handler names
+  define("ADDSLASH_HANDLER",      "AddSlashHandler");
+  define("ARCHIVE_HANDLER",       "ArchiveHandler");
+  define("AUTHOR_HANDLER",        "AuthorHandler");
+  define("CATEGORY_HANDLER",      "CategoryHandler");
+  define("ERROR_HANDLER",         "ErrorHandler");
+  define("FAVICON_ICO_HANDLER",   "FaviconIcoHandler");
+  define("FEED_ARCHIVE_HANDLER",  "FeedArchiveHandler");
+  define("FEED_AUTHOR_HANDLER",   "FeedAuthorHandler");
+  define("FEED_CATEGORY_HANDLER", "FeedCategoryHandler");
+  define("FEED_HOME_HANDLER",     "FeedHomeHandler");
+  define("FEED_SEARCH_HANDLER",   "FeedSearchHandler");
+  define("FIXURL_HANDLER",        "FixUrlHandler");
+  define("HOME_HANDLER",          "HomeHandler");
+  define("INDEX_PHP_HANDLER",     "IndexPhpHandler");
+  define("PAGE_HANDLER",          "PageHandler");
+  define("ROBOTS_TXT_HANDLER",    "RobotsTxtHandler");
+  define("SEARCH_GET_HANDLER",    "SearchGetHandler");
+  define("SEARCH_POST_HANDLER",   "SearchPostHandler");
+  define("SITEMAP_XML_HANDLER",   "SitemapXmlHandler");
 
   // define configuration to deactivate handlers
   define("DEACTIVATE_ADDSLASH",    "deactivate_addslash");

@@ -7,7 +7,7 @@
     stored in a file.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("PageHandler")) {
+  if (!class_exists(PAGE_HANDLER)) {
     class PageHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -121,7 +121,7 @@
     Handlers::preset(DEACTIVATE_PAGE, false);
 
     // register handler
-    Handlers::register("PageHandler", "handle",
+    Handlers::register(PAGE_HANDLER, "handle",
                        "@^\/[0-9A-Za-z\_\-\/]*$@",
                        [GET], SYSTEM);
   }

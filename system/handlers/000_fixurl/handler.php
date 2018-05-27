@@ -7,7 +7,7 @@
     incorrectly written URLs.
 
     @package urlaube\urlaube
-    @version 0.1a2
+    @version 0.1a3
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,7 +17,7 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists("FixUrlHandler")) {
+  if (!class_exists(FIXURL_HANDLER)) {
     class FixUrlHandler implements Handler {
 
       // INTERFACE FUNCTIONS
@@ -67,7 +67,7 @@
     Handlers::preset(DEACTIVATE_FIXURL, false);
 
     // register handler
-    Handlers::register("FixUrlHandler", "handle",
+    Handlers::register(FIXURL_HANDLER, "handle",
                        "@^.*$@",
                        [GET, POST], FIXURL);
   }

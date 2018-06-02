@@ -7,7 +7,7 @@
     kickstarts the execution of the CMS.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -30,6 +30,7 @@
   require_once(SYSTEM_CORE_PATH."Base.class.php");
   require_once(SYSTEM_CORE_PATH."Content.class.php");
   require_once(SYSTEM_CORE_PATH."Debug.class.php");
+  require_once(SYSTEM_CORE_PATH."Translate.class.php");
 
   // require main class
   require_once(SYSTEM_CORE_PATH."Main.class.php");
@@ -38,16 +39,11 @@
   require_once(SYSTEM_CORE_PATH."Handlers.class.php");
   require_once(SYSTEM_CORE_PATH."Plugins.class.php");
   require_once(SYSTEM_CORE_PATH."Themes.class.php");
-  require_once(SYSTEM_CORE_PATH."Translations.class.php");
 
   // require interfaces
   require_once(SYSTEM_CORE_PATH."Handler.interface.php");
   require_once(SYSTEM_CORE_PATH."Plugin.interface.php");
   require_once(SYSTEM_CORE_PATH."Theme.interface.php");
-  require_once(SYSTEM_CORE_PATH."Translation.interface.php");
-
-  // require default translation implementation
-  require_once(SYSTEM_CORE_PATH."Translatable.class.php");
 
   // require config class
   require_once(SYSTEM_CORE_PATH."Config.class.php");

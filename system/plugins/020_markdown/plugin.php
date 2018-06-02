@@ -7,7 +7,7 @@
     to HTML-encoded content.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,13 +18,13 @@
   if (!defined("URLAUBE")) { die(""); }
 
   if (!class_exists("Markdown")) {
-    class Markdown implements Plugin {
+    class Markdown extends Base implements Plugin {
 
       // RUNTIME FUNCTIONS
 
       public static function apply($content) {
         // instantiate markdown converter
-        $parsedown = new Parsedown();
+        $parsedown = new ParsedownExtra();
 
         if ($content instanceof Content) {
           if ($content->isset(CONTENT)) {
@@ -60,6 +60,8 @@
 
     // include Parsedown
     require_once(__DIR__."/vendors/parsedown/Parsedown.php");
+    // include Parsedown-Extra
+    require_once(__DIR__."/vendors/parsedown-extra/ParsedownExtra.php");
 
     // register plugin
     Plugins::register("Markdown", "handle", FILTER_CONTENT);

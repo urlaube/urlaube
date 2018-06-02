@@ -7,7 +7,7 @@
     sitemap.xml handler generates a sitemap file.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,7 +18,7 @@
   if (!defined("URLAUBE")) { die(""); }
 
   if (!class_exists(SITEMAP_XML_HANDLER)) {
-    class SitemapXmlHandler implements Handler {
+    class SitemapXmlHandler extends Base implements Handler {
 
       // INTERFACE FUNCTIONS
 

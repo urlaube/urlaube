@@ -7,7 +7,7 @@
     of one CMS entry and is used by a theme to render an entry.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -46,7 +46,7 @@
 
       public function preset($name, $value) {
         if (!$this->isset($name)) {
-        $this->fields[$name] = $value;
+          $this->fields[$name] = $value;
         } else {
           Debug::log("value $name has already been set", DEBUG_DEBUG);
         }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1a4 (02.06.2018)
+### Features
+* rewrote the translation system which now is completely encapsulated in `Translate`
+* added `fhtml()` that calls `html()` on all values and the formats the given string using `sprintf`
+* renamed `gl()` to `t()` which now also supports formatting based on `sprintf()`
+* added `tfhtml()` that translates all values and then calls `fhtml()`
+* rewrote `999_error` to use the new translation system
+* all system handlers and plugins now to extend the Base class to prevent their instantiation
+* `020_markdown` now uses [Parsedown-Extra](https://github.com/erusev/parsedown-extra) in addition to [Parsedown](https://github.com/erusev/parsedown)
+* rewrote `Themes::register()` so that its structure resembles `Handlers::register()` and `Plugins::register()`
+
 ## 0.1a3 (27.05.2018)
 ### Features
 * added definitions for system handler names

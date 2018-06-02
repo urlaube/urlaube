@@ -7,7 +7,7 @@
     this class. It loads the plugins and activates them depending on the currently required actions.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -123,7 +123,7 @@
         }
 
         foreach (static::$plugins as $plugins_item) {
-          if (0 === strcmp($plugins_item[PLUGIN_EVENT], $event)) {
+          if (0 === strcasecmp($plugins_item[PLUGIN_EVENT], $event)) {
             // set the active plugin
             static::$active = $plugins_item[PLUGIN_ENTITY];
 

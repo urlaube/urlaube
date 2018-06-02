@@ -7,7 +7,7 @@
     activated when no fitting handler is found.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,17 +18,22 @@
   if (!defined("URLAUBE")) { die(""); }
 
   if (!class_exists(ERROR_HANDLER)) {
-    class ErrorHandler extends Translatable implements Handler, Translation {
+    class ErrorHandler extends Base implements Handler {
 
       // INTERFACE FUNCTIONS
 
       public static function getContent($info) {
         $result = new Content();
 
-        $result->set(CONTENT, "<p>".html(gl("Die gewünschte Seite wurde leider nicht gefunden."))."</p>".NL.
-                               "<p>".html(gl("Möchtest du stattdessen zur "))."<a href=\"".html(Main::ROOTURI()).
-                               "\">".html(gl("Startseite"))."</a>".html(gl(" gehen?"))."</p>");
-        $result->set(TITLE,   gl("Nichts gefunden..."));
+        $result->set(CONTENT, tfhtml("<p>%s</p>".NL.
+                                     "<p>%s <a href=\"%s\">%s</a> %s</p>",
+                                     ERROR_HANDLER,
+                                     "Die gewünschte Seite wurde leider nicht gefunden.",
+                                     "Möchtest du stattdessen zur",
+                                     Main::ROOTURI(),
+                                     "Startseite"
+                                     "gehen?");
+        $result->set(TITLE,   t("Nichts gefunden...", ERROR_HANDLER));
 
         // set pagination information
         Main::PAGEMAX(1);
@@ -48,7 +53,7 @@
 
       // RUNTIME FUNCTIONS
 
-      public function handle() {
+      public static function handle() {
         $result = false;
 
         if (!Handlers::get(DEACTIVATE_ERROR)) {
@@ -76,13 +81,13 @@
     // activate handler by default
     Handlers::preset(DEACTIVATE_ERROR, false);
 
-    // instantiate translatable handler
-    $handler = new ErrorHandler();
-    $handler->setTranslationsPath(__DIR__.DS."lang".DS);
 
     // register handler
-    Handlers::register($handler, "handle",
+    Handlers::register(ERROR_HANDLER, "handle",
                        "@^.*$@",
                        [GET, POST], ERROR);
+
+    // register the translation
+    Translate::register(__DIR__.DS."lang".DS, ERROR_HANDLER);
   }
 

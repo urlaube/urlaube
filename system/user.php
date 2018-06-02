@@ -7,7 +7,7 @@
     these functions as they will only change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -88,6 +88,19 @@
     return $result;
   }
 
+  // get the formatted string and call html() on all $values
+  function fhtml($string, ...$values) {
+    $result = $string;
+
+    // escape everything
+    foreach ($values as $values_key => $values_value) {
+      $values[$values_key] = html($values_value);
+    }
+    $result = sprintf($result, ...$values);
+
+    return $result;
+  }
+
   // check if the given $content has one or more $keywords in $field
   function findkeywords($content, $field, $keywords) {
     $result = false;
@@ -156,11 +169,6 @@
     }
 
     return $result;
-  }
-
-  // get the translation
-  function gl($string) {
-    return Translations::getTranslation($string);
   }
 
   // check if the given $content has a certain $author
@@ -482,6 +490,32 @@
         $result = array_merge($sortable, $unsortable);
       }
     }
+
+    return $result;
+  }
+
+  // get the translation
+  function t($string, $name = null, ...$values) {
+    $result = $string;
+
+    if (0 === count($values)) {
+      $result = Translate::get($result, $name);
+    } else {
+      $result = Translate::format($result, $name, ...$values);
+    }
+
+    return $result;
+  }
+
+  // get the formatted string and call html() on the translation of all $values
+  function tfhtml($string, $name = null, ...$values) {
+    $result = $string;
+
+    // translate everything
+    foreach ($values as $values_key => $values_value) {
+      $values[$values_key] = Translate::get($values_value, $name);
+    }
+    $result = fhtml($result, ...$values);
 
     return $result;
   }

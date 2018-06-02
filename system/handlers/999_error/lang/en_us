@@ -1,7 +1,7 @@
 {
-  " gehen?"                                           : " instead?",
+  "gehen?"                                            : "instead?",
   "Die gewünschte Seite wurde leider nicht gefunden." : "The requested page could not be found.",
-  "Möchtest du stattdessen zur "                      : "Do you want to go to the ",
+  "Möchtest du stattdessen zur"                       : "Do you want to go to the",
   "Nichts gefunden..."                                : "Nothing found...",
   "Startseite"                                        : "start page"
 }

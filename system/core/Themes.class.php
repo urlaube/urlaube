@@ -7,7 +7,7 @@
     It loads the themes and activates the selected theme when requested by the active handler.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -102,21 +102,29 @@
       public static function register($entity, $function, $name) {
         $result = false;
 
-        // check if the theme name is not already taken
-        if ((null === static::$themes) || (!array_key_exists($name, static::$themes))) {
-          $result = checkMethod($entity, $function);
+        if (checkMethod($entity, $function)) {
+          if (is_string($name)) {
+            // check if the theme name is not already taken
+            if ((null === static::$themes) || (!isset(static::$themes[$names]))) {
+              // prepare themes array
+              if (null === static::$themes) {
+                static::$themes = array();
+              }
 
-          // store the given method as a new theme
-          if ($result) {
-            // prepare themes array
-            if (null === static::$themes) {
-              static::$themes = array();
+              // store the given method as a new theme
+              static::$themes[$name] = array(THEME_ENTITY   => $entity,
+                                             THEME_FUNCTION => $function);
+
+              // we're done
+              $result = true;
+            } else {
+              Debug::log("given name is already registered", DEBUG_WARN);
             }
-
-            // store the given method as a new theme
-            static::$themes[$name] = array(THEME_ENTITY   => $entity,
-                                           THEME_FUNCTION => $function);
+          } else {
+            Debug::log("given name has wrong format", DEBUG_WARN);
           }
+        } else {
+          Debug::log("given entity or function does not exist", DEBUG_WARN);
         }
 
         return $result;
@@ -141,7 +149,7 @@
             $themes_item = null;
           }
         } else {
-          if (array_key_exists(static::$themename, static::$themes)) {
+          if (isset(static::$themes[static::$themename])) {
             $themes_item = static::$themes[static::$themename];
           }
         }

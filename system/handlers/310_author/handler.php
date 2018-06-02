@@ -7,7 +7,7 @@
     author handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */
@@ -18,7 +18,7 @@
   if (!defined("URLAUBE")) { die(""); }
 
   if (!class_exists(AUTHOR_HANDLER)) {
-    class AuthorHandler implements Handler {
+    class AuthorHandler extends Base implements Handler {
 
       // INTERFACE FUNCTIONS
 

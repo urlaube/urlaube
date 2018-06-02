@@ -6,7 +6,7 @@
     This file contains the Debug class of the urlau.be CMS core. This class provides a simple logging feature.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -122,7 +122,7 @@
             }
 
             // make sure the log message ends with a line break
-            $string = trail($string, EOL);
+            $string = trail($string, NL);
 
             if (DEBUG_OUTPUT === static::$logtarget) {
               print($string);

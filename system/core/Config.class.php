@@ -8,7 +8,7 @@
     which core class as the Config class is used as a facade.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -44,7 +44,7 @@
       }
 
       public static function getLanguage() {
-        return Translations::LANGUAGE();
+        return Translate::LANGUAGE();
       }
 
       public static function getLoglevel() {
@@ -142,7 +142,7 @@
       }
 
       public static function setLanguage($value) {
-        return Translations::LANGUAGE($value);
+        return Translate::LANGUAGE($value);
       }
 
       public static function setLoglevel($value) {

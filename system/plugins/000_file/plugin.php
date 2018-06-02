@@ -7,7 +7,7 @@
     CMS entries.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,7 +18,7 @@
   if (!defined("URLAUBE")) { die(""); }
 
   if (!class_exists("File")) {
-    class File implements Plugin {
+    class File extends Base implements Plugin {
 
       // RUNTIME FUNCTIONS
 

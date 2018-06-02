@@ -7,7 +7,7 @@
     contents for certain typically provided files.
 
     @package urlaube\urlaube
-    @version 0.1a3
+    @version 0.1a4
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,7 +18,7 @@
   if (!defined("URLAUBE")) { die(""); }
 
   if (!class_exists(ROBOTS_TXT_HANDLER)) {
-    class RobotsTxtHandler implements Handler {
+    class RobotsTxtHandler extends Base implements Handler {
 
       // INTERFACE FUNCTIONS
 

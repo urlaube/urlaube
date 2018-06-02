@@ -37,9 +37,7 @@ The core are the minimal files that make up the CMS. The following files belong 
 * `./system/core/Plugins.class.php` contains the plugin management class
 * `./system/core/Theme.interface.php` contains the theme interface that SHOULD be used by all handler developers
 * `./system/core/Themes.class.php` contains the theme management class
-* `./system/core/Translatable.class.php` contains the default implementation of the translation interface
-* `./system/core/Translation.interface.php` contains the translation interface that SHOULD be used by all multi-language developers
-* `./system/core/Translations.class.php` containts the translation management class
+* `./system/core/Translate.class.php` containts the translation engine class
 
 ## Handlers
 Handlers extend the core and react on certain URLs by matching a handler's regular expression against the relative URI. Handlers can be registered in the core by calling the following method:

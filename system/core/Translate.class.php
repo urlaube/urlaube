@@ -61,14 +61,16 @@
               // iterate through the folder entry
               $translation = array();
               foreach (static::$translations[strtolower($name)][null] as $translations_item) {
-                // try to read the file
-                $content = file_get_contents($translations_item.strtolower(static::$language));
-                if (false !== $content) {
-                  // try to json-decode the read content
-                  $temp = json_decode($content, true);
-                  if (is_array($temp)) {
-                    // merge the translation entries
-                    $translation = array_merge($translation, $temp);
+                if (is_file($translations_item.strtolower(static::$language))) {
+                  // try to read the file
+                  $content = file_get_contents($translations_item.strtolower(static::$language));
+                  if (false !== $content) {
+                    // try to json-decode the read content
+                    $temp = json_decode($content, true);
+                    if (is_array($temp)) {
+                      // merge the translation entries
+                      $translation = array_merge($translation, $temp);
+                    }
                   }
                 }
               }

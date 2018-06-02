@@ -31,7 +31,7 @@
                                      "Die gewünschte Seite wurde leider nicht gefunden.",
                                      "Möchtest du stattdessen zur",
                                      Main::ROOTURI(),
-                                     "Startseite"
+                                     "Startseite",
                                      "gehen?");
         $result->set(TITLE,   t("Nichts gefunden...", ERROR_HANDLER));
 

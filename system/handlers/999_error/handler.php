@@ -32,7 +32,7 @@
                                      "Möchtest du stattdessen zur",
                                      Main::ROOTURI(),
                                      "Startseite",
-                                     "gehen?");
+                                     "gehen?"));
         $result->set(TITLE,   t("Nichts gefunden...", ERROR_HANDLER));
 
         // set pagination information

@@ -5,7 +5,7 @@ The Urlaube CMS is a flat-file content management system. It has been developed 
 Config SHALL be located in the `./user/config/config.php` file.
 
 ## Content
-Content SHALL be located in the `./user/content/` directory and MAY be located in subdirectories. Each content file has end with the extension `.md` otherwise it is not considered to be a content file. Content files consist of header lines in the form `<Key>: <Value>` which are used to provide further information about the content to handlers, plugins and themes. The actual content of the file starts after a blank line and ends at the end of the file.
+Content SHALL be located in the `./user/content/` directory and MAY be located in subdirectories. Each content file has to end with the extension `.md` otherwise it is not considered to be a content file. Content files consist of header lines in the form of `<Key>: <Value>` which are used to provide further information about the content to handlers, plugins and themes. The actual content of the file starts after a blank line and ends at the end of the file.
 
 An example content file might look like this:
 ```
@@ -45,7 +45,7 @@ Handlers extend the core and react on certain URLs by matching a handler's regul
 Handlers::register($entity, $function, $regex, $methods = array(GET), $priority = 0);
 ```
 
-The register method has to following parameters:
+The register method has the following parameters:
 * `$entity` is either `null`, a class name or an object
 * `$function` is the either a name of a function (when `$entity` is `null`) or the name of a method of `$entity`
 * `$regex` is a regular expression that is matched against the URI relative to the configured root URI
@@ -89,7 +89,7 @@ Plugins extend the core and react on certain events. Plugins can be registered i
 Plugins::register($entity, $function, $event);
 ```
 
-The register method has to following parameters:
+The register method has the following parameters:
 * `$entity` is either `null`, a class name or an object
 * `$function` is the either a name of a function (when `$entity` is `null`) or the name of a method of `$entity`
 * `$event` is an event name the plugin shall react on
@@ -121,15 +121,15 @@ At the moment the Urlaube CMS consists of the following system plugins that are 
 * `010_feed` is used by system feed handlers to generate RSS feeds from content objects
 * `020_markdown` is used to provide the markdown down support
 
-Users MAY add their own handlers by putting them in the `./user/plugins/` directory.
+Users MAY add their own plugins by putting them in the `./user/plugins/` directory.
 
 ## Themes
-Themes extend the core and are called by a handler. Themes  can be registered in the core by calling the following method:
+Themes extend the core and are called by a handler. Themes can be registered in the core by calling the following method:
 ```
 Themes::register($entity, $function, $name);
 ```
 
-The register method has to following parameters:
+The register method has the following parameters:
 * `$entity` is either `null`, a class name or an object
 * `$function` is the either a name of a function (when `$entity` is `null`) or the name of a method of `$entity`
 * `$name` is the name of the theme to be used in the config file
@@ -139,7 +139,57 @@ To use a theme its name has to be configured in the config file located at `./us
 Config::THEMENAME("<NAME OF THE THEME>");
 ```
 
-Users SHALL add their own handlers by putting them in the `./user/themes/` directory.
+Users SHALL add their own themes by putting them in the `./user/themes/` directory.
+
+## Translation
+The `Translate` class provides a translation feature based on simple JSON files. New translation files can be registered by calling the following method:
+```
+Translate::register($folder, $name = null);
+```
+
+The register method has the following parameters:
+* `$folder` is the path to a folder that contains files named after potential language values (e.g. `de_de`)
+* `$name` is an optional namespace for the registered translation, if no name is given, the translations are loaded into the global space
+
+An example translation file might look like this:
+```
+{
+  "This"           : "Das",
+  "is"             : "ist",
+  "an"             : "eine",
+  "example file"   : "Testdatei",
+  "My name is %s." : "Mein Name ist %s."
+}
+```
+
+To translate a basic string, the following method can be used:
+```
+Translate::get($string, $name = null)
+```
+
+The following parameters are allowed:
+* `$string` is the string that shall be translated, this string is searched in the JSON files within the registered folders
+* `$name` is the namespace in which the translation shall be searched for, this is helpful to separate translations of different extensions
+
+To translate a string containing placeholders as supported by PHP's `sprintf()` function the following method can be used:
+```
+Translate::format($string, $name = null, ...$values)
+```
+
+The following parameters are allowed:
+* `$string` is the string that shall be translated, this string is searched in the JSON files within the registered folders
+* `$name` is the namespace in which the translation shall be searched for, this is helpful to separate translations of different extensions
+* `$values` are **one** or more additional values that shall be used to replace the placeholders in the translated strings
+
+There is a shortcode function in `./system/user.php` to shorten the code necessary to get a translation:
+```
+t($string, $name = null, ...$values)
+```
+
+The following parameters are allowed:
+* `$string` is the string that shall be translated, this string is searched in the JSON files within the registered folders
+* `$name` is the namespace in which the translation shall be searched for, this is helpful to separate translations of different extensions
+* `$values` if left out then `Translate::get()` is called, if at least one addition $values parameter is set, the `Translate::format()` is called
 
 ## Installation
 To install the Urlaube CMS you can clone the corresponding git repository:

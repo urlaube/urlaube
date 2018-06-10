@@ -551,3 +551,35 @@
     return $result;
   }
 
+  // call the widgets and filter them afterwards
+  function widgets() {
+    $result = array();
+
+    // call the widget plugins
+    $widgets = Plugins::run(ON_WIDGETS);
+
+    // filter wrong entries and flatten arrays
+    foreach ($widgets as $widgets_item) {
+      if ($widgets_item instanceof Content) {
+        $result[] = $widgets_item;
+      } else {
+        // flatten arrays
+        if (is_array($widgets_item)) {
+          foreach ($widgets_item as $widgets_item_item) {
+            if ($widgets_item_item instanceof Content) {
+              $result[] = $widgets_item_item;
+            }
+          }
+        }
+      }
+    }
+
+    // return null if no widget is set
+    if (0 <= count($result)) {
+      $result = null;
+    }
+
+    // filter the widgets and return them
+    return Plugins::run(FILTER_WIDGETS, true, $result);
+  }
+

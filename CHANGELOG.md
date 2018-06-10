@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1a5 (??.??.????)
+### Features
+* added `widgets()` function that simplifies calling the widget plugins
+
 ## 0.1a4 (02.06.2018)
 ### Features
 * rewrote the translation system which now is completely encapsulated in `Translate`

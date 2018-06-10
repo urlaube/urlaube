@@ -575,7 +575,7 @@
     }
 
     // return null if no widget is set
-    if (0 <= count($result)) {
+    if (0 >= count($result)) {
       $result = null;
     }
 

@@ -7,7 +7,7 @@
     these functions as they will only change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a4
+    @version 0.1a5
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -282,6 +282,35 @@
     }
 
     return $result;
+  }
+
+  // check if the given $string represents a permanent redirect state
+  function ispermanent($string) {
+    $string = strtolower(trim($string));
+
+    return ((0 === strcmp($string, "301")) ||
+            (0 === strcmp($string, "permanent")) ||
+            (0 === strcmp($string, "permanently")));
+  }
+
+  // check if the given $content is a redirect
+  function isredirect($content) {
+    $result = false;
+
+    if ($content instanceof Content) {
+      $result = (($content->isset(REDIRECT)) && (0 < strlen(trim($content->get(REDIRECT)))));
+    }
+
+    return $result;
+  }
+
+  // check if the given $string represents a temporary redirect state
+  function istemporary($string) {
+    $string = strtolower(trim($string));
+
+    return ((0 === strcmp($string, "302")) ||
+            (0 === strcmp($string, "temporary")) ||
+            (0 === strcmp($string, "temporarily")));
   }
 
   // checks if $string ends with $trail

@@ -7,7 +7,7 @@
     author handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a4
+    @version 0.1a5
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */
@@ -44,9 +44,12 @@
 
                                            // check that $content is not hidden
                                            if (!ishidden($content)) {
-                                             // check that $content has the $author
-                                             if (hasauthor($content, $author)) {
-                                               $result = $content;
+                                             // check that $content is not a redirect
+                                             if (!isredirect($content)) {
+                                               // check that $content has the $author
+                                               if (hasauthor($content, $author)) {
+                                                 $result = $content;
+                                               }
                                              }
                                            }
 

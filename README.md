@@ -119,7 +119,8 @@ The following event names SHOULD be used by handlers, plugins or themes for now:
 At the moment the Urlaube CMS consists of the following system plugins that are located in `./system/plugins/`:
 * `000_file` is used by system handlers to load content files
 * `010_feed` is used by system feed handlers to generate RSS feeds from content objects
-* `020_markdown` is used to provide the markdown down support
+* `020_redirect` is used to provide the redirect feature through the `Redirect` and `RedirectType` fields
+* `030_markdown` is used to provide the markdown down support
 
 Users MAY add their own plugins by putting them in the `./user/plugins/` directory.
 

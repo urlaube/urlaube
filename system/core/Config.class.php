@@ -8,7 +8,7 @@
     which core class as the Config class is used as a facade.
 
     @package urlaube\urlaube
-    @version 0.1a4
+    @version 0.1a5
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

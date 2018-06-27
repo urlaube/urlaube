@@ -1,8 +1,10 @@
 # Changelog
 
-## 0.1a5 (??.??.????)
+## 0.1a5 (27.06.2018)
 ### Features
 * added `widgets()` function that simplifies calling the widget plugins
+* introduced redirect plugin that handles `Redirect` and `RedirectType` fields
+* modified all relevent handlers to filter content elements that are redirects
 
 ## 0.1a4 (02.06.2018)
 ### Features

@@ -8,7 +8,7 @@
     identifier.
 
     @package urlaube\urlaube
-    @version 0.1a4
+    @version 0.1a5
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -45,9 +45,12 @@
 
                                            // check that $content is not hidden
                                            if (!ishidden($content)) {
-                                             // check that $content has the $category
-                                             if (hascategory($content, $category)) {
-                                               $result = $content;
+                                             // check that $content is not a redirect
+                                             if (!isredirect($content)) {
+                                               // check that $content has the $category
+                                               if (hascategory($content, $category)) {
+                                                 $result = $content;
+                                               }
                                              }
                                            }
 

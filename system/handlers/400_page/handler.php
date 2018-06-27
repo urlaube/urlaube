@@ -7,7 +7,7 @@
     stored in a file.
 
     @package urlaube\urlaube
-    @version 0.1a4
+    @version 0.1a5
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -46,6 +46,7 @@
 
                                         // check that $content is not hidden
                                         if (!ishidden($content)) {
+                                          // do not filter out redirects as these have to be executed at this stage
                                           $result = $content;
                                         }
 

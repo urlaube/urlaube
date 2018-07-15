@@ -48,7 +48,7 @@
           $noslash = static::$noslash;
 
           $result = File::loadContent($path, false,
-                                      function ($content) use $noslash {
+                                      function ($content) use ($noslash) {
                                         $result = null;
 
                                         // check that $content is not hidden

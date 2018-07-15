@@ -146,7 +146,7 @@
       // sort array by content field
       if (usort($sortable,
                 function ($left, $right) use ($field, $comparator) {
-                  return $comparator(value($left, $field), value($right, ($field));
+                  return $comparator(value($left, $field), value($right, $field));
                 })) {
         // remerge previously split elements
         $result = array_merge($sortable, $unsortable);

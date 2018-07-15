@@ -81,8 +81,8 @@
             if (null !== $content) {
               foreach ($content as $content_item) {
                 print("  <url>".NL.
-                      "    <loc>".Main::PROTOCOL().Main::HOSTNAME().$content_item->get(URI)."</loc>".NL.
-                      "    <lastmod>".date("Y-m-d", filemtime($content_item->get(FILE)))."</lastmod>".NL.
+                      "    <loc>".Main::PROTOCOL().Main::HOSTNAME().value($content_item, URI)."</loc>".NL.
+                      "    <lastmod>".date("Y-m-d", filemtime(value($content_item, FILE)))."</lastmod>".NL.
                       "    <changefreq>monthly</changefreq>".NL.
                       "    <priority>0.5</priority>".NL.
                       "  </url>".NL);

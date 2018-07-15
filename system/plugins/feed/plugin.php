@@ -42,23 +42,23 @@
 
               if ($content_item->isset(TITLE)) {
                 $result .= fhtml("      <title>%s</title>".NL,
-                                 $content_item->get(TITLE));
+                                 value($content_item, TITLE));
               }
               if ($content_item->isset(URI)) {
                 $result .= fhtml("      <link>%s</link>".NL.
                                  "      <guid>%s</guid>".NL,
-                                 Main::PROTOCOL().Main::HOSTNAME().$content_item->get(URI),
-                                 Main::PROTOCOL().Main::HOSTNAME().$content_item->get(URI));
+                                 Main::PROTOCOL().Main::HOSTNAME().value($content_item, URI),
+                                 Main::PROTOCOL().Main::HOSTNAME().value($content_item, URI));
               }
               if ($content_item->isset(DATE)) {
-                $time = strtotime($content_item->get(DATE));
+                $time = strtotime(value($content_item, DATE));
                 if (false !== $time) {
                   $result .= fhtml("      <pubDate>%s</pubDate>".NL,
                                    date("r", $time));
                 }
               }
               if ($content_item->isset(CATEGORY)) {
-                $categories = array_unique(explode(SP, strtolower($content_item->get(CATEGORY))));
+                $categories = array_unique(explode(SP, strtolower(value($content_item, CATEGORY))));
                 foreach ($categories as $categories_item) {
                   $result .= fhtml("      <category>%s</category>".NL,
                                    trim($categories_item));
@@ -66,7 +66,7 @@
               }
               if ($content_item->isset(CONTENT)) {
                 $result .= fhtml("      <description>%s</description>".NL,
-                                 $content_item->get(CONTENT));
+                                 value($content_item, CONTENT));
               }
 
               $result .= "    </item>".NL;

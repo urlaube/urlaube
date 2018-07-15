@@ -30,7 +30,7 @@
           if ($content->isset(CONTENT)) {
             // do not use markdown if markdown field is set to false
             if (!istrue(value($content, NOMARKDOWN))) {
-              $content->set(CONTENT, $parsedown->text($content->get(CONTENT)));
+              $content->set(CONTENT, $parsedown->text(value($content, CONTENT)));
             }
           }
         } else {
@@ -41,7 +41,7 @@
                 if ($content_item->isset(CONTENT)) {
                   // do not use markdown if markdown field is set to false
                   if (!istrue(value($content_item, NOMARKDOWN))) {
-                    $content_item->set(CONTENT, $parsedown->text($content_item->get(CONTENT)));
+                    $content_item->set(CONTENT, $parsedown->text(value($content_item, CONTENT)));
                   }
                 }
               }

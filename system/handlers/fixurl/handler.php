@@ -45,7 +45,7 @@
           $array = array_filter(explode(US, Main::URI()));
           $fixed = array();
           foreach ($array as $array_value) {
-            switch ($array) {
+            switch ($array_value) {
               // do nothing
               case "." :
                 break;

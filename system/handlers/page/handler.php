@@ -87,7 +87,7 @@
       public static function parseUri($uri) {
         $result = null;
 
-        if (1 === preg_match("@^\/([0-9A-Za-z\_\-\/]*)$@",
+        if (1 === preg_match("@^\/([0-9A-Za-z\_\-\/\.]*)$@",
                              $uri, $matches)) {
           $result = array();
 
@@ -165,11 +165,11 @@
 
     // register handler
     Handlers::register(PAGE_HANDLER, "handleNoSlash",
-                       "@^\/[0-9A-Za-z\_\-\/]*$@",
+                       "@^\/[0-9A-Za-z\_\-\/\.]*$@",
                        [GET, POST], PAGE_BEFORE_ADDSLASH);
 
     Handlers::register(PAGE_HANDLER, "handleSystem",
-                       "@^\/[0-9A-Za-z\_\-\/]*$@",
+                       "@^\/[0-9A-Za-z\_\-\/\.]*$@",
                        [GET, POST], PAGE_SYSTEM);
   }
 

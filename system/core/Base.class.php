@@ -7,7 +7,7 @@
     static-only properties and methods. The Base class tries to prevent the instantiation of core classes.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -43,8 +43,8 @@
             $name = SETTER_PREFIX.ucfirst(strtolower($name));
           }
 
-          if (checkMethod($class, $name)) {
-            $result = callMethod($class, $name, ...$arguments);
+          if (_checkMethod($class, $name)) {
+            $result = _callMethod($class, $name, ...$arguments);
           } else {
             Debug::log("call to undefined magic method $class::$name()", DEBUG_WARN);
           }

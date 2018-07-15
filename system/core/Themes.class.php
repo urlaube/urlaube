@@ -7,7 +7,7 @@
     It loads the themes and activates the selected theme when requested by the active handler.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -102,7 +102,7 @@
       public static function register($entity, $function, $name) {
         $result = false;
 
-        if (checkMethod($entity, $function)) {
+        if (_checkMethod($entity, $function)) {
           if (is_string($name)) {
             // check if the theme name is not already taken
             if ((null === static::$themes) || (!isset(static::$themes[$names]))) {
@@ -156,15 +156,20 @@
 
         // proceed with the retrieved theme item
         if (null !== $themes_item) {
-          // set the active theme
-          static::$active = $themes_item[THEME_ENTITY];
+          // store the last active theme
+          $lastActive = static::$active;
 
-          // call the theme
-          $result = callMethod($themes_item[THEME_ENTITY],
-                               $themes_item[THEME_FUNCTION]);
+          try {
+            // set the active theme
+            static::$active = $themes_item[THEME_ENTITY];
 
-          // unset the active theme
-          static::$active = null;
+            // call the theme
+            $result = _callMethod($themes_item[THEME_ENTITY],
+                                  $themes_item[THEME_FUNCTION]);
+          } finally {
+            // restore the last active theme
+            static::$active = $lastActive;
+          }
         }
 
         // warn if no theme has been found

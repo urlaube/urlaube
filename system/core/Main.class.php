@@ -7,7 +7,7 @@
     urlau.be CMS.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -338,6 +338,9 @@
 
             // activate the multibyte support
             _useMultiByte(static::$charset);
+
+            // clear the stat cache for things like file existance
+            clearstatcache(true);
 
             // set the timezone
             date_default_timezone_set(static::$timezone);

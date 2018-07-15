@@ -7,7 +7,7 @@
     theme developers so that they can decide on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -23,22 +23,25 @@
   define("CONTENT_FILE_EXT", ".md");
 
   // recommended content fields
-  define("AUTHOR",       "author");       // author of an entry
-  define("CATEGORY",     "category");     // list of categories of an entry
-  define("CONTENT",      "content");      // actual content of an entry
-  define("DATE",         "date");         // publication date of an entry
-  define("DESCRIPTION",  "description");  // description of an entry
-  define("FILE",         "file");         // filename of an entry
-  define("HIDE",         "hide");         // hidden status of an entry
-  define("HOME",         "home");         // hidden from home status of an entry
-  define("MARKDOWN",     "markdown");     // disable markdown
-  define("PREVIEW",      "preview");      // preview image of an entry
-  define("REDIRECT",     "redirect");     // redirect URL
-  define("REDIRECTTYPE", "redirecttype"); // type of the redirect (temporary or permanent)
-  define("STICKY",       "sticky");       // sticky status of an entry
-  define("TITLE",        "title");        // title of an entry
-  define("URI",          "uri");          // uri of an entry
-  define("WIDGETS",      "widgets");      // disable widgets
+  define("AUTHOR",         "author");         // author of an entry
+  define("CATEGORY",       "category");       // list of categories of an entry
+  define("CONTENT",        "content");        // actual content of an entry
+  define("CONTENTTYPE",    "contenttype");    // value of the content-type header
+  define("DATE",           "date");           // publication date of an entry
+  define("DESCRIPTION",    "description");    // description of an entry
+  define("FILE",           "file");           // filename of an entry
+  define("HIDDEN",         "hidden");         // hidden status of an entry
+  define("HIDDENFROMHOME", "hiddenfromhome"); // hidden from home status of an entry
+  define("NOMARKDOWN",     "nomarkdown");     // disable markdown
+  define("NOTHEME",        "notheme");        // don't call the theme but print the content directly
+  define("NOSLASH",        "noslash");        // handle this page without requiring a trailing slash
+  define("NOWIDGETS",      "nowidgets");      // disable widgets
+  define("PREVIEW",        "preview");        // preview image of an entry
+  define("RELOCATE",       "relocate");       // relocate URL
+  define("RELOCATETYPE",   "relocatetype");   // type of the relocate (temporary or permanent, move or redirect)
+  define("STICKY",         "sticky");         // sticky status of an entry
+  define("TITLE",          "title");          // title of an entry
+  define("URI",            "uri");            // uri of an entry
 
   // AFTER_* and BEFORE_* plugins just get called
   define("AFTER_BODY",     "after_body");
@@ -123,12 +126,14 @@
   define("YEAR",   "year");
 
   // define handler priority values
-  define("BEFORE_FIXURL",   -40);
-  define("FIXURL",          -30);
-  define("BEFORE_ADDSLASH", -20);
-  define("ADDSLASH",        -10);
-  define("USER",              0);
-  define("SYSTEM",           10);
-  define("BEFORE_ERROR",     20);
-  define("ERROR",            30);
+  define("BEFORE_FIXURL",        -50);
+  define("FIXURL",               -40);
+  define("PAGE_BEFORE_ADDSLASH", -30);
+  define("BEFORE_ADDSLASH",      -20);
+  define("ADDSLASH",             -10);
+  define("USER",                   0);
+  define("PAGE_SYSTEM",           10);
+  define("SYSTEM",                20);
+  define("BEFORE_ERROR",          30);
+  define("ERROR",                 40);
 

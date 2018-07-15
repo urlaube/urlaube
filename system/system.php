@@ -7,7 +7,7 @@
     rely on these functions as they may change without prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -25,6 +25,44 @@
     ini_set("display_startup_errors", 1);
     ini_set("html_errors",            1);
     ini_set("track_errors",           1);
+  }
+
+  // call the $method in $entity and return its result value
+  function _callMethod($entity, $method, ...$arguments) {
+    $result = false;
+
+    // check if the method is callable
+    if (_checkMethod($entity, $method)) {
+      // retrieve target
+      $target = $method;
+      if (null !== $entity) {
+        $target = array($entity, $method);
+      }
+
+      $result = call_user_func_array($target, $arguments);
+    }
+
+    return $result;
+  }
+
+  // check if $method exists in $entity or as a function if $entity is null
+  function _checkMethod($entity, $method) {
+    $result = false;
+
+    // check if $entity is either an object or a class name
+    if (is_object($entity) ||
+        (is_string($entity) && class_exists($entity))) {
+      // check if $method is a method of $entity
+      $result = method_exists($entity, $method);
+    } else {
+      // check if $entity is empty
+      if (null === $entity) {
+        // check if $method is a function
+        $result = function_exists($method);
+      }
+    }
+
+    return $result;
   }
 
   // turn off all error reporting
@@ -150,8 +188,8 @@
   function _loadExtensions($path, $file) {
     $result = 0;
 
-    // handle system handlers first
     if (is_dir($path)) {
+      $file = basename($file);
       $path = trail($path, DS);
 
       // get entries in alphabetical order
@@ -162,7 +200,7 @@
           if ((0 !== strcasecmp($dirs_item, ".")) &&
               (0 !== strcasecmp($dirs_item, "..")) &&
               (is_dir($path.$dirs_item)) &&
-              (is_file($path.$dirs_item.DS.$file))) {               
+              (is_file($path.$dirs_item.DS.$file))) {
             // include the extension file
             require_once($path.$dirs_item.DS.$file);
 

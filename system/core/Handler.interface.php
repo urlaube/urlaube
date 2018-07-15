@@ -7,7 +7,7 @@
     handler should implement to simply the implementation of further functions
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

@@ -7,7 +7,7 @@
     strings.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -22,12 +22,12 @@
   // define Urlaube information
   define("URLAUBE_NAME",        "Urlaube");
   define("URLAUBE_URL",         "https://urlau.be/");
-  define("URLAUBE_VERSION",     "0.1a5");
+  define("URLAUBE_VERSION",     "0.1a6");
   define("URLAUBE_CODENAME",    "Freizeit");
-  define("URLAUBE_RELEASEDATE", "27.06.2018");
+  define("URLAUBE_RELEASEDATE", "15.07.2018");
 
   // define shortcodes
-  define("BR",  "<br />");
+  define("BR",  "<br>");
   define("DS",  DIRECTORY_SEPARATOR);
   define("EOL", PHP_EOL);
   define("NL",  "\n");
@@ -107,9 +107,9 @@
   // DERIVED CONSTANTS
 
   // derive system paths
-  $path = SYSTEM_PATH;
-  if (is_dir($path)) {
-    $path = lead($path, DS);
+  $path = realpath(SYSTEM_PATH);
+  if ((false !== $path) && is_dir($path)) {
+    $path = tail($path, DS);
   } else {
     $path = ROOT_PATH."system".DS;
   }
@@ -118,9 +118,9 @@
   define("SYSTEM_PLUGINS_PATH",  $path."plugins".DS);
 
   // derive user paths
-  $path = USER_PATH;
-  if (is_dir($path)) {
-    $path = lead($path, DS);
+  $path = realpath(USER_PATH);
+  if ((false !== $path) && is_dir($path)) {
+    $path = tail($path, DS);
   } else {
     $path = ROOT_PATH."user".DS;
   }

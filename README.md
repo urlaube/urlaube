@@ -61,25 +61,25 @@ The following priority values SHOULD be used for now:
 When a handler has successfully handled a URI, it MUST return `true` to abort the further handling of the URI by other others.
 
 At the moment the Urlaube CMS consists of the following system handlers that are located in `./system/handlers/`:
-* `000_fixurl` normalizes the URI to discard garbage
-* `100_favicon_ico` handles accesses to the `favicon.ico` file by returning a `204 No Content`
-* `110_index_php` handles accesses to the `index.php` file by redirecting to the configured root URI
-* `120_robots_txt` handles accesses to the `robots.txt` file by generating a minimal file
-* `130_sitemap_xml` handles access to the `sitemap.xml` file by generating a minimal file
-* `200_addslash` adds a trailing slash to the URI
-* `300_archive` provides a paginated archive feature based on the content's `Date` field
-* `305_feed_archive` provides an RSS feed for the archive feature
-* `310_author` provides a paginated author feature based on the content's `Author` field
-* `315_feed_author` provides an RSS feed for the author feature
-* `320_category` provides a paginated category feature based on the content's `Category` field
-* `325_feed_category` provides an RSS feed for the category feature
-* `330_home` provides a paginated home feature like a blog roll
-* `335_feed_home` provides an RSS feed for the home feature
-* `340_search_get` provides a paginated search feature
-* `340_search_post` provides the endpoint for search forms
-* `345_feed_search` provides an RSS feed for the search feature
-* `400_page` handles access to single pages by converting the URI to the corresponding content file path
-* `999_error` handles all URIs that have not returned content
+* `fixurl` normalizes the URI to discard garbage
+* `favicon_ico` handles accesses to the `favicon.ico` file by returning a `204 No Content`
+* `index_php` handles accesses to the `index.php` file by redirecting to the configured root URI
+* `robots_txt` handles accesses to the `robots.txt` file by generating a minimal file
+* `sitemap_xml` handles access to the `sitemap.xml` file by generating a minimal file
+* `addslash` adds a trailing slash to the URI
+* `page` handles access to single pages by converting the URI to the corresponding content file path
+* `archive` provides a paginated archive feature based on the content's `Date` field
+* `feed_archive` provides an RSS feed for the archive feature
+* `author` provides a paginated author feature based on the content's `Author` field
+* `feed_author` provides an RSS feed for the author feature
+* `category` provides a paginated category feature based on the content's `Category` field
+* `feed_category` provides an RSS feed for the category feature
+* `home` provides a paginated home feature like a blog roll
+* `feed_home` provides an RSS feed for the home feature
+* `search_get` provides a paginated search feature
+* `search_post` provides the endpoint for search forms
+* `feed_search` provides an RSS feed for the search feature
+* `error` handles all URIs that have not returned content
 
 Users MAY add their own handlers by putting them in the `./user/handlers/` directory.
 
@@ -117,10 +117,11 @@ The following event names SHOULD be used by handlers, plugins or themes for now:
 * `AFTER_BODY` should be called by a theme after the HTML body is generated
 
 At the moment the Urlaube CMS consists of the following system plugins that are located in `./system/plugins/`:
-* `000_file` is used by system handlers to load content files
-* `010_feed` is used by system feed handlers to generate RSS feeds from content objects
-* `020_redirect` is used to provide the redirect feature through the `Redirect` and `RedirectType` fields
-* `030_markdown` is used to provide the markdown down support
+* `file` is used by system handlers to load content files
+* `feed` is used by system feed handlers to generate RSS feeds from content objects
+* `relocate` is used to provide the relocation feature through the `Relocate` and `RelocateType` fields
+* `markdown` is used to provide the markdown down support which can be disables through the `nomarkdown` field
+* `sticky` is used to prive the stickyness feature through the `Sticky` field
 
 Users MAY add their own plugins by putting them in the `./user/plugins/` directory.
 

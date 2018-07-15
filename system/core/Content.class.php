@@ -7,7 +7,7 @@
     of one CMS entry and is used by a theme to render an entry.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

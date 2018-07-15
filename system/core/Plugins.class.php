@@ -7,7 +7,7 @@
     this class. It loads the plugins and activates them depending on the currently required actions.
 
     @package urlaube\urlaube
-    @version 0.1a5
+    @version 0.1a6
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -90,7 +90,7 @@
       public static function register($entity, $function, $event) {
         $result = false;
 
-        if (checkMethod($entity, $function)) {
+        if (_checkMethod($entity, $function)) {
           if (is_string($event)) {
             // prepare plugins array
             if (null === static::$plugins) {
@@ -124,24 +124,39 @@
 
         foreach (static::$plugins as $plugins_item) {
           if (0 === strcasecmp($plugins_item[PLUGIN_EVENT], $event)) {
-            // set the active plugin
-            static::$active = $plugins_item[PLUGIN_ENTITY];
+            // store the last active plugin
+            $lastActive = static::$active;
 
-            // call the plugin
-            if ($filter) {
-              // if this is a filter call then reiterate the $result
-              $result = callMethod($plugins_item[PLUGIN_ENTITY],
-                                   $plugins_item[PLUGIN_FUNCTION],
-                                   $result, ...$arguments);
-            } else {
-              // if this isn't a filter call then collect the return values
-              $result[] = callMethod($plugins_item[PLUGIN_ENTITY],
-                                     $plugins_item[PLUGIN_FUNCTION],
-                                     $value, ...$arguments);
+            try {
+              // set the active plugin
+              static::$active = $plugins_item[PLUGIN_ENTITY];
+
+              // call the plugin
+              if ($filter) {
+                // if this is a filter call then reiterate the $result
+                $result = _callMethod($plugins_item[PLUGIN_ENTITY],
+                                      $plugins_item[PLUGIN_FUNCTION],
+                                      $result, ...$arguments);
+              } else {
+                // if this isn't a filter call then collect the return values
+                $temp = _callMethod($plugins_item[PLUGIN_ENTITY],
+                                    $plugins_item[PLUGIN_FUNCTION],
+                                    $value, ...$arguments);
+
+                // check if an array has been returned that has to be flattened
+                if (is_array($temp)) {
+                  // flatten the array
+                  foreach ($temp as $temp_item) {
+                    $result[] = $temp_item;
+                  }
+                } else {
+                  $result[] = $temp;
+                }
+              }
+            } finally {
+              // restore the last active plugin
+              static::$active = $lastActive;
             }
-
-            // unset the active plugin
-            static::$active = null;
           }
         }
 

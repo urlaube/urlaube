@@ -109,7 +109,7 @@
   // derive system paths
   $path = realpath(SYSTEM_PATH);
   if ((false !== $path) && is_dir($path)) {
-    $path = tail($path, DS);
+    $path = trail($path, DS);
   } else {
     $path = ROOT_PATH."system".DS;
   }
@@ -120,7 +120,7 @@
   // derive user paths
   $path = realpath(USER_PATH);
   if ((false !== $path) && is_dir($path)) {
-    $path = tail($path, DS);
+    $path = trail($path, DS);
   } else {
     $path = ROOT_PATH."user".DS;
   }

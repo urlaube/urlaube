@@ -31,7 +31,7 @@
                              if (istrue(value($left, STICKY))) {
                                if (!istrue(value($right, STICKY))) {
                                  // only the left one is sticky, it should come first
-                                 $result = -1
+                                 $result = -1;
                                }
                              } else {
                                if (istrue(value($right, STICKY))) {

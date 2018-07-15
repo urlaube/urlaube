@@ -45,7 +45,7 @@
                                            // check that $content is not hidden
                                            if (!istrue(value($content, HIDDEN))) {
                                              // check that $content is not a redirect
-                                             if (null === value($content, REDIRECT)) {
+                                             if (null === value($content, RELOCATE)) {
                                                // check that $content contains $keywords
                                                if (findkeywords($content, AUTHOR, $search) ||
                                                    findkeywords($content, CATEGORY, $search) ||

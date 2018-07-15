@@ -46,7 +46,7 @@
                                            // check that $content is not hidden
                                            if (!istrue(value($content, HIDDEN))) {
                                              // check that $content is not a redirect
-                                             if (null === value($content, REDIRECT)) {
+                                             if (null === value($content, RELOCATE)) {
                                                // check that $content has the $category
                                                if (hascategory($content, $category)) {
                                                  $result = $content;

@@ -7,7 +7,7 @@
     these functions as they will only change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a6
+    @version 0.1a7
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,23 +17,29 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  // ***** Content Functions *****
+  // ***** CONTENT FUNCTIONS *****
 
-  // check if the given $content has one or more $keywords in $field
-  function findkeywords($content, $field, $keywords) {
-    $result = false;
+  // find content element by field value
+  function findcontent($content, $field, $value) {
+    $result = null;
 
-    // get the requested field
-    $value = value($content, $field);
-    if (null !== $value) {
-      if (is_array($keywords)) {
-        // check for each keyword if it is contained in the $field
-        foreach ($keywords as $keywords_item) {
-          $result = (false !== stripos($value, trim($keywords_item)));
+    if ($content instanceof Content) {
+      $content_value = value($content, $field);
+      if (null !== $content_value) {
+        if (0 === strcasecmp(trim($value), trim($content_value))) {
+          $result = $content;
+        }
+      }
+    } else {
+      if (is_array($content)) {
+        foreach ($content as $content_item) {
+          $content_value = value($content_item, $field);
+          if (null !== $content_value) {
+            if (0 === strcasecmp(trim($value), trim($content_value))) {
+              $result = $content_item;
 
-          // if true then we're done
-          if ($result) {
-            break;
+              break;
+            }
           }
         }
       }
@@ -85,19 +91,41 @@
     // get the date
     $value = value($content, DATE);
     if (null !== $value) {
-      if (((null === $year) || is_numeric($year)) &&
-          ((null === $month) || is_numeric($month)) &&
-          ((null === $day) || is_numeric($day))) {
-        $time = strtotime($value);
+      $time = strtotime($value);
 
-        // only proceed if DATE is parsable
-        if (false !== $time) {
-          $date = getdate($time);
+      // only proceed if DATE is parsable
+      if (false !== $time) {
+        $date = getdate($time);
 
-          // compare DATE with $year, $month and $day
-          $result = (((null === $year) || ($date["year"] === $year)) &&
-                     ((null === $month) || ($date["mon"] === $month)) &&
-                     ((null === $day) || ($date["mday"] === $day)));
+        // compare DATE with $year, $month and $day
+        $result = (((!is_numeric($year))  || ($date["year"] === intval($year))) &&
+                   ((!is_numeric($month)) || ($date["mon"]  === intval($month))) &&
+                   ((!is_numeric($day))   || ($date["mday"] === intval($day))));
+      }
+    }
+
+    return $result;
+  }
+
+  // check if the given $content has one or more $keywords in $field
+  function haskeywords($content, $field, $keywords) {
+    $result = false;
+
+    // get the requested field
+    $value = value($content, $field);
+    if (null !== $value) {
+      // make sure that we work with an array
+      if (!is_array($keywords)) {
+        $keywords = [$keywords];
+      }
+
+      // check for each keyword if it is contained in the $field
+      foreach ($keywords as $keywords_item) {
+        $result = (false !== stripos($value, trim($keywords_item)));
+
+        // if true then we're done
+        if ($result) {
+          break;
         }
       }
     }
@@ -107,14 +135,77 @@
 
   // return the entries of the given page
   function paginate($array, $page) {
-    $result = null;
+    $result = preparecontent(Plugins::run(FILTER_PAGINATE, true, $array));
 
-    if (is_array($array) && is_numeric($page)) {
-      $result = array_slice($array, ($page-1)*Main::PAGESIZE(), Main::PAGESIZE(), false);
+    if (is_array($result) && is_numeric($page)) {
+      $result = array_slice($result, ($page-1)*value(Main::class, PAGESIZE), value(Main::class, PAGESIZE), false);
 
       // if the result is empty, we set it to null
       if (0 === count($result)) {
         $result = null;
+      }
+    }
+
+    return $result;
+  }
+
+  // prepare content (array) and make sure that mandatory fields are set,
+  // preset fields with default values
+  function preparecontent($content, $defaults = null, $mandatory = null) {
+    $result = null;
+
+    if ($content instanceof Content) {
+      $failed = false;
+
+      // preset fields with default values
+      if (is_array($defaults)) {
+        foreach ($defaults as $key => $value) {
+          $content->preset($key, $value);
+        }
+      }
+
+      if (is_array($mandatory)) {
+        // check if all mandatory fields are set
+        foreach ($mandatory as $mandatory_item) {
+          $failed = (!$content->isset($mandatory_item)) || $failed;
+        }
+      }
+
+      if (!$failed) {
+        $result = $content;
+      }
+    } else {
+      if (is_array($content)) {
+        $result = [];
+
+        // iterate through the array
+        foreach ($content as $content_item) {
+          if ($content_item instanceof Content) {
+            $failed = false;
+
+            // preset fields with default values
+            if (is_array($defaults)) {
+              foreach ($defaults as $key => $value) {
+                $content_item->preset($key, $value);
+              }
+            }
+
+            if (is_array($mandatory)) {
+              // check if all mandatory fields are set
+              foreach ($mandatory as $mandatory_item) {
+                $failed = (!$content_item->isset($mandatory_item)) || $failed;
+              }
+            }
+
+            if (!$failed) {
+              $result[] = $content_item;
+            }
+          }
+        }
+
+        if (0 >= count($result)) {
+          $result = null;
+        }
       }
     }
 
@@ -129,8 +220,8 @@
 
     if (is_array($array) && is_string($field) && is_callable($comparator)) {
       // split elements into sortable and static
-      $sortable   = array();
-      $unsortable = array();
+      $sortable   = [];
+      $unsortable = [];
       foreach ($result as $result_item) {
         // check if the element is a content
         if ($result_item instanceof Content) {
@@ -162,19 +253,29 @@
 
     if ($content instanceof Content) {
       if ($content->isset($name)) {
-        $result = trim($content->get($name));
-
-        // if the length of the result is 0 then set it to NULL
-        if (0 >= strlen($result)) {
-          $result = null;
+        $result = $content->get($name);
+      }
+    } else {
+      if (is_subclass_of($content, BaseConfig::class)) {
+        if ($content::isset($name)) {
+          $result = $content::get($name);
         }
+      }
+    }
+
+    if (is_string($result)) {
+      $result = trim($result);
+
+      // if the length of the result is 0 then set it to NULL
+      if (0 >= strlen($result)) {
+        $result = null;
       }
     }
 
     return $result;
   }
 
-  // ***** String Manipulation Functions *****
+  // ***** STRING MANIPULATION FUNCTIONS *****
 
   // get the formatted string and call html() on all $values
   function fhtml($string, ...$values) {
@@ -184,14 +285,14 @@
     foreach ($values as $values_key => $values_value) {
       $values[$values_key] = html($values_value);
     }
-    $result = sprintf($result, ...$values);
+    $result = vsprintf($result, $values);
 
     return $result;
   }
 
   // escape HTML in the given $string
   function html($string) {
-    return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, Main::CHARSET(), false);
+    return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, value(Main::class, CHARSET), false);
   }
 
   // checks if $string starts with $lead
@@ -300,15 +401,33 @@
     return $result;
   }
 
-  // ***** URL Functions *****
+  // ***** URL FUNCTIONS *****
+
+  // get the absolute URL from a relative URI
+  function absoluteurl($uri = null) {
+    // find out if we have to prepend the port number
+    $port = "";
+    if (((0 === strcasecmp(HTTP_PROTOCOL, value(Main::class, PROTOCOL))) &&
+         (HTTP_PORT !== value(Main::class, PORT))) ||
+        ((0 === strcasecmp(HTTPS_PROTOCOL, value(Main::class, PROTOCOL))) &&
+         (HTTPS_PORT !== value(Main::class, PORT)))) {
+      $port = ":".value(Main::class, PORT);
+    } 
+
+    return value(Main::class, PROTOCOL).
+           value(Main::class, HOSTNAME).
+           $port.
+           value(Main::class, ROOTURI).
+           nolead(relativeuri($uri), US);
+  }
 
   // get URI of current page
   function curpage() {
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::ACTIVE()) {
-      $result = _callMethod(Handlers::ACTIVE(), GETURI, Main::PAGEINFO());
+    if (null !== Handlers::getActive()) {
+      $result = _callMethod(Handlers::getActive(), GETURI, [value(Main::class, METADATA)]);
     }
 
     return $result;
@@ -318,26 +437,16 @@
   function feeduri() {
     $result = null;
 
-    switch (Handlers::ACTIVE()) {
-      case ARCHIVE_HANDLER:
-        $result = FeedArchiveHandler::getUri(Main::PAGEINFO());
-        break;
+    // check that only supported feed sources are handled
+    if (in_array(Handlers::getActive(), FeedHandler::SOURCES)) {
+      // update metadata to get the feed URI
+      $metadata = value(Main::class, METADATA);
+      if ($metadata instanceof Content) {
+        $metadata = $metadata->clone();
+        $metadata->set(FeedHandler::FEED, Handlers::getActive());
 
-      case AUTHOR_HANDLER:
-        $result = FeedAuthorHandler::getUri(Main::PAGEINFO());
-        break;
-
-      case CATEGORY_HANDLER:
-        $result = FeedCategoryHandler::getUri(Main::PAGEINFO());
-        break;
-
-      case HOME_HANDLER:
-        $result = FeedHomeHandler::getUri(Main::PAGEINFO());
-        break;
-
-      case SEARCH_GET_HANDLER:
-        $result = FeedSearchHandler::getUri(Main::PAGEINFO());
-        break;
+        $result = FeedHandler::getUri($metadata);
+      }
     }
 
     return $result;
@@ -348,14 +457,17 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::ACTIVE()) {
+    if (null !== Handlers::getActive()) {
       // check that we're not already on the first page
-      if ($force || (Main::PAGENUMBER() > Main::PAGEMIN())) {
-        // update info to get the URI of the first page
-        $info       = Main::PAGEINFO();
-        $info[PAGE] = Main::PAGEMIN();
+      if ($force || (value(Main::class, PAGE) > 1)) {
+        // update metadata to get the URI of the first page
+        $metadata = value(Main::class, METADATA);
+        if ($metadata instanceof Content) {
+          $metadata = $metadata->clone();
+          $metadata->set(PAGE, 1);
 
-        $result = _callMethod(Handlers::ACTIVE(), GETURI, $info);
+          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+        }
       }
     }
 
@@ -367,14 +479,17 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::ACTIVE()) {
+    if (null !== Handlers::getActive()) {
       // check that we're not already on the last page
-      if ($force || (Main::PAGENUMBER() < Main::PAGEMAX())) {
-        // update info to get the URI of the last page
-        $info       = Main::PAGEINFO();
-        $info[PAGE] = Main::PAGEMAX();
+      if ($force || (value(Main::class, PAGE) < value(Main::class, PAGECOUNT))) {
+        // update metadata to get the URI of the last page
+        $metadata = value(Main::class, METADATA);
+        if ($metadata instanceof Content) {
+          $metadata = $metadata->clone();
+          $metadata->set(PAGE, value(Main::class, PAGECOUNT));
 
-        $result = _callMethod(Handlers::ACTIVE(), GETURI, $info);
+          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+        }
       }
     }
 
@@ -386,14 +501,37 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::ACTIVE()) {
+    if (null !== Handlers::getActive()) {
       // check if there's a next page
-      if ($force || (Main::PAGENUMBER() < Main::PAGEMAX())) {
-        // update info to get the URI of the next page
-        $info       = Main::PAGEINFO();
-        $info[PAGE] = Main::PAGENUMBER()+1;
+      if ($force || (value(Main::class, PAGE) < value(Main::class, PAGECOUNT))) {
+        // update metadata to get the URI of the next page
+        $metadata = value(Main::class, METADATA);
+        if ($metadata instanceof Content) {
+          $metadata = $metadata->clone();
+          $metadata->set(PAGE, value(Main::class, PAGE)+1);
 
-        $result = _callMethod(Handlers::ACTIVE(), GETURI, $info);
+          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+        }
+      }
+    }
+
+    return $result;
+  }
+
+  // parse the URI based on a REGEX and only return named subpatterns
+  function parseuri($uri, $regex) {
+    $result = null;
+
+    // check if the regex matches
+    if (1 === preg_match($regex, $uri, $matches)) {
+      // if it does, always return a Content object
+      $result = new Content();
+
+      foreach ($matches as $key => $value) {
+        // only transfer named subpatterns to the Content object
+        if (1 === preg_match("~^[A-Za-z][0-9A-Za-z]*$~", $key)) {
+          $result->set($key, $value);
+        }
       }
     }
 
@@ -404,14 +542,12 @@
   function path2uri($path) {
     $result = null;
 
-    if (is_string($path)) {
-      if (0 === strpos($path, ROOT_PATH)) {
-        // remove the root path
-        $path = substr($path, strlen(ROOT_PATH));
+    if (0 === strpos($path, ROOTPATH)) {
+      // remove the root path
+      $path = substr($path, strlen(ROOTPATH));
 
-        // prepend the root URI
-        $result = Main::ROOTURI().strtr($path, DS, US);
-      }
+      // prepend the root URI
+      $result = value(Main::class, ROOTURI).strtr($path, DS, US);
     }
 
     return $result;
@@ -422,15 +558,47 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::ACTIVE()) {
+    if (null !== Handlers::getActive()) {
       // check if there's a previous page
-      if ($force || (Main::PAGENUMBER() > Main::PAGEMIN())) {
-        // update info to get the URI of the next page
-        $info       = Main::PAGEINFO();
-        $info[PAGE] = Main::PAGENUMBER()-1;
+      if ($force || (value(Main::class, PAGE) > 1)) {
+        // update metadata to get the URI of the next page
+        $metadata = value(Main::class, METADATA);
+        if ($metadata instanceof Content) {
+          $metadata = $metadata->clone();
+          $metadata->set(PAGE, value(Main::class, PAGE)-1);
 
-        $result = _callMethod(Handlers::ACTIVE(), GETURI, $info);
+          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+        }
       }
+    }
+
+    return $result;
+  }
+
+  // get the relative URI from a URI based on the root URI
+  function relativeuri($uri = null) {
+    $result = $uri;
+
+    // use a specific URI if $uri is null
+    if (null === $result) {
+      $result = value(Main::class, URI);
+    }
+
+    // check if the URI starts the protocol, hostname and optional port
+    $prefix = value(Main::class, PROTOCOL).value(Main::class, HOSTNAME);
+    if (((0 === strcasecmp(HTTP_PROTOCOL, value(Main::class, PROTOCOL))) &&
+         (HTTP_PORT !== value(Main::class, PORT))) ||
+        ((0 === strcasecmp(HTTPS_PROTOCOL, value(Main::class, PROTOCOL))) &&
+         (HTTPS_PORT !== value(Main::class, PORT)))) {
+      $prefix .= ":".value(Main::class, PORT);
+    }     
+    if (0 === stripos($result, $prefix)) {
+      $result = lead(substr($result, strlen($prefix)), US);
+    }
+
+    // check if the URI starts with the root URI
+    if (0 === strpos($result, value(Main::class, ROOTURI))) {
+      $result = lead(substr($result, strlen(value(Main::class, ROOTURI))), US);
     }
 
     return $result;
@@ -438,22 +606,10 @@
 
   // convert the given URI to a path
   function uri2path($uri) {
-    $result = null;
-
-    if (is_string($uri)) {
-      if (0 === strpos($uri, Main::ROOTURI())) {
-        // remove the root path
-        $uri = substr($uri, strlen(Main::ROOTURI()));
-
-        // prepend the root path
-        $result = ROOT_PATH.strtr($uri, US, DS);
-      }
-    }
-
-    return $result;
+    return ROOTPATH.strtr(relativeuri($uri), US, DS);
   }
 
-  // ***** Helper Functions *****
+  // ***** HELPER FUNCTIONS *****
 
   // compare a date string and return a value like strcmp
   function datecmp($left, $right) {
@@ -526,24 +682,11 @@
 
   // call the widgets and filter them afterwards
   function widgets() {
-    $result = array();
-
     // call the widget plugins
-    $widgets = Plugins::run(ON_WIDGETS);
+    $result = preparecontent(Plugins::run(ON_WIDGETS));
 
-    // filter wrong entries
-    foreach ($widgets as $widgets_item) {
-      if ($widgets_item instanceof Content) {
-        $result[] = $widgets_item;
-      }
-    }
+    // filter the widgets
+    $result = preparecontent(Plugins::run(FILTER_WIDGETS, true, $result));
 
-    // return null if no widget is set
-    if (0 >= count($result)) {
-      $result = null;
-    }
-
-    // filter the widgets and return them
-    return Plugins::run(FILTER_WIDGETS, true, $result);
+    return $result;
   }
-

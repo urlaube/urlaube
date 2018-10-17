@@ -3,11 +3,12 @@
   /**
     This is the AddSlashHandler class of the urlau.be CMS.
 
-    This file contains the AddSlashHandler class of the urlau.be CMS. The addslash handler is meant to provide a 
-    generic URL structure for all other handlers.
+    This file contains the AddSlashHandler class of the urlau.be CMS. The
+    add slash handler is meant to provide a generic URL structure for all other
+    handlers.
 
     @package urlaube\urlaube
-    @version 0.1a6
+    @version 0.1a7
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,52 +18,44 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists(ADDSLASH_HANDLER)) {
-    class AddSlashHandler extends Base implements Handler {
+  class AddSlashHandler extends BaseSingleton implements Handler {
 
-      // INTERFACE FUNCTIONS
+    // CONSTANTS
 
-      public static function getContent($info) {
-        return null;
-      }
+    const REGEX = "~^.*$~";
 
-      public static function getUri($info) {
-        return null;
-      }
+    // INTERFACE FUNCTIONS
 
-      public static function parseUri($uri) {
-        return null;
-      }
-
-      // RUNTIME FUNCTIONS
-
-      public static function handle() {
-        $result = false;
-
-        if (!Handlers::get(DEACTIVATE_ADDSLASH)) {
-          // take the given URI and add a trailing slash
-          if (!$result) {
-            $fixed = trail(Main::URI(), US);
-            if (0 !== strcmp(Main::URI(), $fixed)) {
-              relocate($fixed, false, true);
-
-              // we handled this page
-              $result = true;
-            }
-          }
-        }
-
-        return $result;
-      }
-
+    public static function getContent($metadata, &$pagecount) {
+      return null;
     }
 
-    // activate handler by default
-    Handlers::preset(DEACTIVATE_ADDSLASH, false);
+    public static function getUri($metadata) {
+      return null;
+    }
 
-    // register handler
-    Handlers::register(ADDSLASH_HANDLER, "handle",
-                       "@^.*$@",
-                       [GET, POST], ADDSLASH);
+    public static function parseUri($uri) {
+      return null;
+    }
+
+    // RUNTIME FUNCTIONS
+
+    public static function run() {
+      $result = false;
+
+      // take the given URI and add a trailing slash
+      $fixed = trail(value(Main::class, URI), US);
+      if (0 !== strcmp(value(Main::class, URI), $fixed)) {
+        relocate($fixed, false, true);
+
+        // we handled this page
+        $result = true;
+      }
+
+      return $result;
+    }
+
   }
 
+  // register handler
+  Handlers::register(AddSlashHandler::class, "run", AddSlashHandler::REGEX, [GET, POST], ADDSLASH_HANDLER);

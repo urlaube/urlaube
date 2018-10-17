@@ -7,7 +7,7 @@
     rely on these functions as they may change without prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a6
+    @version 0.1a7
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,18 +17,8 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  // turn on all error reporting
-  function _activateDebugMode() {
-    error_reporting(E_ALL | E_STRICT | E_NOTICE);
-
-    ini_set("display_errors",         1);
-    ini_set("display_startup_errors", 1);
-    ini_set("html_errors",            1);
-    ini_set("track_errors",           1);
-  }
-
   // call the $method in $entity and return its result value
-  function _callMethod($entity, $method, ...$arguments) {
+  function _callMethod($entity, $method, $arguments = []) {
     $result = false;
 
     // check if the method is callable
@@ -36,7 +26,7 @@
       // retrieve target
       $target = $method;
       if (null !== $entity) {
-        $target = array($entity, $method);
+        $target = [$entity, $method];
       }
 
       $result = call_user_func_array($target, $arguments);
@@ -50,8 +40,7 @@
     $result = false;
 
     // check if $entity is either an object or a class name
-    if (is_object($entity) ||
-        (is_string($entity) && class_exists($entity))) {
+    if (is_object($entity) || (is_string($entity) && class_exists($entity))) {
       // check if $method is a method of $entity
       $result = method_exists($entity, $method);
     } else {
@@ -67,12 +56,7 @@
 
   // turn off all error reporting
   function _deactivateDebugMode() {
-    error_reporting(0);
 
-    ini_set("display_errors",         0);
-    ini_set("display_startup_errors", 0);
-    ini_set("html_errors",            0);
-    ini_set("track_errors",           0);
   }
 
   // get name of calling function or method
@@ -143,6 +127,17 @@
 
     if (isset($_SERVER["SERVER_PORT"])) {
       $result = $_SERVER["SERVER_PORT"];
+    } else {
+      // try to derive the port from the protocol
+      switch (strtolower(_getDefaultProtocol())) {
+        case HTTP_PROTOCOL:
+          $result = HTTP_PORT;
+          break;
+
+        case HTTPS_PROTOCOL:
+          $result = HTTPS_PORT;
+          break;
+      }
     }
 
     return $result;
@@ -150,11 +145,11 @@
 
   // return the protocol string
   function _getDefaultProtocol() {
-    $result = "http://";
+    $result = HTTP_PROTOCOL;
 
     if (isset($_SERVER["HTTPS"])) {
       if (0 !== strcasecmp($_SERVER["HTTPS"], "off")) {
-        $result = "https://";
+        $result = HTTPS_PROTOCOL;
       }
     }
 
@@ -215,11 +210,26 @@
 
   // log information about resource usage
   function _logResourceUsage() {
-    Debug::log("Current execution time: ".(microtime(true)-START_TIME)." sec",  DEBUG_INFO);
-    Debug::log("Current memory usage: ".(memory_get_usage()/1024/1024)." MB",   DEBUG_INFO);
-    Debug::log("Peak memory usage: ".(memory_get_peak_usage()/1024/1024)." MB", DEBUG_INFO);
+    Logging::log("Current execution time: ".(microtime(true)-STARTTIME)." sec",  Logging::INFO);
+    Logging::log("Current memory usage: ".(memory_get_usage()/1024/1024)." MB",   Logging::INFO);
+    Logging::log("Peak memory usage: ".(memory_get_peak_usage()/1024/1024)." MB", Logging::INFO);
   }
 
+  // turn on/off all error reporting
+  function _setDebugMode($debug = false) {
+    if ($debug) {
+      error_reporting(E_ALL | E_STRICT | E_NOTICE);
+    } else {
+      error_reporting(0);
+    }
+
+    ini_set("display_errors",         ($debug) ? 1 : 0);
+    ini_set("display_startup_errors", ($debug) ? 1 : 0);
+    ini_set("html_errors",            ($debug) ? 1 : 0);
+    ini_set("track_errors",           ($debug) ? 1 : 0);
+  }
+
+  // start output buffering
   function _startBuffer() {
     $result = null;
 
@@ -234,6 +244,7 @@
     return $result;
   }
 
+  // stop output buffering
   function _stopBuffer($oblevel) {
     $result = null;
 
@@ -259,7 +270,7 @@
     $result = false;
 
     // use mbstring extension, if available
-    if (extension_loaded(MBSTRING)) {
+    if (extension_loaded("mbstring")) {
       // set internal encoding
       mb_internal_encoding($encoding);
 
@@ -271,4 +282,3 @@
 
     return $result;
   }
-

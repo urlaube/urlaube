@@ -7,7 +7,7 @@
     this file. It initializes the rest of the system.
 
     @package urlaube\urlaube
-    @version 0.1a6
+    @version 0.1a7
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -22,18 +22,17 @@
 
   // ===== DO NOT EDIT HERE =====
 
-  // define the URLAUBE constant the prevents the side-loading of other files
+  // define the URLAUBE constant that prevents the side-loading of other files
   define("URLAUBE", true);
 
   // define the default root path
-  define("ROOT_PATH", __DIR__.DIRECTORY_SEPARATOR);
+  define("ROOTPATH", __DIR__.DIRECTORY_SEPARATOR);
 
   // define the start time
-  define("START_TIME", microtime(true));
+  define("STARTTIME", microtime(true));
 
   // require the init.php file
   require_once(SYSTEM_PATH."init.php");
 
   // do some number crunching
   _logResourceUsage();
-

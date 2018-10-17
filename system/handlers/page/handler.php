@@ -7,7 +7,7 @@
     stored in a file.
 
     @package urlaube\urlaube
-    @version 0.1a6
+    @version 0.1a7
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -17,159 +17,60 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  if (!class_exists(PAGE_HANDLER)) {
-    class PageHandler extends Base implements Handler {
+  class PageHandler extends BaseHandler {
 
-      // FIELDS
+    // CONSTANTS
 
-      protected static $noslash = false;
+    const NAME = "name";
 
-      // INTERFACE FUNCTIONS
+    const MANDATORY = [self::NAME];
+    const OPTIONAL  = null;
+    const REGEX     = "~^\/".
+                      "(?P<name>[0-9A-Za-z\_\-\/\.]*)".
+                      "$~";
 
-      public static function getContent($info) {
-        $result = null;
+    // ABSTRACT FUNCTIONS
 
-        if (is_array($info)) {
-          $name = null;
-          if (isset($info[NAME]) && is_string($info[NAME])) {
-            $name = $info[NAME];
-          }
+    protected static function getResult($metadata) {
+      $name = value($metadata, static::NAME);
 
-          // KNOWN EDGE CASE:
-          // In order to allow static start pages the PagesHandler reacts on
-          // the relative URI "/". $path will evaluate to the following result:
-          // $path = USER_CONTENT_PATH.CONTENT_FILE_EXT;
-          // This is expected behaviour.
-          $path = USER_CONTENT_PATH.
-                  implode(DS, array_filter(explode(US, $name))).
-                  CONTENT_FILE_EXT;
+      $path = USER_CONTENT_PATH.
+              implode(DS, array_filter(explode(US, $name))).
+              FilePlugin::EXTENSION;
 
-          // store $noslash in local variable
-          $noslash = static::$noslash;
+      return FilePlugin::loadContent($path, false,
+                                     function ($content) {
+                                       $result = null;
 
-          $result = File::loadContent($path, false,
-                                      function ($content) use ($noslash) {
-                                        $result = null;
+                                       // check that $content is not hidden
+                                       if (!istrue(value($content, HIDDEN))) {
+                                         // do not filter out relocations as these have to be executed at this stage
+                                         $result = $content;
+                                       }
 
-                                        // check that $content is not hidden
-                                        if (!istrue(value($content, HIDDEN))) {
-                                          // check if we don't require NOSLASH to be set or if it is set
-                                          if (!$noslash || istrue(value($content, NOSLASH))) {
-                                            // do not filter out redirects as these have to be executed at this stage
-                                            $result = $content;
-                                          }
-                                        }
-
-                                        return $result;
-                                      });
-
-          // set pagination information
-          Main::PAGEMAX(1);
-          Main::PAGEMIN(1);
-          Main::PAGENUMBER(1);
-        }
-
-        return $result;
-      }
-
-      public static function getUri($info) {
-        $result = Main::ROOTURI();
-
-        if (is_array($info)) {
-          if (isset($info[NAME]) && is_string($info[NAME])) {
-            $result .= $info[NAME];
-          }
-        }
-
-        return $result;
-      }
-
-      public static function parseUri($uri) {
-        $result = null;
-
-        if (1 === preg_match("@^\/([0-9A-Za-z\_\-\/\.]*)$@",
-                             $uri, $matches)) {
-          $result = array();
-
-          // get the requested content name
-          if (2 <= count($matches)) {
-            $result[NAME] = $matches[1];
-          }
-        }
-
-        return $result;
-      }
-
-      // RUNTIME FUNCTIONS
-
-      protected static function handle($noslash = false) {
-        $result = false;
-
-        if (!Handlers::get(DEACTIVATE_PAGE)) {
-          // set the $noslash value
-          static::$noslash = $noslash;
-
-          $info = static::parseUri(Main::RELATIVEURI());
-          if (null !== $info) {
-            $content = static::getContent($info);
-            if (null !== $content) {
-              // set the content to be processed by the theme
-              Main::CONTENT($content);
-              Main::PAGEINFO($info);
-
-              // check if NOTHEME to directly print the content
-              if (istrue(value(Main::CONTENT(), NOTHEME))) {
-                // filter the content before calling the theme
-                Main::CONTENT(Plugins::run(FILTER_CONTENT, true, Main::CONTENT()));
-
-                // directly print the content
-                if (is_array(Main::CONTENT())) {
-                  foreach (Main::CONTENT() as $content_item) {
-                    print(value($content_item, CONTENT));
-                  }
-                } else {
-                  // set the content type if it is set
-                  $value = value(Main::CONTENT(), CONTENTTYPE);
-                  if (null !== $value) {
-                    header("Content-Type: ".$value);
-                  }
-
-                  print(value(Main::CONTENT(), CONTENT));
-                }
-              } else {
-                // transfer the handling to the Themes class 
-                Themes::run();
-              }
-
-              // we handled this page
-              $result = true;
-            }
-          }
-        }
-
-        return $result;
-      }
-
-      public static function handleNoSlash() {
-        return static::handle(true);
-      }
-
-      public static function handleSystem() {
-        return static::handle(false);
-      }
-
+                                       return $result;
+                                     });
     }
 
-    // activate handler by default
-    Handlers::preset(DEACTIVATE_PAGE, false);
+    // INTERFACE FUNCTIONS
 
-    // register handler
-    Handlers::register(PAGE_HANDLER, "handleNoSlash",
-                       "@^\/[0-9A-Za-z\_\-\/\.]*$@",
-                       [GET, POST], PAGE_BEFORE_ADDSLASH);
+    // overwrite the default behaviour
+    public static function getUri($metadata) {
+      $result = null;
 
-    Handlers::register(PAGE_HANDLER, "handleSystem",
-                       "@^\/[0-9A-Za-z\_\-\/\.]*$@",
-                       [GET, POST], PAGE_SYSTEM);
+      $metadata = preparecontent($metadata, static::OPTIONAL, static::MANDATORY);
+      if ($metadata instanceof Content) {
+        // get the base URI
+        $result = value(Main::class, ROOTURI);
+
+        // append the mandatory URI parts
+        $result .= trail(value($metadata, static::NAME), US);
+      }
+
+      return $result;
+    }
+
   }
 
+  // register handler
+  Handlers::register(PageHandler::class, "run", PageHandler::REGEX, [GET, POST], PAGE_HANDLER);

@@ -57,6 +57,7 @@
 * changed many system handlers to that `getContent()` doesn't have side-effects on PAGEMAX, PAGEMIN and PAGENUMBER
 * renamed runtime functions of plugins and handlers from `handle()` to `run()`
 * the home screen doesn't show entries without a set DATE value anymore (aka. pages)
+* make sure that the sorting of handlers is based on the integer value of the priority
 
 ## 0.1a6 (15.07.2018)
 ### Bugfixes

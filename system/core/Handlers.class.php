@@ -116,7 +116,7 @@
       // sort handlers by priority
       usort(static::$handlers,
             function ($left, $right) {
-              return (value($left, static::PRIORITY)-value($right, static::PRIORITY));
+              return (intval(value($left, static::PRIORITY))-intval(value($right, static::PRIORITY)));
             });
 
       foreach (static::$handlers as $handlers_item) {

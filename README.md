@@ -343,6 +343,6 @@ The following log levels SHALL be used:
 The following values are set during runtime to provide status information to plugins and themes:
 
 * `Main::set(CONTENT, null);` is the content provided to plugins and themes
-* `Main::set(METADATA, null);` are the metadata provided to plugins and themes 
+* `Main::set(METADATA, null);` are the metadata provided to plugins and themes
 * `Main::set(PAGE, 1);` is the page number that is displayed during pagination
 * `Main::set(PAGECOUNT, 1);` is the maximum number of pages available during pagination

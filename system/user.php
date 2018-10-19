@@ -3,8 +3,9 @@
   /**
     These are the user functions of the urlau.be CMS core.
 
-    This file contains the user functions of the urlau.be CMS core. Handler, plugin and them developers may rely on
-    these functions as they will only change with prior notice.
+    This file contains the user functions of the urlau.be CMS core. Handler,
+    plugin and them developers may rely on these functions as they will only
+    change with prior notice.
 
     @package urlaube\urlaube
     @version 0.1a7

@@ -3,8 +3,8 @@
   /**
     This is the PageHandler class of the urlau.be CMS.
 
-    This file contains the PageHandler class of the urlau.be CMS. The page handler provides access to a single page
-    stored in a file.
+    This file contains the PageHandler class of the urlau.be CMS. The page
+    handler provides access to a single page stored in a file.
 
     @package urlaube\urlaube
     @version 0.1a7

@@ -3,8 +3,8 @@
   /**
     These are the derived constants of the urlau.be CMS core.
 
-    This file contains the derived onstants of the urlau.be CMS core.
-    These are used to separate logic from content like strings.
+    This file contains the derived constants of the urlau.be CMS core. These are
+    used to separate logic from content like strings.
 
     @package urlaube\urlaube
     @version 0.1a7

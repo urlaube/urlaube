@@ -3,8 +3,8 @@
   /**
     This is the SearchHandler class of the urlau.be CMS.
 
-    This file contains the SearchHandler class of the urlau.be CMS. The
-    searc handler lists all pages that contain a certain search keyword.
+    This file contains the SearchHandler class of the urlau.be CMS. The search
+    handler lists all pages that contain a certain search keyword.
 
     @package urlaube\urlaube
     @version 0.1a7
@@ -30,7 +30,7 @@
                       "(page\=(?P<page>[0-9]+)\/)?".
                       "$~";
 
-    const REGEXPOST = "~^\/search\/$~";                      
+    const REGEXPOST = "~^\/search\/$~";
 
     // ABSTRACT FUNCTIONS
 

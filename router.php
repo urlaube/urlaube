@@ -3,7 +3,9 @@
   /**
     This is the router file of the urlau.be CMS.
 
-    This file can be used as a routing file when testing urlau.be with the built-in PHP webserver.
+    This file can be used as a routing file when testing urlau.be with the
+    built-in PHP webserver.
+
     Usage: `php -S localhost:8080 ./router.php`
 
     @package urlaube\urlaube

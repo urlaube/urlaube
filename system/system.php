@@ -3,8 +3,9 @@
   /**
     These are the system functions of the urlau.be CMS core.
 
-    This file contains the system functions of the urlau.be CMS core. Handler, plugin and them developers shall not
-    rely on these functions as they may change without prior notice.
+    This file contains the system functions of the urlau.be CMS core. Handler,
+    plugin and them developers shall not rely on these functions as they may
+    change without prior notice.
 
     @package urlaube\urlaube
     @version 0.1a7

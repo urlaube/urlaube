@@ -3,8 +3,8 @@
   /**
     This is the FixUrlHandler class of the urlau.be CMS.
 
-    This file contains the FixUrlHandler class of the urlau.be CMS. The fix URL handler is meant to improve
-    incorrectly written URLs.
+    This file contains the FixUrlHandler class of the urlau.be CMS. The fix URL
+    handler is meant to improve incorrectly written URLs.
 
     @package urlaube\urlaube
     @version 0.1a7

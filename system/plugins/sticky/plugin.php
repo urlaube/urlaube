@@ -1,10 +1,10 @@
 <?php
 
   /**
-    This is the Sticky class of the urlau.be CMS.
+    This is the StickyPlugin class of the urlau.be CMS.
 
-    This file contains the Sticky class of the urlau.be CMS. This plugin resorts content so that sticky entries are
-    at always at the top
+    This file contains the StickyPlugin class of the urlau.be CMS. This plugin
+    resorts content so that sticky entries are at always at the top.
 
     @package urlaube\urlaube
     @version 0.1a7
@@ -48,7 +48,7 @@
                               });
       }
 
-      return $result; 
+      return $result;
     }
 
   }

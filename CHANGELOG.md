@@ -18,7 +18,7 @@
 * changed `Main` to be based on the `BaseConfig` class and to store all values in a `Content` object
 * extended the `value()` function to work with `BaseConfig` subclasses
 * introduced the `BaseHandler` class to reduce duplicate code
-* changed many system handlers to be based on the `BaseHandler` class 
+* changed many system handlers to be based on the `BaseHandler` class
 * removed the `HomeHandler` class as it is now equal to the `ArchiveHandler`
 * combined all `Feed*Handler` classes into a single one
 * removed the `Feed` class as it is only used within one handler now
@@ -30,7 +30,7 @@
 * renamed the `SearchGetHandler` class to `SearchHandler`
 * renamed the `Sticky` class to `StickyPlugin`
 * renamed the `findkeywords()` function to `haskeywords()`
-* changed the `haskeywords()` function to also work with a single keyword instead of an array 
+* changed the `haskeywords()` function to also work with a single keyword instead of an array
 * merged the `SearchHandler` class and the `SearchPostHandler` class
 * moved derived constants from `constants.php` to `derived.php`
 * moved static constants from `constants.php` to `static.php`
@@ -39,7 +39,7 @@
 * changed `MarkdownPlugin` to not provide a separate `apply()` method
 * rewrote handlers and plugins to avoid using string literals for classes
 * rewrote handlers to call FILTER_CONTENT handlers
-* rewrote handlers to use `parseuri()` 
+* rewrote handlers to use `parseuri()`
 * rewrote regexes to use `"\~...\~"` instead of `"@...@"`
 * added `hiddenfromarchive`, `hiddenfromauthor`, `hiddenfromcategory`, `hiddenfromsearch` and `hiddenfromsitemap`
 * checked all handlers to make sure that the metadata are set before plugins are called
@@ -58,6 +58,7 @@
 * renamed runtime functions of plugins and handlers from `handle()` to `run()`
 * the home screen doesn't show entries without a set DATE value anymore (aka. pages)
 * make sure that the sorting of handlers is based on the integer value of the priority
+* fixed line breaks and trailing whitspace
 
 ## 0.1a6 (15.07.2018)
 ### Bugfixes

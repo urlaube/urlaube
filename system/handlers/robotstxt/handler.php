@@ -3,8 +3,9 @@
   /**
     This is the RobotsTxtHandler class of the urlau.be CMS.
 
-    This file contains the RobotsTxtHandler class of the urlau.be CMS. The robots.txt handler generates static file
-    contents for certain typically provided files.
+    This file contains the RobotsTxtHandler class of the urlau.be CMS. The
+    robots.txt handler generates static file contents for certain typically
+    provided files.
 
     @package urlaube\urlaube
     @version 0.1a7

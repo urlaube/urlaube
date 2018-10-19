@@ -3,8 +3,9 @@
   /**
     This is the index file of the urlau.be CMS.
 
-    This file is the single entrypoint to the urlau.be CMS system. All calls to the system have to be directed at
-    this file. It initializes the rest of the system.
+    This file is the single entrypoint to the urlau.be CMS system. All calls to
+    the system have to be directed at this file. It initializes the rest of the
+    system.
 
     @package urlaube\urlaube
     @version 0.1a7

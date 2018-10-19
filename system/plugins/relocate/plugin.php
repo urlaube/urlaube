@@ -1,10 +1,11 @@
 <?php
 
   /**
-    This is the Relocate class of the urlau.be CMS.
+    This is the RelocatePlugin class of the urlau.be CMS.
 
-    This file contains the Relocate class of the urlau.be CMS. This plugin provides a relocation feature that is
-    available through fields in the content files.
+    This file contains the RelocatePlugin class of the urlau.be CMS. This plugin
+    provides a relocation feature that is available through fields in the
+    content files.
 
     @package urlaube\urlaube
     @version 0.1a7

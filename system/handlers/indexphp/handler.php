@@ -3,8 +3,9 @@
   /**
     This is the IndexPhpHandler class of the urlau.be CMS.
 
-    This file contains the IndexPhpHandler class of the urlau.be CMS. The index.php handler generates static file
-    contents for certain typically provided files.
+    This file contains the IndexPhpHandler class of the urlau.be CMS. The
+    index.php handler generates static file contents for certain typically
+    provided files.
 
     @package urlaube\urlaube
     @version 0.1a7

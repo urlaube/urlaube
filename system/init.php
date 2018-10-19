@@ -3,8 +3,8 @@
   /**
     This is the init file of the urlau.be CMS.
 
-    This is the init file of the urlau.be CMS. The file includes all other relevant files of the system and
-    kickstarts the execution of the CMS.
+    This is the init file of the urlau.be CMS. The file includes all other
+    relevant files of the system and kickstarts the execution of the CMS.
 
     @package urlaube\urlaube
     @version 0.1a7

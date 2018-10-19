@@ -1,10 +1,10 @@
 <?php
 
   /**
-    This is the File class of the urlau.be CMS.
+    This is the FilePlugin class of the urlau.be CMS.
 
-    This file contains the File class of the urlau.be CMS core. The file class simplifies the loading of file-based
-    CMS entries.
+    This file contains the FilePlugin class of the urlau.be CMS core. This
+    plugin simplifies the loading of file-based CMS entries.
 
     @package urlaube\urlaube
     @version 0.1a7

@@ -1,10 +1,10 @@
 <?php
 
   /**
-    This is the Markdown class of the urlau.be CMS.
+    This is the MarkdownPlugin class of the urlau.be CMS.
 
-    This file contains the Markdown class of the urlau.be CMS. This plugin converts markdown-encoded content
-    to HTML-encoded content.
+    This file contains the MarkdownPlugin class of the urlau.be CMS. This plugin
+    converts markdown-encoded content to HTML-encoded content.
 
     @package urlaube\urlaube
     @version 0.1a7

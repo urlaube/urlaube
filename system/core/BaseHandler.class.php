@@ -145,7 +145,7 @@
               Main::set(PAGECOUNT, 1);
             }
 
-            // transfer the handling to the Themes class 
+            // transfer the handling to the Themes class
             Themes::run();
 
             // we handled this page

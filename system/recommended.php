@@ -3,8 +3,9 @@
   /**
     These are the recommended constants of the urlau.be CMS core.
 
-    This file contains the recommended constants of the urlau.be CMS core. These are provided to handler, plugin and
-    theme developers so that they can decide on often-used placeholders.
+    This file contains the recommended constants of the urlau.be CMS core. These
+    are provided to handler, plugin and theme developers so that they can decide
+    on often-used placeholders.
 
     @package urlaube\urlaube
     @version 0.1a7
@@ -56,7 +57,7 @@
   define("SITENAME",   "sitename");   // name of the website
   define("SITESLOGAN", "siteslogan"); // slogan of the website
   // TIMEFORMAT                       // formatting of date strings
-  // TITLE                            // head title of the website  
+  // TITLE                            // head title of the website
 
   // recommended widget fields
   // CONTENT // content of the widget

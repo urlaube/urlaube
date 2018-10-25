@@ -128,7 +128,7 @@ The following core trigger events are available for now:
 * `AFTER_HANDLER` is called after the handlers have finished running
 * `AFTER_MAIN` is called after the core has finished running
 
-The following theme triggers events SHOULD be used for now:
+The following theme trigger events SHOULD be used for now:
 
 * `BEFORE_HEAD` should be called by a theme before the head is generated
 * `AFTER_HEAD` should be called by a theme after the head is generated
@@ -153,6 +153,11 @@ The following core content events are available for now:
 
 * `ON_WIDGETS` is called in `widgets()`
 
+The following cache events are available for now:
+
+* `GET_CACHE` is called in `getcache()`
+* `SET_CACHE` is called in `setcache()`
+
 ### Behaviour
 
 * **Trigger plugins** just get executed and don't have to provide a certain behaviour.
@@ -162,6 +167,7 @@ The following core content events are available for now:
 ### System Plugins
 At the moment the Urlaube CMS consists of the following system plugins that are located in `./system/plugins/`:
 
+* `cache` is used to provide a file-based caching feature that uses serialize/unserialize
 * `file` is used by system handlers to load content files
 * `markdown` is used to provide markdown support which can be disables through the `nomarkdown` field
 * `relocate` is used to provide a relocation feature through the `Relocate` and `RelocateType` fields
@@ -304,6 +310,8 @@ The configuration takes place in the configuration file located at `./user/confi
 
 The following configuration values are currently supported:
 
+* `Main::set(CACHE, false);` is the activation or deactivation of the cache
+* `Main::set(CACHEAGE, 60*60);` is the number of seconds a cached value is considered to be fresh by default
 * `Main::set(CHARSET, "UTF-8");` is the charset used by the system
 * `Main::set(CONTENTTYPE, "text/html");` is the default content type set by the system
 * `Main::set(DEBUGMODE, false);` actives printing of warning and error messages  

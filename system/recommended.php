@@ -8,7 +8,7 @@
     on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -40,6 +40,7 @@
   define("RELOCATETYPE",       "relocatetype");       // type of the relocate
   define("STICKY",             "sticky");             // sticky status of an entry
   define("TITLE",              "title");              // title of an entry
+  define("UPDATE",             "update");             // date of the last update of an entry
   // URI                                              // uri of an entry
 
   // recommended theme configuration

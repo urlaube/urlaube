@@ -7,7 +7,7 @@
     handler lists all pages that contain a certain search keyword.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -34,7 +34,10 @@
 
     // ABSTRACT FUNCTIONS
 
-    protected static function getResult($metadata) {
+    protected static function getResult($metadata, &$cachable) {
+      // this result may NOT be cached
+      $cachable = false;
+
       $search = explode(DOT, value($metadata, static::SEARCH));
 
       return FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
@@ -63,6 +66,12 @@
                                           return $result;
                                         },
                                         true);
+    }
+
+    protected static function prepareMetadata($metadata) {
+      $metadata->set(static::SEARCH, strtolower(value($metadata, static::SEARCH)));
+
+      return $metadata;
     }
 
     // INTERFACE FUNCTIONS

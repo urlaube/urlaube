@@ -7,7 +7,7 @@
     handler lists all pages that contain a certain date.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -36,7 +36,10 @@
 
     // ABSTRACT FUNCTIONS
 
-    protected static function getResult($metadata) {
+    protected static function getResult($metadata, &$cachable) {
+      // this result may be cached
+      $cachable = true;
+
       $day   = value($metadata, static::DAY);
       $month = value($metadata, static::MONTH);
       $year  = value($metadata, static::YEAR);
@@ -65,58 +68,29 @@
                                         true);
     }
 
-    // INTERFACE FUNCTIONS
-
-    // overwrite the default behaviour
-    public static function getUri($metadata){
-      $result = null;
-
-      $metadata = preparecontent($metadata, static::OPTIONAL, static::MANDATORY);
-      if ($metadata instanceof Content) {
-        // handle pagination if the PAGE metadate is supported
-        if ($metadata->isset(PAGE)) {
-          $page = value($metadata, PAGE);
-          if (is_numeric($page)) {
-            $metadata->set(PAGE, intval($page));
-          }
-        }
-
-        // prepare the integer values
-        $day = value($metadata, static::DAY);
-        if (is_numeric($day)) {
-          $metadata->set(static::DAY, intval($day));
-        }
-        $month = value($metadata, static::MONTH);
-        if (is_numeric($month)) {
-          $metadata->set(static::MONTH, intval($month));
-        }
-        $year = value($metadata, static::YEAR);
-        if (is_numeric($year)) {
-          $metadata->set(static::YEAR, intval($year));
-        }
-
-        // get the base URI
-        $result = value(Main::class, ROOTURI);
-
-        // append the mandatory URI parts
-        if (is_array(static::MANDATORY)) {
-          foreach (static::MANDATORY as $value) {
-            $result .= strtolower(trim($value)).EQ.value($metadata, $value).US;
-          }
-        }
-
-        // append the optional URI parts
-        if (is_array(static::OPTIONAL)) {
-          foreach (static::OPTIONAL as $key => $value) {
-            // only append it if they value differs from the default
-            if ($value !== value($metadata, $key)) {
-              $result .= strtolower(trim($key)).EQ.value($metadata, $key).US;
-            }
-          }
-        }
+    protected static function prepareMetadata($metadata) {
+      $value = value($metadata, static::DAY);
+      if (is_numeric($value)) {
+        $metadata->set(static::DAY, intval($value));
+      } else {
+        $metadata->set(static::DAY, static::OPTIONAL[static::DAY]);
       }
 
-      return $result;
+      $value = value($metadata, static::MONTH);
+      if (is_numeric($value)) {
+        $metadata->set(static::MONTH, intval($value));
+      } else {
+        $metadata->set(static::MONTH, static::OPTIONAL[static::MONTH]);
+      }
+
+      $value = value($metadata, static::YEAR);
+      if (is_numeric($value)) {
+        $metadata->set(static::YEAR, intval($value));
+      } else {
+        $metadata->set(static::YEAR, static::OPTIONAL[static::YEAR]);
+      }
+
+      return $metadata;
     }
 
   }

@@ -7,7 +7,7 @@
     sitemap.xml handler generates a sitemap file.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -27,25 +27,40 @@
 
     public static function getContent($metadata, &$pagecount) {
       $pagecount = 1;
+      $result    = null;
 
-      return FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
-                                        function ($content) {
-                                          $result = null;
+      // try to get data from cache
+      if (getcache(null, $data, static::class)) {
+        // check that the returned content matches
+        if (is_array($data) && isset($data[CONTENT]) && isset($data[PAGECOUNT])) {
+          $pagecount = $data[PAGECOUNT];
+          $result    = $data[CONTENT];
+        }
+      } else {
+        $result = FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
+                                             function ($content) {
+                                               $result = null;
 
-                                          // check that $content is not hidden
-                                          if (!istrue(value($content, HIDDEN))) {
-                                            // check that $content is not hidden from sitemap
-                                            if (!istrue(value($content, HIDDENFROMSITEMAP))) {
-                                              // check that $content is not a relocation
-                                              if (null === value($content, RELOCATE)) {
-                                                $result = $content;
-                                              }
-                                            }
-                                          }
+                                               // check that $content is not hidden
+                                               if (!istrue(value($content, HIDDEN))) {
+                                                 // check that $content is not hidden from sitemap
+                                                 if (!istrue(value($content, HIDDENFROMSITEMAP))) {
+                                                   // check that $content is not a relocation
+                                                   if (null === value($content, RELOCATE)) {
+                                                     $result = $content;
+                                                   }
+                                                 }
+                                               }
 
-                                          return $result;
-                                        },
-                                        true);
+                                               return $result;
+                                             },
+                                             true);
+
+        // try to set data in cache
+        setcache(null, [CONTENT => $result, PAGECOUNT => $pagecount], static::class);
+      }
+
+      return $result;
     }
 
     public static function getUri($metadata) {
@@ -99,8 +114,40 @@
                         "  </url>".NL,
                         absoluteurl("/")));
 
-            if (is_array($content)) {
+            if (null !== $content) {
+              // make sure that we are handling an array
+              if (!is_array($content)) {
+                $content = [$content];
+              }
+
               foreach ($content as $content_item) {
+                // try to parse the update field
+                $lastmod = value($content_item, UPDATE);
+                if (null !== $lastmod) {
+                  $lastmod = strtotime($lastmod);
+                  if (false === $lastmod) {
+                    // it failed
+                    $lastmod = null;
+                  }
+                }
+
+                // try to parse the date field
+                if (null === $lastmod) {
+                  $lastmod = value($content_item, DATE);
+                  if (null !== $lastmod) {
+                    $lastmod = strtotime($lastmod);
+                    if (false === $lastmod) {
+                      // it failed
+                      $lastmod = null;
+                    }
+                  }
+                }
+
+                // use the file modification time as a last resort
+                if (null === $lastmod) {
+                  $lastmod = filemtime(value($content_item, FILE));
+                }
+
                 print(fhtml("  <url>".NL.
                             "    <loc>%s</loc>".NL.
                             "    <lastmod>%s</lastmod>".NL.
@@ -108,7 +155,7 @@
                             "    <priority>0.5</priority>".NL.
                             "  </url>".NL,
                             absoluteurl(value($content_item, URI)),
-                            date("Y-m-d", filemtime(value($content_item, FILE)))));
+                            date("Y-m-d", $lastmod)));
               }
             }
 

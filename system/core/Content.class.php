@@ -8,7 +8,7 @@
     to render an entry.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,11 +18,27 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  class Content {
+  class Content implements Serializable {
 
     // FIELDS
 
     protected $fields = [];
+
+    // INTERFACE FUNCTIONS
+
+    public function serialize() {
+      return serialize($this->fields);
+    }
+
+    public function unserialize($serialized) {
+      // unserialize and check data
+      $temp = unserialize($serialized);
+      if (is_array($temp)) {
+        foreach ($temp as $key => $value) {
+          $this->set($key, $value);
+        }
+      }
+    }
 
     // GETTER FUNCTIONS
 
@@ -93,13 +109,8 @@
     }
 
     public function preset($name, $value) {
-      // $name should be case-insensitive
-      if (is_string($name)) {
-        $name = strtolower($name);
-      }
-
       if (!$this->isset($name)) {
-        $this->fields[$name] = $value;
+        $this->set($name, $value);
       } else {
         Logging::log("value $name has already been set", Logging::DEBUG);
       }

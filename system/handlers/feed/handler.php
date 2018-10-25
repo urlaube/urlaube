@@ -8,7 +8,7 @@
     type.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -27,7 +27,7 @@
 
     const REGEX = "~^\/".
                   "feed\/".
-                  "(?P<suburl>[0-9A-Za-z\_\-\/\.\=]+)".
+                  "(?P<suburl>[0-9A-Za-z\_\-\/\.\=]*)".
                   "$~";
 
     const SOURCES = [ArchiveHandler::class,
@@ -78,10 +78,13 @@
     public static function parseUri($uri) {
       $result = null;
 
-      $metadata = preparecontent(parseuri($uri, static::REGEX), null, [static::SUBURL]);
+      $metadata = preparecontent(parseuri($uri, static::REGEX), [static::SUBURL => US], null);
       if ($metadata instanceof Content) {
         // check that the SUBURL starts and ends with a slash
         $suburl = trail(lead(value($metadata, static::SUBURL), US), US);
+
+        // fix the suburl field
+        $metadata->set(static::SUBURL, $suburl);
 
         // iterate through the potential feed sources
         foreach (static::SOURCES as $feed_item) {
@@ -144,7 +147,12 @@
                         value(Main::class, SITESLOGAN),
                         strtr(value(Main::class, LANGUAGE), "_", "-")));
 
-            if (is_array($content)) {
+            if (null !== $content) {
+              // make sure that we are handling an array
+              if (!is_array($content)) {
+                $content = [$content];
+              }
+
               foreach ($content as $content_item) {
                 print(fhtml("    <item>".NL));
 

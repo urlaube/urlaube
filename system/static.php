@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -22,9 +22,9 @@
   // define Urlaube information
   define("URLAUBE_NAME",        "Urlaube");
   define("URLAUBE_URL",         "https://urlau.be/");
-  define("URLAUBE_VERSION",     "0.1a7");
+  define("URLAUBE_VERSION",     "0.1a8");
   define("URLAUBE_CODENAME",    "Freizeit");
-  define("URLAUBE_RELEASEDATE", "17.10.2018");
+  define("URLAUBE_RELEASEDATE", "25.10.2018");
 
   // define shortcodes
   define("BR",  "<br>");
@@ -54,6 +54,8 @@
   define("HTTPS_PROTOCOL", "https://");
 
   // define names of main configuration
+  define("CACHE",        "cache");        // the activation status of the cache
+  define("CACHEAGE",     "cacheage");     // the time in seconds a value shall typically be cached
   define("CHARSET",      "charset");      // the charset used by the system
   define("CONTENT",      "content");      // the content provided to plugins and themes
   define("CONTENTTYPE",  "contenttype");  // the default content type set by the system
@@ -102,5 +104,8 @@
 
   // define core content events
   // ON_* plugins shall return content
-  define("ON_CACHE",   "on_cache");   // try to read content from a caching plugin
   define("ON_WIDGETS", "on_widgets"); // try to read content from widgets plugins
+
+  // define cache events
+  define("GET_CACHE", "get_cache"); // try to get content from the cache
+  define("SET_CACHE", "set_cache"); // try to set content in the cache

@@ -7,7 +7,7 @@
     handles the actual workflow of the urlau.be CMS.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -51,6 +51,10 @@
 
       // this is the chosen language (used for Translate::get() and Translate::format())
       static::preset(LANGUAGE, "de_DE");
+
+      // deactivate caching by default
+      static::preset(CACHE,    false);
+      static::preset(CACHEAGE, 60*60);
 
       // these are pagination values
       static::preset(PAGE,      1); // set by the handler

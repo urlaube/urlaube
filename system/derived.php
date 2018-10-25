@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -37,6 +37,7 @@
   } else {
     $path = ROOTPATH."user".DS;
   }
+  define("USER_CACHE_PATH",    $path."cache".DS);
   define("USER_CONFIG_PATH",   $path."config".DS);
   define("USER_CONTENT_PATH",  $path."content".DS);
   define("USER_HANDLERS_PATH", $path."handlers".DS);

@@ -7,7 +7,7 @@
     provides a simple logging feature.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -62,7 +62,7 @@
           if (Logging::OUTPUT === value(Main::class, LOGTARGET)) {
             print($string);
           } else {
-            file_put_contents(value(Main::class, LOGTARGET), $string, FILE_APPEND);
+            file_put_contents(value(Main::class, LOGTARGET), $string, FILE_APPEND | LOCK_EX);
           }
 
           $result = true;

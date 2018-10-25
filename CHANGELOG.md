@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.1a8 (24.10.2018)
+### Features
+* added `UPDATE` field that contains the date of the last update of a content entry
+* `FilePlugin::loadContent()` now checks that the given file is located in the user content path
+* `FilePlugin::loadContent()` now sets a content field even when the value is empty, this way it can be checked whether the field has been set to an empty value (e.g. through `Content->isset()`)
+* `FilePluggin::loadContent()` now tries to preset the `UPDATE` field
+* `SitemapXmlHandler` now tries to use the `UPDATE` field when it's available
+* added the plugin triggers events `GET_CACHE` and `SET_CACHE` as key/value methods to interact with an optional caching plugin
+* added `getcache()` and `setcache()` to have a simpler interface for caching
+* non-filtered arguments for plugins are now passed as an array to `Plugins::run()` to support call by reference arguments
+* `Plugins::run()` now returns NULL when no callable plugins have been found for non-filtered calls
+* added `CachePlugin` as a file-based serialize/unserialize caching plugin
+* `Content` now implements the `Serializable` interface to be compatible with serialization/unserialization
+* added `BaseHandler::prepareMetadata()` to allow handlers to do proper sanitization and thus to reduce duplicate content
+
+### Bugfixes
+* changed visibility of the helper function `FilePlugin::fileToUri()`
+* `Logging::log()` now calls `file_put_content()` with `LOCK_EX` to support parallel writes
+* fixed the default value of `Plugins::run()` for non-filter calls
+* `path2uri()` now calls `realpath()` before trying to convert the path
+* changed conversion functions like `path2uri()`, `uri2path()` and `relativeuri()` so that they return `NULL` on error
+* rewrote `relativeuri()` to use `parse_url()` instead of something that was hacked together
+* removed the amount of type-checking as it prevents the usage of functions in certain cases
+* fixed `FeedHandler` because it didn't generate a feed for the home page
+* fixed `FeedHandler` because it didn't generate a feed for pages with a single entry
+* fixed `SitemapXmlHandler` because it didn't generate a sitemap for site with a single entry
+
 ## 0.1a7 (17.10.2018)
 ### Features
 * introduced the `absoluteurl()` function to create the absolute URL from a relative URI

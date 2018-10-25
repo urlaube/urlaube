@@ -7,7 +7,7 @@
     plugin simplifies the loading of file-based CMS entries.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -23,92 +23,101 @@
 
     const EXTENSION = ".md";
 
-    // RUNTIME FUNCTIONS
+    // HELPER FUNCTIONS
 
-    public static function fileToUri($filename) {
+    protected static function fileToUri($filename) {
       $result = null;
 
-      if (is_string($filename)) {
-        if (0 === strpos($filename, USER_CONTENT_PATH)) {
-          // get relevant part of the filename
-          $filename = substr($filename, strlen(USER_CONTENT_PATH));
+      if (0 === strpos($filename, USER_CONTENT_PATH)) {
+        // get relevant part of the filename
+        $filename = substr($filename, strlen(USER_CONTENT_PATH));
 
-          // remove file extension
-          $filename = notrail($filename, static::EXTENSION);
+        // remove file extension
+        $filename = notrail($filename, static::EXTENSION);
 
-          // replace DS with US and prepend root URI
-          $result = trail(value(Main::class, ROOTURI).strtr($filename, DS, US), US);
-        }
+        // replace DS with US and prepend root URI
+        $result = trail(value(Main::class, ROOTURI).strtr($filename, DS, US), US);
       }
 
       return $result;
     }
 
+    // RUNTIME FUNCTIONS
+
     public static function loadContent($filename, $skipcontent = false, $filter = null) {
       $result = null;
 
-      // check if the file exists
-      if (is_file($filename) &&
-          istrail($filename, static::EXTENSION)) {
-        // read the file as an array
-        $file = file($filename);
-        if (false !== $file) {
-          // iterate through $file to read all attributes
-          $index = 0;
-          while ($index < count($file)) {
-            $pos = strpos($file[$index], ":");
-            if (false !== $pos) {
-              $left  = strtolower(trim(substr($file[$index], 0, $pos)));
-              $right = trim(substr($file[$index], $pos+1));
+      // fix $filename
+      $filename = realpath($filename);
 
-              if ((false !== $right) && (0 < strlen($left)) && (0 < strlen($right))) {
+      // check if the file is located in the user content path
+      if (0 === strpos($filename, USER_CONTENT_PATH)) {
+        // check if the file exists
+        if (is_file($filename) && istrail($filename, static::EXTENSION)) {
+          // read the file as an array
+          $file = file($filename);
+          if (false !== $file) {
+            // iterate through $file to read all attributes
+            $index = 0;
+            while ($index < count($file)) {
+              $pos = strpos($file[$index], ":");
+              if (false !== $pos) {
+                $left  = trim(substr($file[$index], 0, $pos));
+                $right = trim(substr($file[$index], $pos+1));
+
+                // only proceed when the name on the left is given
+                if (0 < strlen($left)) {
+                  // preset result
+                  if (null === $result) {
+                    $result = new Content();
+                  }
+
+                  $result->set($left, $right);
+                } else {
+                  Logging::log("ignored line because it does not contain a field name", Logging::DEBUG);
+                }
+              } else {
+                // check if this is the empty line
+                if (0 === strlen(trim($file[$index]))) {
+                  // break the loop
+                  break;
+                } else {
+                  // ignore the line
+                  Logging::log("ignored line because it does not contain a colon", Logging::DEBUG);
+                }
+              }
+
+              // increment index
+              $index++;
+            }
+
+            // try to set the content
+            if (!$skipcontent) {
+              // delete all lines that do not belong to the content
+              for ($counter = $index-1; $counter >= 0; $counter--) {
+                unset($file[$counter]);
+              }
+
+              // get content string
+              $content = trim(implode($file));
+              if (0 < strlen($content)) {
                 // preset result
                 if (null === $result) {
                   $result = new Content();
                 }
 
-                $result->set($left, $right);
-              } else {
-                Logging::log("ignored line because left or right are empty", Logging::DEBUG);
-              }
-            } else {
-              // check if this is the empty line
-              if (0 === strlen(trim($file[$index]))) {
-                // break the loop
-                break;
-              } else {
-                // ignore the line
-                Logging::log("ignored line because it does not contain a colon", Logging::DEBUG);
+                $result->set(CONTENT, $content);
               }
             }
 
-            // increment index
-            $index++;
-          }
+            if (null !== $result) {
+              // try to preset the update field to the file modification time
+              $result->preset(UPDATE, date(value(Main::class, TIMEFORMAT), filemtime($filename)));
 
-          // try to set the content
-          if (!$skipcontent) {
-            // delete all lines that do not belong to the content
-            for ($counter = $index-1; $counter >= 0; $counter--) {
-              unset($file[$counter]);
+              // only set the file name and URI when there is a result
+              $result->set(FILE, $filename);
+              $result->set(URI,  static::fileToUri($filename));
             }
-
-            // get content string
-            $content = trim(implode($file));
-            if (0 < strlen($content)) {
-              // preset result
-              if (null === $result) {
-                $result = new Content();
-              }
-
-              $result->set(CONTENT, $content);
-            }
-          }
-
-          // only set the file name and URI when there is a result
-          if (null !== $result) {
-            $result->set(FILE, $filename);
-            $result->set(URI,  static::fileToUri($filename));
           }
         }
       }

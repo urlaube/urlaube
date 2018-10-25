@@ -8,7 +8,7 @@
     to reduce the amount of duplicate code.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -22,7 +22,8 @@
 
     // ABSTRACT FUNCTIONS
 
-    protected static abstract function getResult($metadata);
+    protected static abstract function getResult($metadata, &$cachable);
+    protected static abstract function prepareMetadata($metadata);
 
     // INTERFACE FUNCTIONS
 
@@ -30,26 +31,46 @@
       $pagecount = 1;
       $result    = null;
 
+      // prepare metadata for sanitization
       $metadata = preparecontent($metadata, static::OPTIONAL, static::MANDATORY);
       if ($metadata instanceof Content) {
-        $result = preparecontent(static::getResult($metadata));
+        // sanitize metadata
+        $metadata = preparecontent(static::prepareMetadata($metadata), static::OPTIONAL, static::MANDATORY);
+        if ($metadata instanceof Content) {
+          // try to get data from cache
+          if (getcache(static::getUri($metadata), $data, static::class)) {
+            // check that the returned content matches
+            if (is_array($data) && isset($data[CONTENT]) && isset($data[PAGECOUNT])) {
+              $pagecount = $data[PAGECOUNT];
+              $result    = $data[CONTENT];
+            }
+          } else {
+            $result = preparecontent(static::getResult($metadata, $cachable));
+            if (null !== $result) {
+              // sort and paginate the content if it is an array
+              if (is_array($result)) {
+                // sort entries by DATE
+                $result = sortcontent($result, DATE,
+                                      function ($left, $right) {
+                                        // reverse-sort
+                                        return -datecmp($left, $right);
+                                      });
 
-        // sort and paginate the content if it is an array
-        if (is_array($result)) {
-          // sort entries by DATE
-          $result = sortcontent($result, DATE,
-                                function ($left, $right) {
-                                  // reverse-sort
-                                  return -datecmp($left, $right);
-                                });
+                // handle pagination if the PAGE metadate is supported
+                if ($metadata->isset(PAGE)) {
+                  // set the maximum page count
+                  $pagecount = ceil(count($result)/value(Main::class, PAGESIZE));
 
-          // handle pagination if the PAGE metadate is supported
-          if ($metadata->isset(PAGE)) {
-            // set the maximum page count
-            $pagecount = ceil(count($result)/value(Main::class, PAGESIZE));
+                  // execute the pagination
+                  $result = paginate($result, value($metadata, PAGE));
+                }
+              }
 
-            // execute the pagination
-            $result = paginate($result, value($metadata, PAGE));
+              if ($cachable) {
+                // try to set data in cache
+                setcache(static::getUri($metadata), [CONTENT => $result, PAGECOUNT => $pagecount], static::class);
+              }
+            }
           }
         }
       }
@@ -60,6 +81,7 @@
     public static function getUri($metadata){
       $result = null;
 
+      // prepare metadata for sanitization
       $metadata = preparecontent($metadata, static::OPTIONAL, static::MANDATORY);
       if ($metadata instanceof Content) {
         // handle pagination if the PAGE metadate is supported
@@ -67,25 +89,37 @@
           $page = value($metadata, PAGE);
           if (is_numeric($page)) {
             $metadata->set(PAGE, intval($page));
+          } else {
+            // set page to the default value if it is set
+            if (is_array(static::OPTIONAL) and array_key_exists(PAGE, static::OPTIONAL)) {
+              $metadata->set(PAGE, static::OPTIONAL[PAGE]);
+            } else {
+              // set page to a standard value
+              $metadata->set(PAGE, 1);
+            }
           }
         }
 
-        // get the base URI
-        $result = value(Main::class, ROOTURI);
+        // sanitize metadata
+        $metadata = preparecontent(static::prepareMetadata($metadata), static::OPTIONAL, static::MANDATORY);
+        if ($metadata instanceof Content) {
+          // get the base URI
+          $result = value(Main::class, ROOTURI);
 
-        // append the mandatory URI parts
-        if (is_array(static::MANDATORY)) {
-          foreach (static::MANDATORY as $value) {
-            $result .= strtolower(trim($value)).EQ.value($metadata, $value).US;
+          // append the mandatory URI parts
+          if (is_array(static::MANDATORY)) {
+            foreach (static::MANDATORY as $value) {
+              $result .= strtolower(trim($value)).EQ.value($metadata, $value).US;
+            }
           }
-        }
 
-        // append the optional URI parts
-        if (is_array(static::OPTIONAL)) {
-          foreach (static::OPTIONAL as $key => $value) {
-            // only append it if they value differs from the default
-            if ($value !== value($metadata, $key)) {
-              $result .= strtolower(trim($key)).EQ.value($metadata, $key).US;
+          // append the optional URI parts
+          if (is_array(static::OPTIONAL)) {
+            foreach (static::OPTIONAL as $key => $value) {
+              // only append it if they value differs from the default
+              if ($value !== value($metadata, $key)) {
+                $result .= strtolower(trim($key)).EQ.value($metadata, $key).US;
+              }
             }
           }
         }
@@ -95,15 +129,31 @@
     }
 
     public static function parseUri($uri) {
-      $result = preparecontent(parseuri($uri, static::REGEX), static::OPTIONAL, static::MANDATORY);
+      $result = null;
 
-      if ($result instanceof Content) {
+      // prepare metadata for sanitization
+      $metadata = preparecontent(parseuri($uri, static::REGEX), static::OPTIONAL, static::MANDATORY);
+      if ($metadata instanceof Content) {
         // handle pagination if the PAGE metadate is supported
-        if ($result->isset(PAGE)) {
-          $page = value($result, PAGE);
+        if ($metadata->isset(PAGE)) {
+          $page = value($metadata, PAGE);
           if (is_numeric($page)) {
-            $result->set(PAGE, intval($page));
+            $metadata->set(PAGE, intval($page));
+          } else {
+            // set page to the default value if it is set
+            if (is_array(static::OPTIONAL) and array_key_exists(PAGE, static::OPTIONAL)) {
+              $metadata->set(PAGE, static::OPTIONAL[PAGE]);
+            } else {
+              // set page to a standard value
+              $metadata->set(PAGE, 1);
+            }
           }
+        }
+
+        // sanitize metadata
+        $metadata = preparecontent(static::prepareMetadata($metadata), static::OPTIONAL, static::MANDATORY);
+        if ($metadata instanceof Content) {
+          $result = $metadata;
         }
       }
 

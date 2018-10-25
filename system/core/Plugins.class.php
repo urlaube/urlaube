@@ -8,7 +8,7 @@
     activates them depending on the currently required actions.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -90,11 +90,16 @@
 
     // search for all plugins that match the event
     // call the plugins' methods if there's a match
-    public static function run($event, $filter = false, $value = null, ...$arguments) {
+    public static function run($event, $filter = false, $value = null, $arguments = []) {
       if ($filter) {
         $result = $value;
       } else {
-        $result[] = [];
+        $result = null;
+      }
+
+      // make sure that $arguments is an array
+      if (!is_array($arguments)) {
+        $arguments = [$arguments];
       }
 
       foreach (static::$plugins as $plugins_item) {
@@ -111,12 +116,17 @@
               // if this is a filter call then reiterate the $result
               $result = _callMethod(value($plugins_item, static::ENTITY),
                                     value($plugins_item, static::FUNCTION),
-                                    array_merge([$result], ...$arguments));
+                                    array_merge([$result], $arguments));
             } else {
+              // preset the result when at least one plugin is called
+              if (null === $result) {
+                $result = [];
+              }
+
               // if this isn't a filter call then collect the return values
               $temp = _callMethod(value($plugins_item, static::ENTITY),
                                   value($plugins_item, static::FUNCTION),
-                                  array_merge([$value], ...$arguments));
+                                  $arguments);
 
               // check if an array has been returned that has to be flattened
               if (is_array($temp)) {

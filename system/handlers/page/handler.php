@@ -7,7 +7,7 @@
     handler provides access to a single page stored in a file.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -31,12 +31,12 @@
 
     // ABSTRACT FUNCTIONS
 
-    protected static function getResult($metadata) {
-      $name = value($metadata, static::NAME);
+    protected static function getResult($metadata, &$cachable) {
+      // this result may NOT be cached
+      $cachable = false;
 
-      $path = USER_CONTENT_PATH.
-              implode(DS, array_filter(explode(US, $name))).
-              FilePlugin::EXTENSION;
+      $name = value($metadata, static::NAME);
+      $path = USER_CONTENT_PATH.implode(DS, array_filter(explode(US, $name))).FilePlugin::EXTENSION;
 
       return FilePlugin::loadContent($path, false,
                                      function ($content) {
@@ -52,19 +52,30 @@
                                      });
     }
 
+    protected static function prepareMetadata($metadata) {
+      $metadata->set(static::NAME, trail(lead(value($metadata, static::NAME), US), US));
+
+      return $metadata;
+    }
+
     // INTERFACE FUNCTIONS
 
     // overwrite the default behaviour
     public static function getUri($metadata) {
       $result = null;
 
+      // prepare metadata for sanitization
       $metadata = preparecontent($metadata, static::OPTIONAL, static::MANDATORY);
       if ($metadata instanceof Content) {
-        // get the base URI
-        $result = value(Main::class, ROOTURI);
+        // sanitize metadata
+        $metadata = preparecontent(static::prepareMetadata($metadata), static::OPTIONAL, static::MANDATORY);
+        if ($metadata instanceof Content) {
+          // get the base URI
+          $result = value(Main::class, ROOTURI);
 
-        // append the mandatory URI parts
-        $result .= trail(value($metadata, static::NAME), US);
+          // append the mandatory URI parts
+          $result .= nolead(value($metadata, static::NAME), US);
+        }
       }
 
       return $result;

@@ -1,4 +1,5 @@
 # do not publish user content
+user/cache/*
 user/config/*
 user/content/*
 user/handlers/*
@@ -7,6 +8,7 @@ user/themes/*
 user/uploads/*
 
 # do not ignore the gitkeep files
+!user/cache/.gitkeep
 !user/config/.gitkeep
 !user/content/.gitkeep
 !user/handlers/.gitkeep

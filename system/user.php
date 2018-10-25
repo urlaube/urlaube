@@ -8,7 +8,7 @@
     change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a7
+    @version 0.1a8
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -298,24 +298,12 @@
 
   // checks if $string starts with $lead
   function islead($string, $lead) {
-    $result = false;
-
-    if (is_string($string) && is_string($lead)) {
-      $result = ($lead === substr($string, 0, strlen($lead)));
-    }
-
-    return $result;
+    return ($lead === substr($string, 0, strlen($lead)));
   }
 
   // checks if $string ends with $trail
   function istrail($string, $trail) {
-    $result = $string;
-
-    if (is_string($string) && is_string($trail)) {
-      $result = ($trail === substr($string, -strlen($trail)));
-    }
-
-    return $result;
+    return ($trail === substr($string, -strlen($trail)));
   }
 
   // checks if $string starts with $lead
@@ -323,10 +311,8 @@
   function lead($string, $lead) {
     $result = $string;
 
-    if (is_string($result) && is_string($lead)) {
-      if ($lead !== substr($result, 0, strlen($lead))) {
-        $result = $lead.$result;
-      }
+    if ($lead !== substr($result, 0, strlen($lead))) {
+      $result = $lead.$result;
     }
 
     return $result;
@@ -337,11 +323,9 @@
   function nolead($string, $lead) {
     $result = $string;
 
-    if (is_string($result) && is_string($lead)) {
-      // repeat until there's no match
-      while (0 === strpos($result, $lead)) {
-        $result = substr($result, strlen($lead));
-      }
+    // repeat until there's no match
+    while (0 === strpos($result, $lead)) {
+      $result = substr($result, strlen($lead));
     }
 
     return $result;
@@ -351,12 +335,10 @@
   // if it does then $trail is removed from $string
   function notrail($string, $trail) {
     $result = $string;
- 
-    if (is_string($result) && is_string($trail)) {
-      // repeat until there's no match
-      while ($trail === substr($result, -strlen($trail))) {
-        $result = substr($result, 0, -strlen($trail));
-      }
+
+    // repeat until there's no match
+    while ($trail === substr($result, -strlen($trail))) {
+      $result = substr($result, 0, -strlen($trail));
     }
 
     return $result;
@@ -393,10 +375,8 @@
   function trail($string, $trail) {
     $result = $string;
 
-    if (is_string($result) && is_string($trail)) {
-      if ($trail !== substr($result, -strlen($trail))) {
-        $result = $result.$trail;
-      }
+    if ($trail !== substr($result, -strlen($trail))) {
+      $result = $result.$trail;
     }
 
     return $result;
@@ -413,7 +393,7 @@
         ((0 === strcasecmp(HTTPS_PROTOCOL, value(Main::class, PROTOCOL))) &&
          (HTTPS_PORT !== value(Main::class, PORT)))) {
       $port = ":".value(Main::class, PORT);
-    } 
+    }
 
     return value(Main::class, PROTOCOL).
            value(Main::class, HOSTNAME).
@@ -543,12 +523,14 @@
   function path2uri($path) {
     $result = null;
 
+    // check if the path starts with the root path
+    $path = realpath($path);
     if (0 === strpos($path, ROOTPATH)) {
       // remove the root path
       $path = substr($path, strlen(ROOTPATH));
 
       // prepend the root URI
-      $result = value(Main::class, ROOTURI).strtr($path, DS, US);
+      $result = value(Main::class, ROOTURI).strtr(nolead($path, DS), DS, US);
     }
 
     return $result;
@@ -578,28 +560,17 @@
 
   // get the relative URI from a URI based on the root URI
   function relativeuri($uri = null) {
-    $result = $uri;
+    $result = null;
 
     // use a specific URI if $uri is null
-    if (null === $result) {
-      $result = value(Main::class, URI);
-    }
-
-    // check if the URI starts the protocol, hostname and optional port
-    $prefix = value(Main::class, PROTOCOL).value(Main::class, HOSTNAME);
-    if (((0 === strcasecmp(HTTP_PROTOCOL, value(Main::class, PROTOCOL))) &&
-         (HTTP_PORT !== value(Main::class, PORT))) ||
-        ((0 === strcasecmp(HTTPS_PROTOCOL, value(Main::class, PROTOCOL))) &&
-         (HTTPS_PORT !== value(Main::class, PORT)))) {
-      $prefix .= ":".value(Main::class, PORT);
-    }     
-    if (0 === stripos($result, $prefix)) {
-      $result = lead(substr($result, strlen($prefix)), US);
+    if (null === $uri) {
+      $uri = value(Main::class, URI);
     }
 
     // check if the URI starts with the root URI
-    if (0 === strpos($result, value(Main::class, ROOTURI))) {
-      $result = lead(substr($result, strlen(value(Main::class, ROOTURI))), US);
+    $uri = lead(parse_url($uri, PHP_URL_PATH), US);
+    if (0 === strpos($uri, value(Main::class, ROOTURI))) {
+      $result = lead(substr($uri, strlen(value(Main::class, ROOTURI))), US);
     }
 
     return $result;
@@ -607,7 +578,15 @@
 
   // convert the given URI to a path
   function uri2path($uri) {
-    return ROOTPATH.strtr(relativeuri($uri), US, DS);
+    $result = null;
+
+    // only handle the relative URI
+    $uri = relativeuri($uri);
+    if (null !== $uri) {
+      $result = ROOTPATH.strtr(nolead($uri, US), US, DS);
+    }
+
+    return ;
   }
 
   // ***** HELPER FUNCTIONS *****
@@ -627,6 +606,44 @@
         // if $left < $right, the result is < 0
         // if $left > $right, the result is > 0
         $result = $left-$right;
+      }
+    }
+
+    return $result;
+  }
+
+  // call cache plugins and get cached content
+  function getcache($key, &$value, $name = null) {
+    $result = false;
+
+    // only proceed when caching is active
+    if (value(Main::class, CACHE)) {
+      // store value temporarily first
+      $temp = null;
+
+      // try to store content through a caching plugin
+      $cached = Plugins::run(GET_CACHE, false, null, [$key, &$temp, $name]);
+
+      // check that the returned content matches
+      if (is_array($temp) && isset($temp[CONTENT]) && isset($temp[DATE])) {
+        // check that the kill date has not been reached
+        if ((0 >= $temp[DATE]) || (time() <= $temp[DATE])) {
+          // find out if at least on plugin was called and returned TRUE
+          if (is_array($cached)) {
+            foreach ($cached as $cached_item) {
+              // check if a caching plugin returned true
+              $result = (true === $cached_item);
+              if ($result) {
+                break;
+              }
+            }
+
+            // store result permanently
+            if ($result) {
+              $value = $temp[CONTENT];
+            }
+          }
+        }
       }
     }
 
@@ -676,6 +693,45 @@
 
       // success
       $result = true;
+    }
+
+    return $result;
+  }
+
+  // call cache plugins and set cached content
+  function setcache($key, $value, $name = null, $age = 0) {
+    $result = false;
+
+    // only proceed when caching is active
+    if (value(Main::class, CACHE)) {
+      // only proceed when the cached value cannot be retrieved anymore
+      if (!getcache($key, $temp, $name)) {
+        // check if the cache age shall be set to the configured cache age
+        if (0 === $age) {
+          $age = value(Main::class, CACHEAGE);
+        }
+
+        // get the date when the cached value shall be killed,
+        // negative values prevent the value from being killed
+        $killdate = -1;
+        if (0 < $age) {
+          $killdate = time()+$age;
+        }
+
+        // try to store content through a caching plugin
+        $cached = Plugins::run(SET_CACHE, false, null, [$key, [CONTENT => $value, DATE => $killdate], $name]);
+
+        // find out if at least on plugin was called and returned TRUE
+        if (is_array($cached)) {
+          foreach ($cached as $cached_item) {
+            // check if a caching plugin returned true
+            $result = (true === $cached_item);
+            if ($result) {
+              break;
+            }
+          }
+        }
+      }
     }
 
     return $result;

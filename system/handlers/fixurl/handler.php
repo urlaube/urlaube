@@ -7,7 +7,7 @@
     handler is meant to improve incorrectly written URLs.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -66,7 +66,7 @@
       $fixed = lead(implode(US, $fixed), US);
       if ((0 !== strcmp(value(Main::class, URI), urldecode($fixed))) &&
           (0 !== strcmp(value(Main::class, URI), urldecode(trail($fixed, US))))) {
-        relocate($fixed, false, true);
+        relocate($fixed.querystring(), false, true);
 
         // we handled this page
         $result = true;

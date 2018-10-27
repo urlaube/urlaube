@@ -8,7 +8,7 @@
     on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */

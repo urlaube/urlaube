@@ -7,7 +7,7 @@
     plugin simplifies the loading of file-based CMS entries.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -60,7 +60,7 @@
             // iterate through $file to read all attributes
             $index = 0;
             while ($index < count($file)) {
-              $pos = strpos($file[$index], ":");
+              $pos = strpos($file[$index], COL);
               if (false !== $pos) {
                 $left  = trim(substr($file[$index], 0, $pos));
                 $right = trim(substr($file[$index], $pos+1));

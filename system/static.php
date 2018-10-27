@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -22,19 +22,23 @@
   // define Urlaube information
   define("URLAUBE_NAME",        "Urlaube");
   define("URLAUBE_URL",         "https://urlau.be/");
-  define("URLAUBE_VERSION",     "0.1a8");
+  define("URLAUBE_VERSION",     "0.1a9");
   define("URLAUBE_CODENAME",    "Freizeit");
   define("URLAUBE_RELEASEDATE", "25.10.2018");
 
   // define shortcodes
-  define("BR",  "<br>");
-  define("DOT", ".");
-  define("DS",  DIRECTORY_SEPARATOR);
-  define("EOL", PHP_EOL);
-  define("EQ",  "=");
-  define("NL",  "\n");
-  define("SP",  " ");
-  define("US",  "/");
+  define("AMP", "&");                 // ampersand
+  define("BR",  "<br>");              // HTML line break
+  define("COL", ":");                 // colon
+  define("DOT", ".");                 // dot
+  define("DP",  ",");                 // decimal point
+  define("DS",  DIRECTORY_SEPARATOR); // directory separator
+  define("EOL", PHP_EOL);             // end of line
+  define("EQ",  "=");                 // equal sign
+  define("NL",  "\n");                // new line
+  define("QM",  "?");                 // question mark
+  define("SP",  " ");                 // space character
+  define("US",  "/");                 // URI separator
 
   // define HTTP methods
   define("CONNECT", "CONNECT");

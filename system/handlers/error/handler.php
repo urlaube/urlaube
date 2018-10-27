@@ -8,7 +8,7 @@
     found.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -59,7 +59,7 @@
       // set the metadata to be processed by plugins and the theme
       Main::set(METADATA, new Content());
 
-      $content = static::getContent(null, $pagecount);
+      $content = preparecontent(static::getContent(null, $pagecount));
       if (null !== $content) {
         // filter the content
         $content = preparecontent(Plugins::run(FILTER_CONTENT, true, $content));

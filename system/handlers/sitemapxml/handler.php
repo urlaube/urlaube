@@ -7,7 +7,7 @@
     sitemap.xml handler generates a sitemap file.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -88,16 +88,13 @@
         // set the metadata to be processed by plugins
         Main::set(METADATA, $metadata);
 
-        // check if the URI is correct
-        $fixed = static::getUri($metadata);
-        if (0 !== strcmp(value(Main::class, URI), $fixed)) {
-          relocate($fixed, false, true);
-
-          // we handled this page
-          $result = true;
-        } else {
-          $content = static::getContent($metadata, $pagecount);
-          if (null !== $content) {
+        $content = preparecontent(static::getContent($metadata, $pagecount));
+        if (null !== $content) {
+          // check if the URI is correct
+          $fixed = static::getUri($metadata);
+          if (0 !== strcmp(value(Main::class, URI), $fixed)) {
+            relocate($fixed.querystring(), false, true);
+          } else {
             // filter the content
             $content = preparecontent(Plugins::run(FILTER_CONTENT, true, $content));
 
@@ -112,7 +109,7 @@
                         "    <changefreq>daily</changefreq>".NL.
                         "    <priority>1.0</priority>".NL.
                         "  </url>".NL,
-                        absoluteurl("/")));
+                        absoluteurl(US)));
 
             if (null !== $content) {
               // make sure that we are handling an array
@@ -160,10 +157,10 @@
             }
 
             print("</urlset>");
-
-            // we handled this page
-            $result = true;
           }
+
+          // we handled this page
+          $result = true;
         }
       }
 

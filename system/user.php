@@ -8,7 +8,7 @@
     change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -392,7 +392,7 @@
          (HTTP_PORT !== value(Main::class, PORT))) ||
         ((0 === strcasecmp(HTTPS_PROTOCOL, value(Main::class, PROTOCOL))) &&
          (HTTPS_PORT !== value(Main::class, PORT)))) {
-      $port = ":".value(Main::class, PORT);
+      $port = COL.value(Main::class, PORT);
     }
 
     return value(Main::class, PROTOCOL).
@@ -552,6 +552,30 @@
 
           $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
         }
+      }
+    }
+
+    return $result;
+  }
+
+  // get the URL-encoded query string
+  function querystring($parameters = null) {
+    $result = null;
+
+    // use the GET parameters if no value is given
+    if (null === $parameters) {
+      $parameters = $_GET;
+    }
+
+    if (is_array($parameters)) {
+      $parts = [];
+      foreach ($parameters as $key => $value) {
+        $parts[] = urlencode($key).EQ.urlencode($value);
+      }
+
+      // set result
+      if (0 < count($parts)) {
+        $result = QM.implode(AMP, $parts);
       }
     }
 

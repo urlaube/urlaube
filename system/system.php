@@ -8,7 +8,7 @@
     change without prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -99,7 +99,7 @@
       if (isset($_SERVER["HTTP_HOST"])) {
         // take provided "Host:" header next
         // remove port number if it's attached to the hostname
-        $result = explode(":", $_SERVER["HTTP_HOST"])[0];
+        $result = explode(COL, $_SERVER["HTTP_HOST"])[0];
       } else {
         if (isset($_SERVER["SERVER_ADDR"])) {
           // or the IP address if the "Host:" header is not present
@@ -159,7 +159,7 @@
 
   // return the default root URI
   function _getDefaultRootUri() {
-    $result = "/";
+    $result = US;
 
     if (isset($_SERVER["SCRIPT_NAME"])) {
       $result = lead(trail(dirname($_SERVER["SCRIPT_NAME"]), US), US);
@@ -170,10 +170,10 @@
 
   // return the URI
   function _getDefaultUri() {
-    $result = "/";
+    $result = US;
 
     if (isset($_SERVER["REQUEST_URI"])) {
-      $result = lead(urldecode($_SERVER["REQUEST_URI"]), US);
+      $result = lead(urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)), US);
     }
 
     return $result;

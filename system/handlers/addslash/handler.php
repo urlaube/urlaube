@@ -8,7 +8,7 @@
     handlers.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -46,7 +46,7 @@
       // take the given URI and add a trailing slash
       $fixed = trail(value(Main::class, URI), US);
       if (0 !== strcmp(value(Main::class, URI), $fixed)) {
-        relocate($fixed, false, true);
+        relocate($fixed.querystring(), false, true);
 
         // we handled this page
         $result = true;

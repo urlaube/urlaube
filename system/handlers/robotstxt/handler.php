@@ -8,7 +8,7 @@
     provided files.
 
     @package urlaube\urlaube
-    @version 0.1a8
+    @version 0.1a9
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -55,10 +55,7 @@
         // check if the URI is correct
         $fixed = static::getUri($metadata);
         if (0 !== strcmp(value(Main::class, URI), $fixed)) {
-          relocate($fixed, false, true);
-
-          // we handled this page
-          $result = true;
+          relocate($fixed.querystring(), false, true);
         } else {
           // set the content type
           header("Content-Type: text/plain");
@@ -69,10 +66,10 @@
                       NL.
                       "Sitemap: %s",
                       absoluteurl(SitemapXmlHandler::getUri(new Content()))));
-
-          // we handled this page
-          $result = true;
         }
+
+        // we handled this page
+        $result = true;
       }
 
       return $result;

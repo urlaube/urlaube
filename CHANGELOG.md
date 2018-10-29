@@ -8,6 +8,7 @@
 * handlers shall only redirect to the corrected URI when they actually return content to not disrupt later handlers
 * the handled URI doesn't contain the query string anymore
 * modified the handlers so that redirect which correct the URI still retain the query string
+* modified the archive handler so that only content with a set DATE field is displayed
 
 ## 0.1a8 (24.10.2018)
 ### Features

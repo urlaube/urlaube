@@ -55,9 +55,15 @@
                                               // check that $content is not a relocation
                                               if (null === value($content, RELOCATE)) {
                                                 // check that $content has a DATE field
-                                                if (((null === $year) && (null === $month) && (null === $day)) ||
-                                                    hasdate($content, $year, $month, $day)) {
-                                                  $result = $content;
+                                                if (null !== value($content, DATE)) {
+                                                  // the date either has to match the given date or
+                                                  // no date must be given
+                                                  if (((null === $year) &&
+                                                       (null === $month) &&
+                                                       (null === $day)) ||
+                                                      hasdate($content, $year, $month, $day)) {
+                                                    $result = $content;
+                                                  }
                                                 }
                                               }
                                             }

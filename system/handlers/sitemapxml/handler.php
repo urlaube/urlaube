@@ -7,7 +7,7 @@
     sitemap.xml handler generates a sitemap file.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -37,24 +37,7 @@
           $result    = $data[CONTENT];
         }
       } else {
-        $result = FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
-                                             function ($content) {
-                                               $result = null;
-
-                                               // check that $content is not hidden
-                                               if (!istrue(value($content, HIDDEN))) {
-                                                 // check that $content is not hidden from sitemap
-                                                 if (!istrue(value($content, HIDDENFROMSITEMAP))) {
-                                                   // check that $content is not a relocation
-                                                   if (null === value($content, RELOCATE)) {
-                                                     $result = $content;
-                                                   }
-                                                 }
-                                               }
-
-                                               return $result;
-                                             },
-                                             true);
+        $result = callcontent(null, true, true, null);
 
         // try to set data in cache
         setcache(null, [CONTENT => $result, PAGECOUNT => $pagecount], static::class);
@@ -95,9 +78,6 @@
           if (0 !== strcmp(value(Main::class, URI), $fixed)) {
             relocate($fixed.querystring(), false, true);
           } else {
-            // filter the content
-            $content = preparecontent(Plugins::run(FILTER_CONTENT, true, $content));
-
             // set the content type
             header("Content-Type: application/xml");
 
@@ -138,11 +118,6 @@
                       $lastmod = null;
                     }
                   }
-                }
-
-                // use the file modification time as a last resort
-                if (null === $lastmod) {
-                  $lastmod = filemtime(value($content_item, FILE));
                 }
 
                 print(fhtml("  <url>".NL.

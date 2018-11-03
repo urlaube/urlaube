@@ -8,7 +8,7 @@
     system.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -28,9 +28,6 @@
 
   // define the default root path
   define("ROOTPATH", __DIR__.DIRECTORY_SEPARATOR);
-
-  // define the start time
-  define("STARTTIME", microtime(true));
 
   // require the init.php file
   require_once(SYSTEM_PATH."init.php");

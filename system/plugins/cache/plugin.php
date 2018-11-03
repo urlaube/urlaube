@@ -7,7 +7,7 @@
     provides a file-based cache that relies on PHP (de)serialization.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a8
   */
@@ -18,6 +18,20 @@
   if (!defined("URLAUBE")) { die(""); }
 
   class CachePlugin extends BaseSingleton implements Plugin {
+
+    // HELPER FUNCTIONS
+
+    public static function getPath() {
+      // derive user paths
+      $path = realpath(USER_PATH);
+      if ((false !== $path) && is_dir($path)) {
+        $path = trail($path, DS);
+      } else {
+        $path = ROOTPATH."user".DS;
+      }
+
+      return $path."cache".DS;
+    }
 
     // RUNTIME FUNCTIONS
 
@@ -34,9 +48,9 @@
       }
 
       // if the file exists
-      if (is_file(USER_CACHE_PATH.$name.$key)) {
+      if (is_file(static::getPath().$name.$key)) {
         // try to read the content from file
-        $content = file_get_contents(USER_CACHE_PATH.$name.$key);
+        $content = file_get_contents(static::getPath().$name.$key);
         if (false !== $content) {
           // try to unserialize the content
           $content = unserialize($content);
@@ -63,7 +77,7 @@
       }
 
       // try to write the serialized value to file
-      return file_put_contents(USER_CACHE_PATH.$name.$key, serialize($value), LOCK_EX);
+      return file_put_contents(static::getPath().$name.$key, serialize($value), LOCK_EX);
     }
 
   }

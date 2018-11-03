@@ -7,7 +7,7 @@
     plugin simplifies the loading of file-based CMS entries.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -22,15 +22,16 @@
     // CONSTANTS
 
     const EXTENSION = ".md";
+    const FILE      = "file";
 
     // HELPER FUNCTIONS
 
     protected static function fileToUri($filename) {
       $result = null;
 
-      if (0 === strpos($filename, USER_CONTENT_PATH)) {
+      if (0 === strpos($filename, static::getPath())) {
         // get relevant part of the filename
-        $filename = substr($filename, strlen(USER_CONTENT_PATH));
+        $filename = substr($filename, strlen(static::getPath()));
 
         // remove file extension
         $filename = notrail($filename, static::EXTENSION);
@@ -42,83 +43,83 @@
       return $result;
     }
 
+    public static function getPath() {
+      // derive user paths
+      $path = realpath(USER_PATH);
+      if ((false !== $path) && is_dir($path)) {
+        $path = trail($path, DS);
+      } else {
+        $path = ROOTPATH."user".DS;
+      }
+
+      return $path."content".DS;
+    }
+
     // RUNTIME FUNCTIONS
 
-    public static function loadContent($filename, $skipcontent = false, $filter = null) {
+    protected static function loadContent($filename, $skipcontent = false, $filter = null) {
       $result = null;
 
-      // fix $filename
-      $filename = realpath($filename);
+      // read the file as an array
+      $file = file($filename);
+      if (false !== $file) {
+        // iterate through $file to read all attributes
+        $index = 0;
+        while ($index < count($file)) {
+          $pos = strpos($file[$index], COL);
+          if (false !== $pos) {
+            $left  = trim(substr($file[$index], 0, $pos));
+            $right = trim(substr($file[$index], $pos+1));
 
-      // check if the file is located in the user content path
-      if (0 === strpos($filename, USER_CONTENT_PATH)) {
-        // check if the file exists
-        if (is_file($filename) && istrail($filename, static::EXTENSION)) {
-          // read the file as an array
-          $file = file($filename);
-          if (false !== $file) {
-            // iterate through $file to read all attributes
-            $index = 0;
-            while ($index < count($file)) {
-              $pos = strpos($file[$index], COL);
-              if (false !== $pos) {
-                $left  = trim(substr($file[$index], 0, $pos));
-                $right = trim(substr($file[$index], $pos+1));
-
-                // only proceed when the name on the left is given
-                if (0 < strlen($left)) {
-                  // preset result
-                  if (null === $result) {
-                    $result = new Content();
-                  }
-
-                  $result->set($left, $right);
-                } else {
-                  Logging::log("ignored line because it does not contain a field name", Logging::DEBUG);
-                }
-              } else {
-                // check if this is the empty line
-                if (0 === strlen(trim($file[$index]))) {
-                  // break the loop
-                  break;
-                } else {
-                  // ignore the line
-                  Logging::log("ignored line because it does not contain a colon", Logging::DEBUG);
-                }
+            // only proceed when the name on the left is given
+            if (0 < strlen($left)) {
+              // preset result
+              if (null === $result) {
+                $result = new Content();
               }
 
-              // increment index
-              $index++;
+              $result->set($left, $right);
+            } else {
+              Logging::log("ignored line because it does not contain a field name", Logging::DEBUG);
             }
-
-            // try to set the content
-            if (!$skipcontent) {
-              // delete all lines that do not belong to the content
-              for ($counter = $index-1; $counter >= 0; $counter--) {
-                unset($file[$counter]);
-              }
-
-              // get content string
-              $content = trim(implode($file));
-              if (0 < strlen($content)) {
-                // preset result
-                if (null === $result) {
-                  $result = new Content();
-                }
-
-                $result->set(CONTENT, $content);
-              }
-            }
-
-            if (null !== $result) {
-              // try to preset the update field to the file modification time
-              $result->preset(UPDATE, date(value(Main::class, TIMEFORMAT), filemtime($filename)));
-
-              // only set the file name and URI when there is a result
-              $result->set(FILE, $filename);
-              $result->set(URI,  static::fileToUri($filename));
+          } else {
+            // check if this is the empty line
+            if (0 === strlen(trim($file[$index]))) {
+              // break the loop
+              break;
+            } else {
+              // ignore the line
+              Logging::log("ignored line because it does not contain a colon", Logging::DEBUG);
             }
           }
+
+          // increment index
+          $index++;
+        }
+
+        // try to set the content
+        if (!$skipcontent) {
+          // delete all lines that do not belong to the content
+          for ($counter = $index-1; $counter >= 0; $counter--) {
+            unset($file[$counter]);
+          }
+
+          // preset result
+          if (null === $result) {
+            $result = new Content();
+          }
+
+          // set content string
+          $result->set(CONTENT, trim(implode($file)));
+        }
+
+        if (null !== $result) {
+          // try to preset the update field to the file modification time
+          $result->preset(UPDATE, date(value(Main::class, TIMEFORMAT), filemtime($filename)));
+
+          // only set the file name and URI when there is a result
+          $result->set(static::FILE, $filename);
+          $result->set(URI,          static::fileToUri($filename));
         }
       }
 
@@ -133,18 +134,22 @@
       return $result;
     }
 
-    public static function loadContentDir($dirname, $skipcontent = false, $filter = null, $recursive = false) {
+    protected static function loadContentDir($dirname, $recursive = false, $skipcontent = false, $filter = null) {
       $result = null;
 
-      if (is_dir($dirname)) {
-        $dirname = trail($dirname, DS);
+      // fix $dirname
+      $dirname = trail($dirname, DS);
 
-        // prepare $files array
-        $files = scandir($dirname, SCANDIR_SORT_ASCENDING);
-        if (false !== $files) {
-          // iterate through the file list
-          foreach ($files as $files_item) {
-            if (is_file($dirname.$files_item)) {
+      // prepare $files array
+      $files = scandir($dirname, SCANDIR_SORT_ASCENDING);
+      if (false !== $files) {
+        // iterate through the file list
+        foreach ($files as $files_item) {
+          // ignore current and previous dir entry
+          if (("." !== $files_item) && (".." !== $files_item)) {
+            // what to do if we encounter a file that has the correct extension
+            if (is_file($dirname.$files_item) && istrail($files_item, static::EXTENSION)) {
+              // load the content from file
               $temp = static::loadContent($dirname.$files_item, $skipcontent, $filter);
               if (null !== $temp) {
                 // preset result
@@ -155,18 +160,17 @@
                 $result[] = $temp;
               }
             } else {
-              // read files recursively
-              if (("." !== $files_item) && (".." !== $files_item)) {
-                if (is_dir($dirname.$files_item) && $recursive) {
-                  $temp = static::loadContentDir($dirname.$files_item, $skipcontent, $filter, $recursive);
-                  if (is_array($temp)) {
-                    // preset result
-                    if (null === $result) {
-                      $result = [];
-                    }
-
-                    $result = array_merge($result, $temp);
+              // what to do if we encounter a folder and want to read recursively
+              if (is_dir($dirname.$files_item) && $recursive) {
+                // load the content from folder
+                $temp = static::loadContentDir($dirname.$files_item, $recursive, $skipcontent, $filter);
+                if (is_array($temp)) {
+                  // preset result
+                  if (null === $result) {
+                    $result = [];
                   }
+
+                  $result = array_merge($result, $temp);
                 }
               }
             }
@@ -177,4 +181,32 @@
       return $result;
     }
 
+    public static function run($name = null, $recursive = false, $skipcontent = false, $filter = null) {
+      $result = null;
+
+      // fix $name
+      $name = strtr($name, US, DS);
+
+      // try to derive a potential dirname and filename from the given name
+      $dirname  = trail(realpath(static::getPath().nolead($name, DS)), DS);
+      $filename = realpath(static::getPath().notrail(nolead($name, DS), DS).FilePlugin::EXTENSION);
+
+      // check if the filename is located in the user content path, really ends with the extension and represents a file
+      if ((0 === strpos($filename, static::getPath())) && istrail($filename, static::EXTENSION) && is_file($filename)) {
+        // load a single file
+        $result = static::loadContent($filename, $skipcontent, $filter);
+      } else {
+        // check if the dirname is located in the user content path and represents a folder
+        if ((0 === strpos($dirname, static::getPath())) && is_dir($dirname)) {
+          // load a whole directory
+          $result = static::loadContentDir($dirname, $recursive, $skipcontent, $filter);
+        }
+      }
+
+      return $result;
+    }
+
   }
+
+  // register plugin
+  Plugins::register(FilePlugin::class, "run", ON_CONTENT);

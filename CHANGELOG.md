@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1a10 (03.11.2018)
+### Features
+* added support for system themes
+* changed order of module loading so that user modules have a higher priority than system modules
+* introduced `ON_CONTENT` core content event to make plugins independent from the content source
+* introduced `callcontent()` function that calls and filters the content plugins
+* handlers don't have to call `FILTER_CONTENT` plugins anymore when they use `callcontent()`
+* enhanced `FilePlugin` to react on the `ON_CONTENT` core content event
+* renamed `widgets()` function to `callwidgets()`
+* enhanced `RelocatePlugin` so that handlers don't have to know about the `RELOCATE*` fields
+* introduced `HidePlugin` so that handlers don't have to know about the `HIDDEN*` fields
+* use `$_SERVER["REQUEST_TIME_FLOAT"]` as the start time in `_logResourceUsage()`
+* removed `USER_CACHE_PATH` and `USER_CONTENT_PATH` as the core is storage-agnostic now
+
 ## 0.1a9 (27.10.2018)
 ### Features
 * added `querystring()` function to get a URL-encoded query string

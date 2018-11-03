@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -22,9 +22,9 @@
   // define Urlaube information
   define("URLAUBE_NAME",        "Urlaube");
   define("URLAUBE_URL",         "https://urlau.be/");
-  define("URLAUBE_VERSION",     "0.1a9");
+  define("URLAUBE_VERSION",     "0.1a10");
   define("URLAUBE_CODENAME",    "Freizeit");
-  define("URLAUBE_RELEASEDATE", "25.10.2018");
+  define("URLAUBE_RELEASEDATE", "03.11.2018");
 
   // define shortcodes
   define("AMP", "&");                 // ampersand
@@ -104,10 +104,11 @@
   define("FILTER_PAGINATE", "filter_paginate"); // is called before pagination is applied in paginate()
   define("FILTER_PLUGINS",  "filter_plugins");  // is called after the plugins have been registered
   define("FILTER_THEMES",   "filter_themes");   // is called after the themes have been registered
-  define("FILTER_WIDGETS",  "filter_widgets");  // is called after ON_WIDGETS plugins have been called in widgets()
+  define("FILTER_WIDGETS",  "filter_widgets");  // is called after ON_WIDGETS plugins have been called in callwidgets()
 
   // define core content events
   // ON_* plugins shall return content
+  define("ON_CONTENT", "on_content"); // try to read content from content plugin
   define("ON_WIDGETS", "on_widgets"); // try to read content from widgets plugins
 
   // define cache events

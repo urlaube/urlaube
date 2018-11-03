@@ -7,7 +7,7 @@
     handler provides access to a single page stored in a file.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -36,20 +36,8 @@
       $cachable = false;
 
       $name = value($metadata, static::NAME);
-      $path = USER_CONTENT_PATH.implode(DS, array_filter(explode(US, $name))).FilePlugin::EXTENSION;
 
-      return FilePlugin::loadContent($path, false,
-                                     function ($content) {
-                                       $result = null;
-
-                                       // check that $content is not hidden
-                                       if (!istrue(value($content, HIDDEN))) {
-                                         // do not filter out relocations as these have to be executed at this stage
-                                         $result = $content;
-                                       }
-
-                                       return $result;
-                                     });
+      return callcontent($name, false, false, null);
     }
 
     protected static function prepareMetadata($metadata) {

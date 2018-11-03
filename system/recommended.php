@@ -8,7 +8,7 @@
     on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -21,27 +21,15 @@
   // STATIC CONSTANTS
 
   // recommended content fields
-  define("AUTHOR",             "author");             // author of an entry
-  define("CATEGORY",           "category");           // list of categories of an entry
-  // CONTENT                                          // text content of an entry
-  define("DATE",               "date");               // publication date of an entry
-  define("DESCRIPTION",        "description");        // description of an entry
-  define("FILE",               "file");               // filename of an entry
-  define("HIDDEN",             "hidden");             // hidden status of an entry
-  define("HIDDENFROMARCHIVE",  "hiddenfromarchive");  // hidden from archive status of an entry
-  define("HIDDENFROMAUTHOR",   "hiddenfromauthor");   // hidden from author status of an entry
-  define("HIDDENFROMCATEGORY", "hiddenfromcategory"); // hidden from category status of an entry
-  define("HIDDENFROMSEARCH",   "hiddenfromsearch");   // hidden from search status of an entry
-  define("HIDDENFROMSITEMAP",  "hiddenfromsitemap");  // hidden from sitemap status of an entry
-  define("NOMARKDOWN",         "nomarkdown");         // disable markdown
-  define("NOWIDGETS",          "nowidgets");          // disable widgets
-  define("PREVIEW",            "preview");            // preview image of an entry
-  define("RELOCATE",           "relocate");           // relocate URL
-  define("RELOCATETYPE",       "relocatetype");       // type of the relocate
-  define("STICKY",             "sticky");             // sticky status of an entry
-  define("TITLE",              "title");              // title of an entry
-  define("UPDATE",             "update");             // date of the last update of an entry
-  // URI                                              // uri of an entry
+  define("AUTHOR",      "author");      // author of an entry
+  define("CATEGORY",    "category");    // list of categories of an entry
+  // CONTENT                            // text content of an entry
+  define("DATE",        "date");        // publication date of an entry
+  define("DESCRIPTION", "description"); // description of an entry
+  define("PREVIEW",     "preview");     // preview image of an entry
+  define("TITLE",       "title");       // title of an entry
+  define("UPDATE",      "update");      // date of the last update of an entry
+  // URI                                // uri of an entry
 
   // recommended theme configuration
   // AUTHOR                           // author of the website

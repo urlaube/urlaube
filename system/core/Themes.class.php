@@ -8,7 +8,7 @@
     selected theme when requested by the active handler.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -57,8 +57,11 @@
     }
 
     public static function load() {
-      // load the user themes
+      // load the user themes to give them a higher priority
       _loadExtensions(USER_THEMES_PATH, static::FILENAME);
+
+      // load the system themes
+      _loadExtensions(SYSTEM_THEMES_PATH, static::FILENAME);
     }
 
     public static function register($entity, $function, $name) {

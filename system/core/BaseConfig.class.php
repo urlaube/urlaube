@@ -8,7 +8,7 @@
     a generalized interface that is consistent throughout all of these classes.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */

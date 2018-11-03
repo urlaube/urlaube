@@ -7,7 +7,7 @@
     handler lists all pages that contain a certain date.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -44,34 +44,22 @@
       $month = value($metadata, static::MONTH);
       $year  = value($metadata, static::YEAR);
 
-      return FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
-                                        function ($content) use ($year, $month, $day) {
-                                          $result = null;
+      return callcontent(null, true, false,
+                         function ($content) use ($year, $month, $day) {
+                           $result = null;
 
-                                          // check that $content is not hidden
-                                          if (!istrue(value($content, HIDDEN))) {
-                                            // check that $content is not hidden from archive
-                                            if (!istrue(value($content, HIDDENFROMARCHIVE))) {
-                                              // check that $content is not a relocation
-                                              if (null === value($content, RELOCATE)) {
-                                                // check that $content has a DATE field
-                                                if (null !== value($content, DATE)) {
-                                                  // the date either has to match the given date or
-                                                  // no date must be given
-                                                  if (((null === $year) &&
-                                                       (null === $month) &&
-                                                       (null === $day)) ||
-                                                      hasdate($content, $year, $month, $day)) {
-                                                    $result = $content;
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          }
+                           // check that $content has a DATE field
+                           if (null !== value($content, DATE)) {
+                             // the date either has to match the given date or
+                             // no date must be given
+                             if (((null === $year) && (null === $month) && (null === $day)) ||
+                                 hasdate($content, $year, $month, $day)) {
+                               $result = $content;
+                             }
+                           }
 
-                                          return $result;
-                                        },
-                                        true);
+                           return $result;
+                         });
     }
 
     protected static function prepareMetadata($metadata) {

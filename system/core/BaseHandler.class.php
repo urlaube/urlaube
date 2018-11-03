@@ -8,7 +8,7 @@
     to reduce the amount of duplicate code.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -177,9 +177,6 @@
           if (0 !== strcmp(value(Main::class, URI), $fixed)) {
             relocate($fixed.querystring(), false, true);
           } else {
-            // filter the content
-            $content = preparecontent(Plugins::run(FILTER_CONTENT, true, $content));
-
             // set the content to be processed by plugins and the theme
             Main::set(CONTENT, $content);
 

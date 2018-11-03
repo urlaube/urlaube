@@ -141,17 +141,18 @@ The following theme trigger events SHOULD be used for now:
 
 The following core filter events are available for now:
 
-* `FILTER_CONTENT` SHALL be called by handlers before they call the theme
+* `FILTER_CONTENT` is called after the `ON_CONTENT` plugins have been called in `callcontent()`
 * `FILTER_HANDLERS` is called after the handlers have been registered
 * `FILTER_OUTPUT` is called before `Main::run()` exits
 * `FILTER_PAGINATE` is called before pagination is applied in `paginate()`
 * `FILTER_PLUGINS` is called after the plugins have been registered
 * `FILTER_THEMES` is called after the themes have been registered
-* `FILTER_WIDGETS` is called after the `ON_WIDGETS` plugins have been called in `widgets()`
+* `FILTER_WIDGETS` is called after the `ON_WIDGETS` plugins have been called in `callwidgets()`
 
 The following core content events are available for now:
 
-* `ON_WIDGETS` is called in `widgets()`
+* `ON_CONTENT` is called in `callcontent()`
+* `ON_WIDGETS` is called in `callwidgets()`
 
 The following cache events are available for now:
 
@@ -169,6 +170,7 @@ At the moment the Urlaube CMS consists of the following system plugins that are 
 
 * `cache` is used to provide a file-based caching feature that uses serialize/unserialize
 * `file` is used by system handlers to load content files
+* `hide` is used to provide a feature to hide content from certain pages
 * `markdown` is used to provide markdown support which can be disables through the `nomarkdown` field
 * `relocate` is used to provide a relocation feature through the `Relocate` and `RelocateType` fields
 * `sticky` is used to provide a stickiness feature through the `Sticky` field

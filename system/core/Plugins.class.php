@@ -8,7 +8,7 @@
     activates them depending on the currently required actions.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -57,12 +57,11 @@
     }
 
     public static function load() {
+      // load the user plugins to give them a higher priority
+      _loadExtensions(USER_PLUGINS_PATH, static::FILENAME);
+
       // load the system plugins
       _loadExtensions(SYSTEM_PLUGINS_PATH, static::FILENAME);
-
-      // load the user plugins
-      // user plugins must come last to react on system plugins
-      _loadExtensions(USER_PLUGINS_PATH, static::FILENAME);
     }
 
     public static function register($entity, $function, $event) {

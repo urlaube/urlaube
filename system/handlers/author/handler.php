@@ -7,7 +7,7 @@
     handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */
@@ -36,27 +36,17 @@
 
       $author = value($metadata, AUTHOR);
 
-      return FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
-                                        function ($content) use ($author) {
-                                          $result = null;
+      return callcontent(null, true, false,
+                         function ($content) use ($author) {
+                           $result = null;
 
-                                          // check that $content is not hidden
-                                          if (!istrue(value($content, HIDDEN))) {
-                                            // check that $content is not hidden from author
-                                            if (!istrue(value($content, HIDDENFROMAUTHOR))) {
-                                              // check that $content is not a relocation
-                                              if (null === value($content, RELOCATE)) {
-                                                // check that $content has the $author
-                                                if (hasauthor($content, $author)) {
-                                                  $result = $content;
-                                                }
-                                              }
-                                            }
-                                          }
+                           // check that $content has the $author
+                           if (hasauthor($content, $author)) {
+                             $result = $content;
+                           }
 
-                                          return $result;
-                                        },
-                                        true);
+                           return $result;
+                         });
     }
 
     protected static function prepareMetadata($metadata) {

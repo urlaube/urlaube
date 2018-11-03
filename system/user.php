@@ -8,7 +8,7 @@
     change with prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -615,6 +615,28 @@
 
   // ***** HELPER FUNCTIONS *****
 
+  // call the content plugins and filter them afterwards
+  function callcontent($name = null, $recursive = false, $skipcontent = false, $filter = null) {
+    // call the content plugins
+    $result = preparecontent(Plugins::run(ON_CONTENT, false, null, [$name, $recursive, $skipcontent, $filter]));
+
+    // filter the content
+    $result = preparecontent(Plugins::run(FILTER_CONTENT, true, $result));
+
+    return $result;
+  }
+
+  // call the widget plugins and filter them afterwards
+  function callwidgets() {
+    // call the widget plugins
+    $result = preparecontent(Plugins::run(ON_WIDGETS));
+
+    // filter the widgets
+    $result = preparecontent(Plugins::run(FILTER_WIDGETS, true, $result));
+
+    return $result;
+  }
+
   // compare a date string and return a value like strcmp
   function datecmp($left, $right) {
     $result = 0;
@@ -757,17 +779,6 @@
         }
       }
     }
-
-    return $result;
-  }
-
-  // call the widgets and filter them afterwards
-  function widgets() {
-    // call the widget plugins
-    $result = preparecontent(Plugins::run(ON_WIDGETS));
-
-    // filter the widgets
-    $result = preparecontent(Plugins::run(FILTER_WIDGETS, true, $result));
 
     return $result;
   }

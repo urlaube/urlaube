@@ -8,7 +8,7 @@
     activates them depending on the requested URI.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -60,11 +60,11 @@
     }
 
     public static function load() {
+      // load the user handlers to give them a higher priority
+      _loadExtensions(USER_HANDLERS_PATH, static::FILENAME);
+
       // load the system handlers
       _loadExtensions(SYSTEM_HANDLERS_PATH, static::FILENAME);
-
-      // load the user handlers
-      _loadExtensions(USER_HANDLERS_PATH, static::FILENAME);
     }
 
     public static function register($entity, $function, $regex, $methods = [GET], $priority = 0) {

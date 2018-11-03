@@ -7,7 +7,7 @@
     handles the actual workflow of the urlau.be CMS.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -102,24 +102,21 @@
 
           // start buffering the generated output
           static::$oblevel = _startBuffer();
-
-          // prepare the execution
-          _setDebugMode(value(static::class, DEBUGMODE));
-          _useMultiByte(value(static::class, CHARSET));
-          clearstatcache(true);
-          date_default_timezone_set(value(static::class, TIMEZONE));
-          header("Content-Type: ".value(static::class, CONTENTTYPE));
-          http_response_code(value(static::class, RESPONSECODE));
-
-          // transfer the handling to the Handlers class
-          Handlers::run();
-
-          // stop buffering and gather the generated output
           if (null !== static::$oblevel) {
-            $result = _stopBuffer(static::$oblevel);
-            if (null !== $result) {
-              // filter the output
-              $result = Plugins::run(FILTER_OUTPUT, true, $result);
+            try {
+              // prepare the execution
+              _setDebugMode(value(static::class, DEBUGMODE));
+              _useMultiByte(value(static::class, CHARSET));
+              clearstatcache(true);
+              date_default_timezone_set(value(static::class, TIMEZONE));
+              header("Content-Type: ".value(static::class, CONTENTTYPE));
+              http_response_code(value(static::class, RESPONSECODE));
+
+              // transfer the handling to the Handlers class
+              Handlers::run();
+            } finally {
+              // stop buffering, gather the generated output and filter it
+              $result = Plugins::run(FILTER_OUTPUT, true, _stopBuffer(static::$oblevel));
             }
           }
 

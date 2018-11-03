@@ -7,7 +7,7 @@
     converts markdown-encoded content to HTML-encoded content.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -19,6 +19,10 @@
 
   class MarkdownPlugin extends BaseSingleton implements Plugin {
 
+    // CONSTANTS
+
+    const NOMARKDOWN = "nomarkdown";
+
     // RUNTIME FUNCTIONS
 
     public static function run($content) {
@@ -28,7 +32,7 @@
       if ($content instanceof Content) {
         if ($content->isset(CONTENT)) {
           // do not use markdown if markdown field is set to false
-          if (!istrue(value($content, NOMARKDOWN))) {
+          if (!istrue(value($content, static::NOMARKDOWN))) {
             $content->set(CONTENT, $parsedown->text(value($content, CONTENT)));
           }
         }
@@ -39,7 +43,7 @@
             if ($content_item instanceof Content) {
               if ($content_item->isset(CONTENT)) {
                 // do not use markdown if markdown field is set to false
-                if (!istrue(value($content_item, NOMARKDOWN))) {
+                if (!istrue(value($content_item, static::NOMARKDOWN))) {
                   $content_item->set(CONTENT, $parsedown->text(value($content_item, CONTENT)));
                 }
               }

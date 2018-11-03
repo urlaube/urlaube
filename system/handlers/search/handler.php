@@ -7,7 +7,7 @@
     handler lists all pages that contain a certain search keyword.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -40,32 +40,22 @@
 
       $search = explode(DOT, value($metadata, static::SEARCH));
 
-      return FilePlugin::loadContentDir(USER_CONTENT_PATH, false,
-                                        function ($content) use ($search) {
-                                          $result = null;
+      return callcontent(null, true, false,
+                         function ($content) use ($search) {
+                           $result = null;
 
-                                          // check that $content is not hidden
-                                          if (!istrue(value($content, HIDDEN))) {
-                                            // check that $content is not hidden from search
-                                            if (!istrue(value($content, HIDDENFROMSEARCH))) {
-                                              // check that $content is not a relocation
-                                              if (null === value($content, RELOCATE)) {
-                                                // check that $content contains $keywords
-                                                if (haskeywords($content, AUTHOR, $search) ||
-                                                    haskeywords($content, CATEGORY, $search) ||
-                                                    haskeywords($content, CONTENT, $search) ||
-                                                    haskeywords($content, DATE, $search) ||
-                                                    haskeywords($content, DESCRIPTION, $search) ||
-                                                    haskeywords($content, TITLE, $search)) {
-                                                  $result = $content;
-                                                }
-                                              }
-                                            }
-                                          }
+                           // check that $content contains $keywords
+                           if (haskeywords($content, AUTHOR, $search) ||
+                               haskeywords($content, CATEGORY, $search) ||
+                               haskeywords($content, CONTENT, $search) ||
+                               haskeywords($content, DATE, $search) ||
+                               haskeywords($content, DESCRIPTION, $search) ||
+                               haskeywords($content, TITLE, $search)) {
+                             $result = $content;
+                           }
 
-                                          return $result;
-                                        },
-                                        true);
+                           return $result;
+                         });
     }
 
     protected static function prepareMetadata($metadata) {

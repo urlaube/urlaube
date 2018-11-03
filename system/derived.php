@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -29,6 +29,7 @@
   define("SYSTEM_CORE_PATH",     $path."core".DS);
   define("SYSTEM_HANDLERS_PATH", $path."handlers".DS);
   define("SYSTEM_PLUGINS_PATH",  $path."plugins".DS);
+  define("SYSTEM_THEMES_PATH",   $path."themes".DS);
 
   // derive user paths
   $path = realpath(USER_PATH);
@@ -37,9 +38,7 @@
   } else {
     $path = ROOTPATH."user".DS;
   }
-  define("USER_CACHE_PATH",    $path."cache".DS);
   define("USER_CONFIG_PATH",   $path."config".DS);
-  define("USER_CONTENT_PATH",  $path."content".DS);
   define("USER_HANDLERS_PATH", $path."handlers".DS);
   define("USER_PLUGINS_PATH",  $path."plugins".DS);
   define("USER_THEMES_PATH",   $path."themes".DS);

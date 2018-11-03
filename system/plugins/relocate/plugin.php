@@ -8,7 +8,7 @@
     content files.
 
     @package urlaube\urlaube
-    @version 0.1a9
+    @version 0.1a10
     @author  Yahe <hello@yahe.sh>
     @since   0.1a5
   */
@@ -19,6 +19,11 @@
   if (!defined("URLAUBE")) { die(""); }
 
   class RelocatePlugin extends BaseSingleton implements Plugin {
+
+    // CONSTANTS
+
+    const RELOCATE     = "relocate";
+    const RELOCATETYPE = "relocatetype";
 
     // HELPER FUNCTIONS
 
@@ -45,23 +50,25 @@
     // RUNTIME FUNCTIONS
 
     public static function run($content) {
-      // if $content is an array with a single entry then unpack it
-      if (is_array($content)) {
-        if (1 === count($content)) {
-          $content = $content[0];
+      $result = $content;
+
+      // if $result is an array with a single entry then unpack it
+      if (is_array($result)) {
+        if (1 === count($result)) {
+          $result = $result[0];
         }
       }
 
-      if ($content instanceof Content) {
+      if ($result instanceof Content) {
         // get the target URL
-        $value = value($content, RELOCATE);
+        $value = value($result, static::RELOCATE);
         if (null !== $value) {
           // default is a moved temporarily
           $permanent = false;
           $redirect  = false;
 
           // get the relocation type
-          $type = value($content, RELOCATETYPE);
+          $type = value($result, static::RELOCATETYPE);
           if (null !== $type) {
             $type = explode(SP, $type);
             foreach ($type as $type_item) {
@@ -76,9 +83,21 @@
           // abort the execution to save time
           exit();
         }
+      } else {
+        if (is_array($result)) {
+          // iterate through all content items
+          foreach ($result as $key => $value) {
+            if ($value instanceof Content) {
+              // hide relocations in a list of content items
+              if (null !== value($value, static::RELOCATE)) {
+                unset($result[$key]);
+              }
+            }
+          }
+        }
       }
 
-      return $content;
+      return $result;
     }
 
   }

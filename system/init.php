@@ -7,7 +7,7 @@
     relevant files of the system and kickstarts the execution of the CMS.
 
     @package urlaube\urlaube
-    @version 0.1a10
+    @version 0.1a11
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -52,8 +52,11 @@
 
   // include user configuration if possible
   if (is_file(USER_CONFIG_PATH."config.php")) {
-    include_once(USER_CONFIG_PATH."config.php");
+    require_once(USER_CONFIG_PATH."config.php");
   }
 
   // transfer handling to the Main class
   print(Main::run());
+
+  // do some number crunching
+  _logResourceUsage();

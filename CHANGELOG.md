@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1a11 (05.12.2018)
+### Features
+* added `try_define()` to allow the overwriting of system-defined constants
+* rewrote system files to use `try_define()` instead of `define()`
+* added the possibility to create the file `user.php` that is executed before anything else
+
 ## 0.1a10 (03.11.2018)
 ### Features
 * added support for system themes

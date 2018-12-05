@@ -7,7 +7,7 @@
     plugin simplifies the loading of file-based CMS entries.
 
     @package urlaube\urlaube
-    @version 0.1a10
+    @version 0.1a11
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */

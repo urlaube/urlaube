@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a10
+    @version 0.1a11
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -20,25 +20,13 @@
   // DERIVED CONSTANTS
 
   // derive system paths
-  $path = realpath(SYSTEM_PATH);
-  if ((false !== $path) && is_dir($path)) {
-    $path = trail($path, DS);
-  } else {
-    $path = ROOTPATH."system".DS;
-  }
-  define("SYSTEM_CORE_PATH",     $path."core".DS);
-  define("SYSTEM_HANDLERS_PATH", $path."handlers".DS);
-  define("SYSTEM_PLUGINS_PATH",  $path."plugins".DS);
-  define("SYSTEM_THEMES_PATH",   $path."themes".DS);
+  try_define("SYSTEM_CORE_PATH",     trail(realpath(SYSTEM_PATH), DS)."core".DS);
+  try_define("SYSTEM_HANDLERS_PATH", trail(realpath(SYSTEM_PATH), DS)."handlers".DS);
+  try_define("SYSTEM_PLUGINS_PATH",  trail(realpath(SYSTEM_PATH), DS)."plugins".DS);
+  try_define("SYSTEM_THEMES_PATH",   trail(realpath(SYSTEM_PATH), DS)."themes".DS);
 
   // derive user paths
-  $path = realpath(USER_PATH);
-  if ((false !== $path) && is_dir($path)) {
-    $path = trail($path, DS);
-  } else {
-    $path = ROOTPATH."user".DS;
-  }
-  define("USER_CONFIG_PATH",   $path."config".DS);
-  define("USER_HANDLERS_PATH", $path."handlers".DS);
-  define("USER_PLUGINS_PATH",  $path."plugins".DS);
-  define("USER_THEMES_PATH",   $path."themes".DS);
+  try_define("USER_CONFIG_PATH",   trail(realpath(USER_PATH), DS)."config".DS);
+  try_define("USER_HANDLERS_PATH", trail(realpath(USER_PATH), DS)."handlers".DS);
+  try_define("USER_PLUGINS_PATH",  trail(realpath(USER_PATH), DS)."plugins".DS);
+  try_define("USER_THEMES_PATH",   trail(realpath(USER_PATH), DS)."themes".DS);

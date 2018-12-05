@@ -7,7 +7,7 @@
     handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a10
+    @version 0.1a11
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */

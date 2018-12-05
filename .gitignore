@@ -1,11 +1,6 @@
 # do not publish user content
-user/cache/*
-user/config/*
-user/content/*
-user/handlers/*
-user/plugins/*
-user/themes/*
-user/uploads/*
+user.php
+user/*
 
 # do not ignore the gitkeep files
 !user/cache/.gitkeep

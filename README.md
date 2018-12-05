@@ -147,7 +147,7 @@ The following core filter events are available for now:
 * `FILTER_PAGINATE` is called before pagination is applied in `paginate()`
 * `FILTER_PLUGINS` is called after the plugins have been registered
 * `FILTER_THEMES` is called after the themes have been registered
-* `FILTER_WIDGETS` is called after the `ON_WIDGETS` plugins have been called in `callwidgets()`
+* `FILTER_WIDGETS` is called after the `ON_WIDGETS` plugins in `callwidgets()`
 
 The following core content events are available for now:
 

@@ -8,29 +8,40 @@
     system.
 
     @package urlaube\urlaube
-    @version 0.1a10
+    @version 0.1a11
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
 
-  // ===== EDIT HERE =====
-
-  // define the path to the system folder to find the init.php file
-  define("SYSTEM_PATH", __DIR__."/system/");
-
-  // define the path to the user folder to find the config.php file
-  define("USER_PATH", __DIR__."/user/");
-
   // ===== DO NOT EDIT HERE =====
 
+  // only define $name if it is not yet defined
+  function try_define($name, $value) {
+    $result = false;
+
+    if (!defined($name)) {
+      $result = define($name, $value);
+    }
+
+    return $result;
+  }
+
   // define the URLAUBE constant that prevents the side-loading of other files
-  define("URLAUBE", true);
+  try_define("URLAUBE", true);
+
+  // require the user.php file if it exists
+  if (is_file(__DIR__.DIRECTORY_SEPARATOR."user.php")) {
+    require_once(__DIR__.DIRECTORY_SEPARATOR."user.php");
+  }
 
   // define the default root path
-  define("ROOTPATH", __DIR__.DIRECTORY_SEPARATOR);
+  try_define("ROOTPATH", __DIR__.DIRECTORY_SEPARATOR);
+
+  // define the system path
+  try_define("SYSTEM_PATH", ROOTPATH."system".DIRECTORY_SEPARATOR);
+
+  // define the user path
+  try_define("USER_PATH", ROOTPATH."user".DIRECTORY_SEPARATOR);
 
   // require the init.php file
   require_once(SYSTEM_PATH."init.php");
-
-  // do some number crunching
-  _logResourceUsage();

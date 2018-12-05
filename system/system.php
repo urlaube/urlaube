@@ -8,7 +8,7 @@
     change without prior notice.
 
     @package urlaube\urlaube
-    @version 0.1a10
+    @version 0.1a11
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -211,8 +211,8 @@
 
   // log information about resource usage
   function _logResourceUsage() {
-    Logging::log("Current execution time: ".(microtime(true)-$_SERVER["REQUEST_TIME_FLOAT"])." sec",  Logging::INFO);
-    Logging::log("Current memory usage: ".(memory_get_usage()/1024/1024)." MB",   Logging::INFO);
+    Logging::log("Current execution time: ".(microtime(true)-$_SERVER["REQUEST_TIME_FLOAT"])." sec", Logging::INFO);
+    Logging::log("Current memory usage: ".(memory_get_usage()/1024/1024)." MB", Logging::INFO);
     Logging::log("Peak memory usage: ".(memory_get_peak_usage()/1024/1024)." MB", Logging::INFO);
   }
 

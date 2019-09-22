@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.1a12 (22.09.2019)
+### Security
 * updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.3
 
 ## 0.1a11 (05.12.2018)

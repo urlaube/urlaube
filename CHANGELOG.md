@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1a12 (22.09.2019)
+* updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.3
+
 ## 0.1a11 (05.12.2018)
 ### Features
 * added `try_define()` to allow the overwriting of system-defined constants
@@ -95,7 +98,7 @@
 * introduced `FILTER_PAGINATE` to filter content before pagination takes place
 * changed `MarkdownPlugin` to not provide a separate `apply()` method
 * rewrote handlers and plugins to avoid using string literals for classes
-* rewrote handlers to call FILTER_CONTENT handlers
+* rewrote handlers to call `FILTER_CONTENT` handlers
 * rewrote handlers to use `parseuri()`
 * rewrote regexes to use `"\~...\~"` instead of `"@...@"`
 * added `hiddenfromarchive`, `hiddenfromauthor`, `hiddenfromcategory`, `hiddenfromsearch` and `hiddenfromsitemap`
@@ -120,15 +123,15 @@
 ## 0.1a6 (15.07.2018)
 ### Bugfixes
 * the system and user paths derived in constans.php now use the realpath instead of just prepending a folder separator
-* _loadExtensions() now uses the basename of $file instead of just appending the filename
-* Main::run now calls clearstatcache(true) to prevent PHP file caches from messing with file checks
-* previously, when calling a Handler from within a Handler, a Plugin from within a Plugin or a Theme from within a Theme, the $active value would be set to NULL after the call, breaking the getActive() function; now the last active Handler/Plugin/Theme is stored and restored appropriately
+* `_loadExtensions()` now uses the basename of `$file` instead of just appending the filename
+* `Main::run()` now calls `clearstatcache(true)` to prevent PHP file caches from messing with file checks
+* previously, when calling a Handler from within a Handler, a Plugin from within a Plugin or a Theme from within a Theme, the `$active` value would be set to `NULL` after the call, breaking the `getActive()` function; now the last active Handler/Plugin/Theme is stored and restored appropriately
 * Handler/Plugin/Theme methods are now encapsulated in a try-finally block to prevent a single buggy Handler/Plugin/Theme from killing the whole CMS
 * moved `callMethod()` and `checkMethod()` from `user.php` to `system.php` as they shouldn't be needed for user code
 * renamed recommended fields so that all of them default to false (e.g. `nomarkdown` instead of `markdown` or `hiddenfromhome` instead of `home`) - previously the assumed default has been random
 
 ### Features
-* when a Plugin returns an array this is now merged with the result array of Plugins::run() instead of adding it as a single element of the array (so-called array-flattening), this allows Plugins to return more than one result without the caller having to flatten the array itself
+* when a Plugin returns an array this is now merged with the result array of `Plugins::run()` instead of adding it as a single element of the array (so-called array-flattening), this allows Plugins to return more than one result without the caller having to flatten the array itself
 * array-flattening has been removed from the `widgets()` function
 * the `PageHandler` is now executed earlier so that it can overrule the output of other handlers
 * a static frontpage is now supported by creating the file `user/content/.md`

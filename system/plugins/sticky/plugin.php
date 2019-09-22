@@ -7,7 +7,7 @@
     resorts content so that sticky entries are at always at the top.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a6
   */

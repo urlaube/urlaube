@@ -7,7 +7,7 @@
     handler lists all pages that contain a certain search keyword.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -122,5 +122,5 @@
   }
 
   // register handler
-  Handlers::register(SearchHandler::class, "run",     SearchHandler::REGEX,     [GET, POST], PAGE_SYSTEM);
-  Handlers::register(SearchHandler::class, "runPost", SearchHandler::REGEXPOST, [POST],      PAGE_SYSTEM);
+  Handlers::register(SearchHandler::class, "run",     SearchHandler::REGEX,     [GET, POST], ERROR_SYSTEM);
+  Handlers::register(SearchHandler::class, "runPost", SearchHandler::REGEXPOST, [POST],      ERROR_SYSTEM);

@@ -8,7 +8,7 @@
     type.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -198,4 +198,4 @@
   }
 
   // register handler
-  Handlers::register(FeedHandler::class, "run", FeedHandler::REGEX, [GET, POST], PAGE_SYSTEM);
+  Handlers::register(FeedHandler::class, "run", FeedHandler::REGEX, [GET, POST], ERROR_SYSTEM);

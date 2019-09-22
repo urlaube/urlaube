@@ -7,7 +7,7 @@
     used to separate logic from content like strings.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -22,9 +22,9 @@
   // define Urlaube information
   try_define("URLAUBE_NAME",        "Urlaube");
   try_define("URLAUBE_URL",         "https://urlau.be/");
-  try_define("URLAUBE_VERSION",     "0.1a11");
+  try_define("URLAUBE_VERSION",     "0.1a12");
   try_define("URLAUBE_CODENAME",    "Freizeit");
-  try_define("URLAUBE_RELEASEDATE", "05.12.2018");
+  try_define("URLAUBE_RELEASEDATE", "22.09.2019");
 
   // define shortcodes
   try_define("AMP", "&");                 // ampersand

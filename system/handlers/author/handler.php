@@ -7,7 +7,7 @@
     handler lists all pages that are written by the given author.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a2
   */
@@ -58,4 +58,4 @@
   }
 
   // register handler
-  Handlers::register(AuthorHandler::class, "run", AuthorHandler::REGEX, [GET, POST], PAGE_SYSTEM);
+  Handlers::register(AuthorHandler::class, "run", AuthorHandler::REGEX, [GET, POST], ERROR_SYSTEM);

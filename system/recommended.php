@@ -8,7 +8,7 @@
     on often-used placeholders.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -73,4 +73,5 @@
   try_define("PAGE_SYSTEM",       10); // used by system handlers before PageHandler is called
   try_define("PAGE_HANDLER",      20); // PageHandler
   try_define("ERROR",             30); // used by user handlers before ErrorHandler is called
-  try_define("ERROR_HANDLER",     40); // ErrorHandler
+  try_define("ERROR_SYSTEM",      40); // used by system handlers before ErrorHandler is called
+  try_define("ERROR_HANDLER",     50); // ErrorHandler

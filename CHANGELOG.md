@@ -1,6 +1,11 @@
 # Changelog
 
 ## 0.1a12 (22.09.2019)
+### Bugfixes
+* changed execution of system handlers so that the `PageHandler` is called earlier
+* introduced new handler priority `ERROR_SYSTEM` to let handlers run after `PageHandler`
+* `FilePlugin::run()` should not check for a single file if `$recursive` argument is set
+
 ### Security
 * updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.3
 

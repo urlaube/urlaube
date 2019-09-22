@@ -7,7 +7,7 @@
     plugin simplifies the loading of file-based CMS entries.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -191,8 +191,9 @@
       $dirname  = trail(realpath(static::getPath().nolead($name, DS)), DS);
       $filename = realpath(static::getPath().notrail(nolead($name, DS), DS).FilePlugin::EXTENSION);
 
-      // check if the filename is located in the user content path, really ends with the extension and represents a file
-      if ((0 === strpos($filename, static::getPath())) && istrail($filename, static::EXTENSION) && is_file($filename)) {
+      // check if the filename is located in the user content path, really ends with the extension and represents a file,
+      // do not read a single file if we are requested to do a recursive search
+      if ((!$recursive) && (0 === strpos($filename, static::getPath())) && istrail($filename, static::EXTENSION) && is_file($filename)) {
         // load a single file
         $result = static::loadContent($filename, $skipcontent, $filter);
       } else {

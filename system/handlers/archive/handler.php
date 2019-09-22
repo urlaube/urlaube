@@ -7,7 +7,7 @@
     handler lists all pages that contain a certain date.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -90,4 +90,4 @@
   }
 
   // register handler
-  Handlers::register(ArchiveHandler::class, "run", ArchiveHandler::REGEX, [GET, POST], PAGE_SYSTEM);
+  Handlers::register(ArchiveHandler::class, "run", ArchiveHandler::REGEX, [GET, POST], ERROR_SYSTEM);

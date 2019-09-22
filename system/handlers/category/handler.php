@@ -7,7 +7,7 @@
     category handler lists all pages that contain a certain category identifier.
 
     @package urlaube\urlaube
-    @version 0.1a11
+    @version 0.1a12
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -58,4 +58,4 @@
   }
 
   // register handler
-  Handlers::register(CategoryHandler::class, "run", CategoryHandler::REGEX, [GET, POST], PAGE_SYSTEM);
+  Handlers::register(CategoryHandler::class, "run", CategoryHandler::REGEX, [GET, POST], ERROR_SYSTEM);

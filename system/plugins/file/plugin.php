@@ -187,20 +187,23 @@
       // fix $name
       $name = strtr($name, US, DS);
 
-      // try to derive a potential dirname and filename from the given name
-      $dirname  = trail(realpath(static::getPath().nolead($name, DS)), DS);
-      $filename = realpath(static::getPath().notrail(nolead($name, DS), DS).FilePlugin::EXTENSION);
+      if ($recursive) {
+        // try to derive a potential dirname from the given name
+        $dirname = trail(realpath(static::getPath().nolead($name, DS)), DS);
 
-      // check if the filename is located in the user content path, really ends with the extension and represents a file,
-      // do not read a single file if we are requested to do a recursive search
-      if ((!$recursive) && (0 === strpos($filename, static::getPath())) && istrail($filename, static::EXTENSION) && is_file($filename)) {
-        // load a single file
-        $result = static::loadContent($filename, $skipcontent, $filter);
-      } else {
         // check if the dirname is located in the user content path and represents a folder
         if ((0 === strpos($dirname, static::getPath())) && is_dir($dirname)) {
           // load a whole directory
           $result = static::loadContentDir($dirname, $recursive, $skipcontent, $filter);
+        }
+      } else {
+        // try to derive a potential filename from the given name
+        $filename = realpath(static::getPath().notrail(nolead($name, DS), DS).FilePlugin::EXTENSION);
+
+        // check if the filename is located in the user content path, really ends with the extension and represents a file,
+        if ((0 === strpos($filename, static::getPath())) && istrail($filename, static::EXTENSION) && is_file($filename)) {
+          // load a single file
+          $result = static::loadContent($filename, $skipcontent, $filter);
         }
       }
 

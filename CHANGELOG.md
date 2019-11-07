@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1a?? (??.??.????)
+### Features
+* slighty improved `router.php` for local debugging
+
 ## 0.1a12 (22.09.2019)
 ### Bugfixes
 * changed execution of system handlers so that the `PageHandler` is called earlier

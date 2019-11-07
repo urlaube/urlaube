@@ -20,8 +20,9 @@
   if ("cli-server" !== PHP_SAPI) { die(""); }
 
   // route calls to index file
-  $result = (!is_file(__DIR__.$_SERVER["REQUEST_URI"]));
+  $result = (!is_file(__DIR__.parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)));
   if ($result) {
-    require(__DIR__."/index.php");
+    require_once(__DIR__."/index.php");
   }
   return $result;
+

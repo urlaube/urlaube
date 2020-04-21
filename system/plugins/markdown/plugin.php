@@ -21,7 +21,8 @@
 
     // CONSTANTS
 
-    const NOMARKDOWN = "nomarkdown";
+    const NOMARKDOWN           = "nomarkdown";
+    const NOMARKDOWNPARAGRAPHS = "nomarkdownparagraphs";
 
     // RUNTIME FUNCTIONS
 
@@ -33,7 +34,12 @@
         if ($content->isset(CONTENT)) {
           // do not use markdown if markdown field is set to false
           if (!istrue(value($content, static::NOMARKDOWN))) {
-            $content->set(CONTENT, $parsedown->text(value($content, CONTENT)));
+            // switch between markdown and inline markdown
+            if (!istrue(value($content, static::NOMARKDOWNPARAGRAPHS))) {
+              $content->set(CONTENT, $parsedown->text(value($content, CONTENT)));
+            } else {
+              $content->set(CONTENT, $parsedown->line(value($content, CONTENT)));
+            }
           }
         }
       } else {
@@ -44,7 +50,12 @@
               if ($content_item->isset(CONTENT)) {
                 // do not use markdown if markdown field is set to false
                 if (!istrue(value($content_item, static::NOMARKDOWN))) {
-                  $content_item->set(CONTENT, $parsedown->text(value($content_item, CONTENT)));
+                  // switch between markdown and inline markdown
+                  if (!istrue(value($content_item, static::NOMARKDOWNPARAGRAPHS))) {
+                    $content_item->set(CONTENT, $parsedown->text(value($content_item, CONTENT)));
+                  } else {
+                    $content_item->set(CONTENT, $parsedown->line(value($content_item, CONTENT)));
+                  }
                 }
               }
             }

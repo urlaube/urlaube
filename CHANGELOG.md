@@ -3,6 +3,9 @@
 ## 0.1a?? (??.??.????)
 ### Features
 * slighty improved `router.php` for local debugging
+* introduced `NOMARKDOWNPARAGRAPHS` to prevent the markdown plugin from creating `<p>` elements around HTML output
+* updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.4
+* updated [Parsedown-Extra](https://github.com/erusev/parsedown-extra/) to version 0.8.1
 
 ## 0.1a12 (22.09.2019)
 ### Bugfixes

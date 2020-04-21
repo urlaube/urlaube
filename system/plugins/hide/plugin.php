@@ -64,6 +64,13 @@
               }
             }
           }
+
+          // renumber result or set it to null
+          if (0 < count($result)) {
+            $result = array_values($result);
+          } else {
+            $result = null;
+          }
         }
       }
 

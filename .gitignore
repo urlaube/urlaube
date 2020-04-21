@@ -11,6 +11,11 @@ user/*
 !user/themes/.gitkeep
 !user/uploads/.gitkeep
 
+# do not care about custom-provided web files
+favicon.ico
+robots.txt
+sitemap.xml
+
 # do not publish macOS blergh
 ._*
 .DS_Store

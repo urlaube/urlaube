@@ -5,6 +5,7 @@
 * slighty improved `router.php` for local debugging
 * introduced `NOMARKDOWNPARAGRAPHS` to prevent the markdown plugin from creating `<p>` elements around HTML output
 * improved `hide` plugin so that is renumbers the content array after modifying it
+* improved `relocate` plugin so that is renumbers the content array after modifying it
 * updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.4
 * updated [Parsedown-Extra](https://github.com/erusev/parsedown-extra/) to version 0.8.1
 

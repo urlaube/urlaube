@@ -4,16 +4,16 @@
   RewriteBase /
 
   # disallow access to hidden files
-  RewriteRule \/\. /index.php [L]
+  RewriteRule ((^(\/)?)|(\/))\. /index.php [L]
 
   # prevent access to protected paths
-  RewriteRule ^\/CHANGELOG\.md$        /index.php [L]
-  RewriteRule ^\/README\.md$           /index.php [L]
-  RewriteRule ^\/router\.php$          /index.php [L]
-  RewriteRule ^\/system(\/.*)?$        /index.php [L]
-  RewriteRule ^\/user\/cache(\/.*)?$   /index.php [L]
-  RewriteRule ^\/user\/config(\/.*)?$  /index.php [L]
-  RewriteRule ^\/user\/content(\/.*)?$ /index.php [L]
+  RewriteRule ^(\/)?CHANGELOG\.md$        /index.php [L]
+  RewriteRule ^(\/)?README\.md$           /index.php [L]
+  RewriteRule ^(\/)?router\.php$          /index.php [L]
+  RewriteRule ^(\/)?system(\/.*)?$        /index.php [L]
+  RewriteRule ^(\/)?user\/cache(\/.*)?$   /index.php [L]
+  RewriteRule ^(\/)?user\/config(\/.*)?$  /index.php [L]
+  RewriteRule ^(\/)?user\/content(\/.*)?$ /index.php [L]
 
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f

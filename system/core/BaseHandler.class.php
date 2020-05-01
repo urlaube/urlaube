@@ -22,10 +22,10 @@
 
     // ABSTRACT CONSTANTS
 
-    const MADATORY = null;  // must be NULL or an array
-    const OPTIONAL = null;  // must be NULL or an associative array
-    const PAGINATE = false; // must be boolean
-    const REGEX    = null;  // must be a regular expression string
+    const MANDATORY = null;  // must be NULL or an array
+    const OPTIONAL  = null;  // must be NULL or an associative array
+    const PAGINATE  = false; // must be boolean
+    const REGEX     = null;  // must be a regular expression string
 
     // ABSTRACT FUNCTIONS
 

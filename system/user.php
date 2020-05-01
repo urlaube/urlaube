@@ -7,8 +7,8 @@
     plugin and them developers may rely on these functions as they will only
     change with prior notice.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -21,22 +21,22 @@
   // ***** CONTENT FUNCTIONS *****
 
   // find content element by field value
-  function findcontent($content, $field, $value) {
+  function findcontent($content, $key, $value) {
     $result = null;
 
     if ($content instanceof Content) {
-      $content_value = value($content, $field);
+      $content_value = gv($content, $key);
       if (null !== $content_value) {
-        if (0 === strcasecmp(trim($value), trim($content_value))) {
+        if (0 === strcasecmp(trim($value), $content_value)) {
           $result = $content;
         }
       }
     } else {
       if (is_array($content)) {
         foreach ($content as $content_item) {
-          $content_value = value($content_item, $field);
+          $content_value = gv($content_item, $key);
           if (null !== $content_value) {
-            if (0 === strcasecmp(trim($value), trim($content_value))) {
+            if (0 === strcasecmp(trim($value), $content_value)) {
               $result = $content_item;
 
               break;
@@ -54,7 +54,7 @@
     $result = false;
 
     // get the author
-    $value = value($content, AUTHOR);
+    $value = gv($content, AUTHOR);
     if (null !== $value) {
       $result = (0 === strcasecmp(trim($author), $value));
     }
@@ -67,12 +67,13 @@
     $result = false;
 
     // get the category
-    $value = value($content, CATEGORY);
+    $value = gv($content, CATEGORY);
     if (null !== $value) {
       // split the CATEGORY by spaces and iterate through them
       $content_category = explode(SP, $value);
       foreach ($content_category as $content_category_item) {
-        // check if the category from the URL matches the CATEGORY
+        // check if the category from the URL matches the CATEGORY,
+        // trim content_category_item as it may contain other whitespace characters as well
         $result = (0 === strcasecmp(trim($category), trim($content_category_item)));
 
         // if true then we're done
@@ -90,7 +91,7 @@
     $result = false;
 
     // get the date
-    $value = value($content, DATE);
+    $value = gv($content, DATE);
     if (null !== $value) {
       $time = strtotime($value);
 
@@ -108,19 +109,19 @@
     return $result;
   }
 
-  // check if the given $content has one or more $keywords in $field
-  function haskeywords($content, $field, $keywords) {
+  // check if the given $content has one or more $keywords in $key
+  function haskeywords($content, $key, $keywords) {
     $result = false;
 
     // get the requested field
-    $value = value($content, $field);
+    $value = gv($content, $key);
     if (null !== $value) {
       // make sure that we work with an array
       if (!is_array($keywords)) {
         $keywords = [$keywords];
       }
 
-      // check for each keyword if it is contained in the $field
+      // check for each keyword if it is contained in the $key
       foreach ($keywords as $keywords_item) {
         $result = (false !== stripos($value, trim($keywords_item)));
 
@@ -138,8 +139,9 @@
   function paginate($array, $page) {
     $result = preparecontent(Plugins::run(FILTER_PAGINATE, true, $array));
 
-    if (is_array($result) && is_numeric($page)) {
-      $result = array_slice($result, ($page-1)*value(Main::class, PAGESIZE), value(Main::class, PAGESIZE), false);
+    // do not paginate if the page size is not set to a numeric value
+    if (is_array($result) && is_numeric($page) && is_numeric(gc(PAGESIZE, null))) {
+      $result = array_slice($result, ($page-1)*gc(PAGESIZE, null), gc(PAGESIZE, null), false);
 
       // if the result is empty, we set it to null
       if (0 === count($result)) {
@@ -216,18 +218,18 @@
   // sort array of Content objects
   // splits entries with a certain fields from entries without that field
   // only entries with the value get sorted
-  function sortcontent($array, $field, $comparator) {
+  function sortcontent($array, $key, $comparator) {
     $result = $array;
 
-    if (is_array($array) && is_string($field) && is_callable($comparator)) {
+    if (is_array($array) && is_string($key) && is_callable($comparator)) {
       // split elements into sortable and static
       $sortable   = [];
       $unsortable = [];
       foreach ($result as $result_item) {
         // check if the element is a content
         if ($result_item instanceof Content) {
-          // if $field is set
-          if ($result_item->isset($field)) {
+          // if $key is set
+          if ($result_item->isset($key)) {
             $sortable[] = $result_item;
           } else {
             $unsortable[] = $result_item;
@@ -237,8 +239,8 @@
 
       // sort array by content field
       if (usort($sortable,
-                function ($left, $right) use ($field, $comparator) {
-                  return $comparator(value($left, $field), value($right, $field));
+                function ($left, $right) use ($key, $comparator) {
+                  return $comparator(gv($left, $key), gv($right, $key));
                 })) {
         // remerge previously split elements
         $result = array_merge($sortable, $unsortable);
@@ -248,19 +250,49 @@
     return $result;
   }
 
+  // ***** VALUE FUNCTIONS *****
+
+  // get the given config value
+  function gc($key, ...$name) {
+    // try to find the caller class
+    if (0 >= count($name)) {
+      $caller = _getCaller(2);
+      if (is_array($caller) && array_key_exists(ENTITY, $caller)) {
+        $name = $caller[ENTITY];
+      }
+    } else {
+      $name = $name[0];
+    }
+
+    return gv(Config::class, $key, $name);
+  }
+
   // get the given value or NULL on error
-  function value($content, $name) {
+  function gv($content, $key, $name = null) {
     $result = null;
 
     if ($content instanceof Content) {
-      if ($content->isset($name)) {
-        $result = $content->get($name);
+      $result = $content->get($key);
+    } elseif (Config::class === $content) {
+      // we try to read the specific configuration first
+      $result = Config::get($key, $name);
+      if ((null === $result) && (null !== $name)) {
+        // if a specific configuration is not set then we try to read the global configuration
+        $result = Config::get($key, null);
       }
-    } else {
-      if (is_subclass_of($content, BaseConfig::class)) {
-        if ($content::isset($name)) {
-          $result = $content::get($name);
+    } elseif (is_array($content)) {
+      if (is_string($key)) {
+        // $key should be trimmed lowercase
+        $key = strtolower(trim($key));
+
+        // handle empty $key like null
+        if (0 >= strlen($key)) {
+          $key = null;
         }
+      }
+
+      if (array_key_exists($key, $content)) {
+        $result = $content[$key];
       }
     }
 
@@ -271,6 +303,142 @@
       if (0 >= strlen($result)) {
         $result = null;
       }
+    }
+
+    return $result;
+  }
+
+  // check if the given config value is set
+  function ic($key, ...$name) {
+    // try to find the caller class
+    if (0 >= count($name)) {
+      $caller = _getCaller(2);
+      if (is_array($caller) && array_key_exists(ENTITY, $caller)) {
+        $name = $caller[ENTITY];
+      }
+    } else {
+      $name = $name[0];
+    }
+
+    return iv(Config::class, $key, $name);
+  }
+
+  // check if the given value is set
+  function iv($content, $key, $name = null) {
+    $result = false;
+
+    if ($content instanceof Content) {
+      $result = $content->isset($key);
+    } elseif (Config::class === $content) {
+      // we try to read the specific configuration first
+      $result = Config::isset($key, $name);
+      if ((!$result) && (null !== $name)) {
+        // if a specific configuration is not set then we try to read the global configuration
+        $result = Config::isset($key, null);
+      }
+    } elseif (is_array($content)) {
+      if (is_string($key)) {
+        // $key should be trimmed lowercase
+        $key = strtolower(trim($key));
+
+        // handle empty $key like null
+        if (0 >= strlen($key)) {
+          $key = null;
+        }
+      }
+
+      $result = array_key_exists($key, $content);
+    }
+
+    return $result;
+  }
+
+  // preset the given config value
+  function pc($key, $value, ...$name) {
+    // try to find the caller class
+    if (0 >= count($name)) {
+      $caller = _getCaller(2);
+      if (is_array($caller) && array_key_exists(ENTITY, $caller)) {
+        $name = $caller[ENTITY];
+      }
+    } else {
+      $name = $name[0];
+    }
+
+    return pv(Config::class, $key, $value, $name);
+  }
+
+  // preset the given value
+  function pv($content, $key, $value, $name = null) {
+    $result = false;
+
+    if ($content instanceof Content) {
+      $result = $content->preset($key, $value);
+    } elseif (Config::class === $content) {
+      $result = Config::preset($key, $value, $name);
+    } elseif (is_array($content)) {
+      // cannot handle arrays here
+    }
+
+    return $result;
+  }
+
+  // set the given config value
+  function sc($key, $value, ...$name) {
+    // try to find the caller class
+    if (0 >= count($name)) {
+      $caller = _getCaller(2);
+      if (is_array($caller) && array_key_exists(ENTITY, $caller)) {
+        $name = $caller[ENTITY];
+      }
+    } else {
+      $name = $name[0];
+    }
+
+    return sv(Config::class, $key, $value, $name);
+  }
+
+  // set the given value
+  function sv($content, $key, $value, $name = null) {
+    $result = false;
+
+    if ($content instanceof Content) {
+      $result = $content->set($key, $value);
+    } elseif (Config::class === $content) {
+      $result = Config::set($key, $value, $name);
+    } elseif (is_array($content)) {
+      // cannot handle arrays here
+    }
+
+    return $result;
+  }
+
+  // unset the given config value
+  function uc($key, ...$name) {
+    // try to find the caller class
+    if (0 >= count($name)) {
+      $caller = _getCaller(2);
+      if (is_array($caller) && array_key_exists(ENTITY, $caller)) {
+        $name = $caller[ENTITY];
+      }
+    } else {
+      $name = $name[0];
+    }
+
+    return uv(Config::class, $key, $name);
+  }
+
+  // unset the given value
+  function uv($content, $key, $name = null) {
+    $result = false;
+
+    if ($content instanceof Content) {
+      $result = $content->unset($key);
+    } elseif (Config::class === $content) {
+      // we try to unset the specific configuration AND the global configuration
+      $result = Config::unset($key, $name) && ((null === $name) || Config::unset($key, null));
+    } elseif (is_array($content)) {
+      // cannot handle arrays here
     }
 
     return $result;
@@ -293,7 +461,7 @@
 
   // escape HTML in the given $string
   function html($string) {
-    return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, value(Main::class, CHARSET), false);
+    return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, gc(CHARSET, null), false);
   }
 
   // checks if $string starts with $lead
@@ -388,18 +556,12 @@
   function absoluteurl($uri = null) {
     // find out if we have to prepend the port number
     $port = "";
-    if (((0 === strcasecmp(HTTP_PROTOCOL, value(Main::class, PROTOCOL))) &&
-         (HTTP_PORT !== value(Main::class, PORT))) ||
-        ((0 === strcasecmp(HTTPS_PROTOCOL, value(Main::class, PROTOCOL))) &&
-         (HTTPS_PORT !== value(Main::class, PORT)))) {
-      $port = COL.value(Main::class, PORT);
+    if (((0 === strcasecmp(HTTP_PROTOCOL, gc(PROTOCOL, null))) && (HTTP_PORT !== gc(PORT, null))) ||
+        ((0 === strcasecmp(HTTPS_PROTOCOL, gc(PROTOCOL, null))) && (HTTPS_PORT !== gc(PORT, null)))) {
+      $port = COL.gc(PORT, null);
     }
 
-    return value(Main::class, PROTOCOL).
-           value(Main::class, HOSTNAME).
-           $port.
-           value(Main::class, ROOTURI).
-           nolead(relativeuri($uri), US);
+    return gc(PROTOCOL, null).gc(HOSTNAME, null).$port.gc(ROOTURI, null).nolead(relativeuri($uri), US);
   }
 
   // get URI of current page
@@ -407,8 +569,9 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::getActive()) {
-      $result = _callMethod(Handlers::getActive(), GETURI, [value(Main::class, METADATA)]);
+    $handler = gethandler();
+    if (null !== $handler) {
+      $result = _callFunction($handler[ENTITY], GETURI, [gc(METADATA, null)]);
     }
 
     return $result;
@@ -419,14 +582,15 @@
     $result = null;
 
     // check that only supported feed sources are handled
-    if (in_array(Handlers::getActive(), FeedHandler::SOURCES)) {
+    $handler = gethandler();
+    if ((null !== $handler) && in_array($handler[ENTITY], FeedAddon::SOURCES)) {
       // update metadata to get the feed URI
-      $metadata = value(Main::class, METADATA);
+      $metadata = gc(METADATA, null);
       if ($metadata instanceof Content) {
         $metadata = $metadata->clone();
-        $metadata->set(FeedHandler::FEED, Handlers::getActive());
+        $metadata->set(FeedAddon::FEED, $handler[ENTITY]);
 
-        $result = FeedHandler::getUri($metadata);
+        $result = FeedAddon::getUri($metadata);
       }
     }
 
@@ -438,16 +602,17 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::getActive()) {
+    $handler = gethandler();
+    if (null !== $handler) {
       // check that we're not already on the first page
-      if ($force || (value(Main::class, PAGE) > 1)) {
+      if ($force || (gc(PAGE, null) > 1)) {
         // update metadata to get the URI of the first page
-        $metadata = value(Main::class, METADATA);
+        $metadata = gc(METADATA, null);
         if ($metadata instanceof Content) {
           $metadata = $metadata->clone();
           $metadata->set(PAGE, 1);
 
-          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+          $result = _callFunction($handler[ENTITY], GETURI, [$metadata]);
         }
       }
     }
@@ -460,16 +625,17 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::getActive()) {
+    $handler = gethandler();
+    if (null !== $handler) {
       // check that we're not already on the last page
-      if ($force || (value(Main::class, PAGE) < value(Main::class, PAGECOUNT))) {
+      if ($force || (gc(PAGE, null) < gc(PAGECOUNT, null))) {
         // update metadata to get the URI of the last page
-        $metadata = value(Main::class, METADATA);
+        $metadata = gc(METADATA, null);
         if ($metadata instanceof Content) {
           $metadata = $metadata->clone();
-          $metadata->set(PAGE, value(Main::class, PAGECOUNT));
+          $metadata->set(PAGE, gc(PAGECOUNT, null));
 
-          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+          $result = _callFunction($handler[ENTITY], GETURI, [$metadata]);
         }
       }
     }
@@ -482,16 +648,17 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::getActive()) {
+    $handler = gethandler();
+    if (null !== $handler) {
       // check if there's a next page
-      if ($force || (value(Main::class, PAGE) < value(Main::class, PAGECOUNT))) {
+      if ($force || (gc(PAGE, null) < gc(PAGECOUNT, null))) {
         // update metadata to get the URI of the next page
-        $metadata = value(Main::class, METADATA);
+        $metadata = gc(METADATA, null);
         if ($metadata instanceof Content) {
           $metadata = $metadata->clone();
-          $metadata->set(PAGE, value(Main::class, PAGE)+1);
+          $metadata->set(PAGE, gc(PAGE, null)+1);
 
-          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+          $result = _callFunction($handler[ENTITY], GETURI, [$metadata]);
         }
       }
     }
@@ -530,7 +697,7 @@
       $path = substr($path, strlen(ROOTPATH));
 
       // prepend the root URI
-      $result = value(Main::class, ROOTURI).strtr(nolead($path, DS), DS, US);
+      $result = gc(ROOTURI, null).strtr(nolead($path, DS), DS, US);
     }
 
     return $result;
@@ -541,16 +708,17 @@
     $result = null;
 
     // we use the current handler's getUri() method
-    if (null !== Handlers::getActive()) {
+    $handler = gethandler();
+    if (null !== $handler) {
       // check if there's a previous page
-      if ($force || (value(Main::class, PAGE) > 1)) {
+      if ($force || (gc(PAGE, null) > 1)) {
         // update metadata to get the URI of the next page
-        $metadata = value(Main::class, METADATA);
+        $metadata = gc(METADATA, null);
         if ($metadata instanceof Content) {
           $metadata = $metadata->clone();
-          $metadata->set(PAGE, value(Main::class, PAGE)-1);
+          $metadata->set(PAGE, gc(PAGE, null)-1);
 
-          $result = _callMethod(Handlers::getActive(), GETURI, [$metadata]);
+          $result = _callFunction($handler[ENTITY], GETURI, [$metadata]);
         }
       }
     }
@@ -588,13 +756,13 @@
 
     // use a specific URI if $uri is null
     if (null === $uri) {
-      $uri = value(Main::class, URI);
+      $uri = gc(URI, null);
     }
 
     // check if the URI starts with the root URI
     $uri = lead(parse_url($uri, PHP_URL_PATH), US);
-    if (0 === strpos($uri, value(Main::class, ROOTURI))) {
-      $result = lead(substr($uri, strlen(value(Main::class, ROOTURI))), US);
+    if (0 === strpos($uri, gc(ROOTURI, null))) {
+      $result = lead(substr($uri, strlen(gc(ROOTURI, null))), US);
     }
 
     return $result;
@@ -616,9 +784,9 @@
   // ***** HELPER FUNCTIONS *****
 
   // call the content plugins and filter them afterwards
-  function callcontent($name = null, $recursive = false, $skipcontent = false, $filter = null) {
+  function callcontent($content = null, $recursive = false, $skipcontent = false, $filter = null) {
     // call the content plugins
-    $result = preparecontent(Plugins::run(ON_CONTENT, false, null, [$name, $recursive, $skipcontent, $filter]));
+    $result = preparecontent(Plugins::run(ON_CONTENT, false, null, [$content, $recursive, $skipcontent, $filter]));
 
     // filter the content
     $result = preparecontent(Plugins::run(FILTER_CONTENT, true, $result));
@@ -663,7 +831,7 @@
     $result = false;
 
     // only proceed when caching is active
-    if (value(Main::class, CACHE)) {
+    if (CACHE_NONE < gc(CACHE, null)) {
       // store value temporarily first
       $temp = null;
 
@@ -671,7 +839,7 @@
       $cached = Plugins::run(GET_CACHE, false, null, [$key, &$temp, $name]);
 
       // check that the returned content matches
-      if (is_array($temp) && isset($temp[CONTENT]) && isset($temp[DATE])) {
+      if (is_array($temp) && array_key_exists(CONTENT, $temp) && array_key_exists(DATE, $temp)) {
         // check that the kill date has not been reached
         if ((0 >= $temp[DATE]) || (time() <= $temp[DATE])) {
           // find out if at least on plugin was called and returned TRUE
@@ -691,6 +859,45 @@
           }
         }
       }
+    }
+
+    return $result;
+  }
+
+  function gethandler() {
+    $result = Handlers::active();
+    if (!is_array($result)) {
+      $result = gc(HANDLER, null);
+    }
+
+    // only return value if all mandatory fields are set
+    if (!is_array($result) || !array_key_exists(ENTITY, $result) || !array_key_exists(MEMBER, $result)) {
+      $result = null;
+    }
+
+    return $result;
+  }
+
+  function getplugin() {
+    $result = Plugins::active();
+
+    // only return value if all mandatory fields are set
+    if (!is_array($result) || !array_key_exists(ENTITY, $result) || !array_key_exists(MEMBER, $result)) {
+      $result = null;
+    }
+
+    return $result;
+  }
+
+  function gettheme() {
+    $result = Themes::active();
+    if (!is_array($result)) {
+      $result = gc(THEME, null);
+    }
+
+    // only return value if all mandatory fields are set
+    if (!is_array($result) || !array_key_exists(ENTITY, $result) || !array_key_exists(MEMBER, $result)) {
+      $result = null;
     }
 
     return $result;
@@ -745,16 +952,16 @@
   }
 
   // call cache plugins and set cached content
-  function setcache($key, $value, $name = null, $age = 0) {
+  function setcache($key, $value, $age = 0, $name = null) {
     $result = false;
 
     // only proceed when caching is active
-    if (value(Main::class, CACHE)) {
+    if (CACHE_NONE < gc(CACHE, null)) {
       // only proceed when the cached value cannot be retrieved anymore
       if (!getcache($key, $temp, $name)) {
         // check if the cache age shall be set to the configured cache age
         if (0 === $age) {
-          $age = value(Main::class, CACHEAGE);
+          $age = gc(CACHEAGE, null);
         }
 
         // get the date when the cached value shall be killed,

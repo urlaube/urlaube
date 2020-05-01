@@ -7,8 +7,8 @@
     the system handlers do the same thing over and over again. This class helps
     to reduce the amount of duplicate code.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -20,9 +20,16 @@
 
   abstract class BaseHandler extends BaseSingleton implements Handler {
 
+    // ABSTRACT CONSTANTS
+
+    const MADATORY = null;  // must be NULL or an array
+    const OPTIONAL = null;  // must be NULL or an associative array
+    const PAGINATE = false; // must be boolean
+    const REGEX    = null;  // must be a regular expression string
+
     // ABSTRACT FUNCTIONS
 
-    protected static abstract function getResult($metadata, &$cachable);
+    protected static abstract function getResult($metadata);
     protected static abstract function prepareMetadata($metadata);
 
     // INTERFACE FUNCTIONS
@@ -37,38 +44,24 @@
         // sanitize metadata
         $metadata = preparecontent(static::prepareMetadata($metadata), static::OPTIONAL, static::MANDATORY);
         if ($metadata instanceof Content) {
-          // try to get data from cache
-          if (getcache(static::getUri($metadata), $data, static::class)) {
-            // check that the returned content matches
-            if (is_array($data) && isset($data[CONTENT]) && isset($data[PAGECOUNT])) {
-              $pagecount = $data[PAGECOUNT];
-              $result    = $data[CONTENT];
-            }
-          } else {
-            $result = preparecontent(static::getResult($metadata, $cachable));
-            if (null !== $result) {
-              // sort and paginate the content if it is an array
-              if (is_array($result)) {
-                // sort entries by DATE
-                $result = sortcontent($result, DATE,
-                                      function ($left, $right) {
-                                        // reverse-sort
-                                        return -datecmp($left, $right);
-                                      });
+          $result = preparecontent(static::getResult($metadata));
+          if (null !== $result) {
+            // sort and paginate the content if it is an array
+            if (is_array($result)) {
+              // sort entries by DATE
+              $result = sortcontent($result, DATE,
+                                    function ($left, $right) {
+                                      // reverse-sort
+                                      return -datecmp($left, $right);
+                                    });
 
-                // handle pagination if the PAGE metadate is supported
-                if ($metadata->isset(PAGE)) {
-                  // set the maximum page count
-                  $pagecount = ceil(count($result)/value(Main::class, PAGESIZE));
+              // handle pagination if the PAGE metadate is supported
+              if (static::PAGINATE && is_numeric($metadata->get(PAGE)) && is_numeric(Config::get(PAGESIZE))) {
+                // set the maximum page count
+                $pagecount = ceil(count($result)/Config::get(PAGESIZE));
 
-                  // execute the pagination
-                  $result = paginate($result, value($metadata, PAGE));
-                }
-              }
-
-              if ($cachable) {
-                // try to set data in cache
-                setcache(static::getUri($metadata), [CONTENT => $result, PAGECOUNT => $pagecount], static::class);
+                // execute the pagination
+                $result = paginate($result, $metadata->get(PAGE));
               }
             }
           }
@@ -86,7 +79,7 @@
       if ($metadata instanceof Content) {
         // handle pagination if the PAGE metadate is supported
         if ($metadata->isset(PAGE)) {
-          $page = value($metadata, PAGE);
+          $page = $metadata->get(PAGE);
           if (is_numeric($page)) {
             $metadata->set(PAGE, intval($page));
           } else {
@@ -104,12 +97,12 @@
         $metadata = preparecontent(static::prepareMetadata($metadata), static::OPTIONAL, static::MANDATORY);
         if ($metadata instanceof Content) {
           // get the base URI
-          $result = value(Main::class, ROOTURI);
+          $result = Config::get(ROOTURI);
 
           // append the mandatory URI parts
           if (is_array(static::MANDATORY)) {
             foreach (static::MANDATORY as $value) {
-              $result .= strtolower(trim($value)).EQ.value($metadata, $value).US;
+              $result .= strtolower(trim($value)).EQ.$metadata->get($value).US;
             }
           }
 
@@ -117,8 +110,8 @@
           if (is_array(static::OPTIONAL)) {
             foreach (static::OPTIONAL as $key => $value) {
               // only append it if they value differs from the default
-              if ($value !== value($metadata, $key)) {
-                $result .= strtolower(trim($key)).EQ.value($metadata, $key).US;
+              if ($value !== $metadata->get($key)) {
+                $result .= strtolower(trim($key)).EQ.$metadata->get($key).US;
               }
             }
           }
@@ -136,7 +129,7 @@
       if ($metadata instanceof Content) {
         // handle pagination if the PAGE metadate is supported
         if ($metadata->isset(PAGE)) {
-          $page = value($metadata, PAGE);
+          $page = $metadata->get(PAGE);
           if (is_numeric($page)) {
             $metadata->set(PAGE, intval($page));
           } else {
@@ -168,29 +161,26 @@
       $metadata = static::parseUri(relativeuri());
       if (null !== $metadata) {
         // set the metadata to be processed by plugins and the theme
-        Main::set(METADATA, $metadata);
+        Config::set(METADATA, $metadata);
 
         $content = preparecontent(static::getContent($metadata, $pagecount));
         if (null !== $content) {
           // check if the URI is correct
           $fixed = static::getUri($metadata);
-          if (0 !== strcmp(value(Main::class, URI), $fixed)) {
+          if (0 !== strcmp(Config::get(URI), $fixed)) {
             relocate($fixed.querystring(), false, true);
           } else {
             // set the content to be processed by plugins and the theme
-            Main::set(CONTENT, $content);
+            Config::set(CONTENT, $content);
 
             // handle pagination if the PAGE metadate is supported
             if ($metadata->isset(PAGE)) {
-              Main::set(PAGE,      value($metadata, PAGE));
-              Main::set(PAGECOUNT, $pagecount);
+              Config::set(PAGE,      $metadata->get(PAGE));
+              Config::set(PAGECOUNT, $pagecount);
             } else {
-              Main::set(PAGE,      1);
-              Main::set(PAGECOUNT, 1);
+              Config::set(PAGE,      1);
+              Config::set(PAGECOUNT, 1);
             }
-
-            // transfer the handling to the Themes class
-            Themes::run();
           }
 
           // we handled this page

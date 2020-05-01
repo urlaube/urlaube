@@ -3,11 +3,10 @@
   /**
     This is the Translate class of the urlau.be CMS core.
 
-    This file contains the Translate class of the urlau.be CMS core. This class
-    provides a translation feature based on JSON translation files.
+    This class provides a translation feature based on JSON translation files.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a4
   */
@@ -28,15 +27,20 @@
     protected static function load($name = null) {
       $result = false;
 
-      // $language should be case-insensitive
-      $language = value(Main::class, LANGUAGE);
+      $language = Config::get(LANGUAGE);
       if (is_string($language)) {
-        $language = strtolower($language);
+        // $language is trimmed lowercase
+        $language = strtolower(trim($language));
       }
 
-      // $name should be case-insensitive
       if (is_string($name)) {
-        $name = strtolower($name);
+        // $name should be trimmed lowercase
+        $name = strtolower(trim($name));
+
+        // handle empty $name like null
+        if (0 >= strlen($name)) {
+          $name = null;
+        }
       }
 
       // check if the named translation is registered
@@ -84,15 +88,20 @@
     public static function format($string, $name = null, ...$values) {
       $result = $string;
 
-      // $language should be case-insensitive
-      $language = value(Main::class, LANGUAGE);
+      $language = Config::get(LANGUAGE);
       if (is_string($language)) {
-        $language = strtolower($language);
+        // $language is trimmed lowercase
+        $language = strtolower(trim($language));
       }
 
-      // $name should be case-insensitive
       if (is_string($name)) {
-        $name = strtolower($name);
+        // $name should be trimmed lowercase
+        $name = strtolower(trim($name));
+
+        // handle empty $name like null
+        if (0 >= strlen($name)) {
+          $name = null;
+        }
       }
 
       if (static::load($name)) {
@@ -111,15 +120,20 @@
     public static function get($string, $name = null) {
       $result = $string;
 
-      // $language should be case-insensitive
-      $language = value(Main::class, LANGUAGE);
+      $language = Config::get(LANGUAGE);
       if (is_string($language)) {
-        $language = strtolower($language);
+        // $language is trimmed lowercase
+        $language = strtolower(trim($language));
       }
 
-      // $name should be case-insensitive
       if (is_string($name)) {
-        $name = strtolower($name);
+        // $name should be trimmed lowercase
+        $name = strtolower(trim($name));
+
+        // handle empty $name like null
+        if (0 >= strlen($name)) {
+          $name = null;
+        }
       }
 
       if (static::load($name)) {
@@ -138,9 +152,14 @@
     public static function register($folder, $name = null) {
       $result = false;
 
-      // $name should be case-insensitive
       if (is_string($name)) {
-        $name = strtolower($name);
+        // $name should be trimmed lowercase
+        $name = strtolower(trim($name));
+
+        // handle empty $name like null
+        if (0 >= strlen($name)) {
+          $name = null;
+        }
       }
 
       if (is_dir($folder)) {

@@ -1,31 +1,75 @@
 # Changelog
 
-## 0.1a?? (??.??.????)
+## 0.2a0 (??.??.????)
+
 ### Features
+
 * slighty improved `router.php` for local debugging
 * introduced `NOMARKDOWNPARAGRAPHS` to prevent the markdown plugin from creating `<p>` elements around HTML output
 * improved `hide` plugin so that is renumbers the content array after modifying it
 * improved `relocate` plugin so that is renumbers the content array after modifying it
 * updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.4
 * updated [Parsedown-Extra](https://github.com/erusev/parsedown-extra/) to version 0.8.1
+* added security rules in `.htaccess`
+* support `null` as `$method` in `Handlers::register()` to mean **all HTTP methods**
+* improved `addslash` and `fixurl` handlers to run on all HTTP methods, not just GET and POST
+* merged the separate `handlers`, `plugins` and `themes` folders into the `addons` folder
+* merged the separate `handler.php`, `plugin.php` and `theme.php` entrypoint filenames into the `addon.php` entrypoint filename
+* renamed all system addons to be named as `*Addon` instead of `*Handler` or `*Plugin`
+* moved configuration from `Main`, `Handlers`, `Plugins` and `Themes` classes to the central `Config` class
+* improved `value()` to also support arrays
+* improved `value()` to also support the central `Config` class
+* renamed `value()` to `gv()`
+* introduced `iv()` which checks if a given value is set
+* introduced `pv()` which presets a given value
+* introduced `sv()` which sets a given value
+* introduced `uv()` which unsets
+* introduced `ic()` as a context-aware shortcut for `iv(Config::class, $key, static::class)`
+* introduced `gc()` as a context-aware shortcut for `gv(Config::class, $key, static::class)`
+* introduced `pc()` as a context-aware shortcut for `pv(Config::class, $key, $value, static::class)`
+* introduced `sc()` as a context-aware shortcut for `sv(Config::class, $key, $value, static::class)`
+* introduced `uc()` as a context-aware shortcut for `uv(Config::class, $key, $value, static::class)`
+* renamed `Handlers::getActive()` to `Handlers::active()`
+* improved `Handlers:active()` to return an array consisting of the `ENTITY` name and `MEMBER` name
+* improved `Handlers::filter()` to do proper sanitization on the resulting list of handlers
+* improved `Handlers::run()` to store the successful handler into `Config::set(HANDLER)`
+* renamed `Plugins::getActive()` to `Plugins::active()`
+* improved `Plugins::filter()` to do proper sanitization on the resulting list of plugins
+* improved `Plugins:active()` to return an array consisting of the `ENTITY` name and `MEMBER` name
+* renamed `Themes::getActive()` to `Themes::active()`
+* improved `Themes:active()` to return an array consisting of the `ENTITY` name and `MEMBER` name
+* improved `THemes::filter()` to do proper sanitization on the resulting list of themes
+* improved `Themes::run()` to store the successful theme into `Config::set(THEME)`
+* introduced `gethandler()` which returns the active/successful handler or NULL
+* introduced `getplugin()` which returns the active plugin or NULL
+* introduced `gettheme()` which returns the active/successful theme or NULL
+* improved `Main::run()` to call `Themes::run()` instead of delegating the call to each individual handler
+* added tests in `tests/` folder
 
 ## 0.1a12 (22.09.2019)
+
 ### Bugfixes
+
 * changed execution of system handlers so that the `PageHandler` is called earlier
 * introduced new handler priority `ERROR_SYSTEM` to let handlers run after `PageHandler`
 * `FilePlugin::run()` should not check for a single file if `$recursive` argument is set
 
 ### Security
+
 * updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.3
 
 ## 0.1a11 (05.12.2018)
+
 ### Features
+
 * added `try_define()` to allow the overwriting of system-defined constants
 * rewrote system files to use `try_define()` instead of `define()`
 * added the possibility to create the file `user.php` that is executed before anything else
 
 ## 0.1a10 (03.11.2018)
+
 ### Features
+
 * added support for system themes
 * changed order of module loading so that user modules have a higher priority than system modules
 * introduced `ON_CONTENT` core content event to make plugins independent from the content source
@@ -39,17 +83,22 @@
 * removed `USER_CACHE_PATH` and `USER_CONTENT_PATH` as the core is storage-agnostic now
 
 ## 0.1a9 (27.10.2018)
+
 ### Features
+
 * added `querystring()` function to get a URL-encoded query string
 
 ### Bugfixes
+
 * handlers shall only redirect to the corrected URI when they actually return content to not disrupt later handlers
 * the handled URI doesn't contain the query string anymore
 * modified the handlers so that redirect which correct the URI still retain the query string
 * modified the archive handler so that only content with a set DATE field is displayed
 
 ## 0.1a8 (24.10.2018)
+
 ### Features
+
 * added `UPDATE` field that contains the date of the last update of a content entry
 * `FilePlugin::loadContent()` now checks that the given file is located in the user content path
 * `FilePlugin::loadContent()` now sets a content field even when the value is empty, this way it can be checked whether the field has been set to an empty value (e.g. through `Content->isset()`)
@@ -64,6 +113,7 @@
 * added `BaseHandler::prepareMetadata()` to allow handlers to do proper sanitization and thus to reduce duplicate content
 
 ### Bugfixes
+
 * changed visibility of the helper function `FilePlugin::fileToUri()`
 * `Logging::log()` now calls `file_put_content()` with `LOCK_EX` to support parallel writes
 * fixed the default value of `Plugins::run()` for non-filter calls
@@ -76,7 +126,9 @@
 * fixed `SitemapXmlHandler` because it didn't generate a sitemap for site with a single entry
 
 ## 0.1a7 (17.10.2018)
+
 ### Features
+
 * introduced the `absoluteurl()` function to create the absolute URL from a relative URI
 * extended the `relativeuri()` function to be able to handle absolute URLs
 * introduced the `findcontent()` function to search for `Content` object in array
@@ -121,6 +173,7 @@
 * checked all handlers to make sure that the content is set before the theme is called
 
 ### Bugfixes
+
 * removed the `if (!class_exists("<CLASSNAME>")) {` checks as duplicate class names should fail hard
 * removed the `Config` class as configurations should take place with the specific classes that are involved
 * removed the `DEACTIVATE_*` constants as this is now achieved through `FILTER_HANDLERS` plugins
@@ -136,7 +189,9 @@
 * fixed line breaks and trailing whitspace
 
 ## 0.1a6 (15.07.2018)
+
 ### Bugfixes
+
 * the system and user paths derived in constans.php now use the realpath instead of just prepending a folder separator
 * `_loadExtensions()` now uses the basename of `$file` instead of just appending the filename
 * `Main::run()` now calls `clearstatcache(true)` to prevent PHP file caches from messing with file checks
@@ -146,6 +201,7 @@
 * renamed recommended fields so that all of them default to false (e.g. `nomarkdown` instead of `markdown` or `hiddenfromhome` instead of `home`) - previously the assumed default has been random
 
 ### Features
+
 * when a Plugin returns an array this is now merged with the result array of `Plugins::run()` instead of adding it as a single element of the array (so-called array-flattening), this allows Plugins to return more than one result without the caller having to flatten the array itself
 * array-flattening has been removed from the `widgets()` function
 * the `PageHandler` is now executed earlier so that it can overrule the output of other handlers
@@ -164,13 +220,17 @@
 * introduced a sticky plugin that reacts on the `sticky` field and resorts content so that sticky content comes first
 
 ## 0.1a5 (27.06.2018)
+
 ### Features
+
 * added `widgets()` function that simplifies calling the widget plugins
 * introduced redirect plugin that handles `Redirect` and `RedirectType` fields
 * modified all relevent handlers to filter content elements that are redirects
 
 ## 0.1a4 (02.06.2018)
+
 ### Features
+
 * rewrote the translation system which now is completely encapsulated in `Translate`
 * added `fhtml()` that calls `html()` on all values and the formats the given string using `sprintf`
 * renamed `gl()` to `t()` which now also supports formatting based on `sprintf()`
@@ -181,27 +241,35 @@
 * rewrote `Themes::register()` so that its structure resembles `Handlers::register()` and `Plugins::register()`
 
 ## 0.1a3 (27.05.2018)
+
 ### Features
+
 * added definitions for system handler names
 * introduced `feeduri()` as shortcut to get the correct feed URI
 
 ## 0.1a2 (26.05.2018)
+
 ### Bugfixes
+
 * renumbered system handlers
 * the `ArchiveHandler` now requires at least the year to be set in the URI
 * the `FixUrlHandler` now properly handles urlencoded special characters
 
 ### Features
+
 * added `AuthorHandler` and `FeedAuthorHandler`
 * renamed `SearchHandler` to `SearchGetHandler`
 * added `SearchPostHandler` that properly redirect to the correct search URI
 
 ## 0.1a1 (23.05.2018)
+
 ### Bugfixes
+
 * `010_feed` plugin doesn't call `Markdown::apply()` directly anymore to decouple it from `020_markdown`
 * `020_markdown` plugin now checks for each array entry if it is an instance of `Content`
 
 ### Feature
+
 * `Plugins::run()` now supports multiple arguments
 * `Plugins::run()` now properly supports filter plugins
 * added `FILTER_CONTENT` plugin event
@@ -209,5 +277,7 @@
 * `3*0_feed_*` handlers now call `FILTER_CONTENT` plugins as they don't use Themes::run() which does this automatically
 
 ## 0.1a0 (21.05.2018)
+
 ### Features
+
 * initial version

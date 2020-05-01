@@ -7,8 +7,8 @@
     core classes use a singleton pattern by means of static-only properties and
     methods. The Base class tries to prevent the instantiation of core classes.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */

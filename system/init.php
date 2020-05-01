@@ -3,11 +3,10 @@
   /**
     This is the init file of the urlau.be CMS.
 
-    This is the init file of the urlau.be CMS. The file includes all other
-    relevant files of the system and kickstarts the execution of the CMS.
+    The file includes all other relevant files of the system and kickstarts the execution.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -33,24 +32,29 @@
 
   // require base classes
   require_once(SYSTEM_CORE_PATH."BaseSingleton.class.php");
-  require_once(SYSTEM_CORE_PATH."BaseConfig.class.php");
   require_once(SYSTEM_CORE_PATH."BaseHandler.class.php");
-  require_once(SYSTEM_CORE_PATH."Content.class.php");
-  require_once(SYSTEM_CORE_PATH."Logging.class.php");
-  require_once(SYSTEM_CORE_PATH."Translate.class.php");
 
   // require management classes
   require_once(SYSTEM_CORE_PATH."Handlers.class.php");
   require_once(SYSTEM_CORE_PATH."Plugins.class.php");
   require_once(SYSTEM_CORE_PATH."Themes.class.php");
 
+  // require helper classes
+  require_once(SYSTEM_CORE_PATH."Config.class.php");
+  require_once(SYSTEM_CORE_PATH."Content.class.php");
+  require_once(SYSTEM_CORE_PATH."Logging.class.php");
+  require_once(SYSTEM_CORE_PATH."Translate.class.php");
+
   // require main class
   require_once(SYSTEM_CORE_PATH."Main.class.php");
 
-  // preset the core configuration
+  // preset core configuration
   Main::configure();
 
-  // include user configuration if possible
+  // load user and system addons
+  Main::load();
+
+  // require user configuration if the file exists
   if (is_file(USER_CONFIG_PATH."config.php")) {
     require_once(USER_CONFIG_PATH."config.php");
   }

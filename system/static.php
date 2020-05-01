@@ -6,8 +6,8 @@
     This file contains the static constants of the urlau.be CMS core. These are
     used to separate logic from content like strings.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -22,9 +22,12 @@
   // define Urlaube information
   try_define("URLAUBE_NAME",        "Urlaube");
   try_define("URLAUBE_URL",         "https://urlau.be/");
-  try_define("URLAUBE_VERSION",     "0.1a12");
-  try_define("URLAUBE_CODENAME",    "Freizeit");
-  try_define("URLAUBE_RELEASEDATE", "22.09.2019");
+  try_define("URLAUBE_VERSION",     "0.2a0");
+  try_define("URLAUBE_CODENAME",    "Quarantäne");
+  try_define("URLAUBE_RELEASEDATE", "??.??.20??");
+
+  // define addons filename
+  try_define("ADDONS_FILENAME", "addon.php");
 
   // define shortcodes
   try_define("AMP", "&");                 // ampersand
@@ -64,6 +67,7 @@
   try_define("CONTENT",      "content");      // the content provided to plugins and themes
   try_define("CONTENTTYPE",  "contenttype");  // the default content type set by the system
   try_define("DEBUGMODE",    "debugmode");    // actives printing of warning and error messages
+  try_define("HANDLER",      "handler");      // the handler that has run successfully
   try_define("HOSTNAME",     "hostname");     // the hostname as taken from the URL
   try_define("LANGUAGE",     "language");     // the language used by the system
   try_define("LOGLEVEL",     "loglevel");     // the minimum level of log entries that get printed
@@ -77,10 +81,33 @@
   try_define("PROTOCOL",     "protocol");     // the protocol as taken from the URL
   try_define("ROOTURI",      "rooturi");      // the root URI the system is reachable at
   try_define("RESPONSECODE", "responsecode"); // the default HTTP response code set by the system
+  try_define("THEME",        "theme");        // the theme that has run successfully
   try_define("TIMEFORMAT",   "timeformat");   // the time format used for log entries
   try_define("TIMEZONE",     "timezone");     // the time zones used by the system
   try_define("THEMENAME",    "themename");    // the name of the active theme
   try_define("URI",          "uri");          // the URI as taken from the URL
+
+  // define names of handlers, plugins and themes fields
+  try_define("ENTITY",   "entity");
+  try_define("EVENT",    "event");
+  try_define("MEMBER",   "member");
+  // METHOD
+  try_define("PRIORITY", "priority");
+  try_define("REGEX",    "regex");
+  // THEMENAME
+
+  // define types of caching
+  try_define("CACHE_NONE",     -1);
+  try_define("CACHE_RAW",       0);
+  try_define("CACHE_FILTERED",  1);
+  try_define("CACHE_OUTPUT",    2);
+
+  // define types of logging
+  try_define("LOGGING_NONE",  -1);
+  try_define("LOGGING_DEBUG",  0);
+  try_define("LOGGING_INFO",   1);
+  try_define("LOGGING_WARN",   2);
+  try_define("LOGGING_ERROR",  3);
 
   // define names of predefined interface methods
   try_define("GETCONTENT", "getContent");
@@ -100,7 +127,7 @@
   // FILTER_* plugins get content and shall filter it
   try_define("FILTER_CONTENT",  "filter_content");  // SHALL be called by handlers before they call the theme
   try_define("FILTER_HANDLERS", "filter_handlers"); // is called after the handlers have been registered
-  try_define("FILTER_OUTPUT",   "filter_output");   // is called before Main::run() exits
+  try_define("FILTER_OUTPUT",   "filter_output");   // is called before the output is written
   try_define("FILTER_PAGINATE", "filter_paginate"); // is called before pagination is applied in paginate()
   try_define("FILTER_PLUGINS",  "filter_plugins");  // is called after the plugins have been registered
   try_define("FILTER_THEMES",   "filter_themes");   // is called after the themes have been registered

@@ -11,6 +11,7 @@
   RewriteRule ^(\/)?README\.md$           /index.php [L]
   RewriteRule ^(\/)?router\.php$          /index.php [L]
   RewriteRule ^(\/)?system(\/.*)?$        /index.php [L]
+  RewriteRule ^(\/)?tests(\/.*)?$         /index.php [L]
   RewriteRule ^(\/)?user\/cache(\/.*)?$   /index.php [L]
   RewriteRule ^(\/)?user\/config(\/.*)?$  /index.php [L]
   RewriteRule ^(\/)?user\/content(\/.*)?$ /index.php [L]

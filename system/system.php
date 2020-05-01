@@ -7,8 +7,8 @@
     plugin and them developers shall not rely on these functions as they may
     change without prior notice.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,16 +18,16 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  // call the $method in $entity and return its result value
-  function _callMethod($entity, $method, $arguments = []) {
+  // call the $member of $entity and return its result value
+  function _callFunction($entity, $member, $arguments = []) {
     $result = false;
 
     // check if the method is callable
-    if (_checkMethod($entity, $method)) {
+    if (_checkFunction($entity, $member)) {
       // retrieve target
-      $target = $method;
+      $target = $member;
       if (null !== $entity) {
-        $target = [$entity, $method];
+        $target = [$entity, $member];
       }
 
       $result = call_user_func_array($target, $arguments);
@@ -36,52 +36,62 @@
     return $result;
   }
 
-  // check if $method exists in $entity or as a function if $entity is null
-  function _checkMethod($entity, $method) {
+  // check if $member exists in $entity or as a plain function if $entity is null
+  function _checkFunction($entity, $member) {
     $result = false;
 
     // check if $entity is either an object or a class name
     if (is_object($entity) || (is_string($entity) && class_exists($entity))) {
-      // check if $method is a method of $entity
-      $result = method_exists($entity, $method);
+      // check if $member is a member of $entity
+      $result = method_exists($entity, $member);
     } else {
       // check if $entity is empty
       if (null === $entity) {
-        // check if $method is a function
-        $result = function_exists($method);
+        // check if $member is a plain function
+        $result = function_exists($member);
       }
     }
 
     return $result;
   }
 
-  // turn off all error reporting
-  function _deactivateDebugMode() {
+  // get entity and member of calling function or method
+  function _getCaller($caller = 1) {
+    $result = null;
 
+    // extract the caller from the debug backtrace
+    $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $caller+1);
+    if (is_array($backtrace) && array_key_exists($caller, $backtrace) && is_array($backtrace[$caller])) {
+      if (array_key_exists("function", $backtrace[$caller])) {
+        $member = $backtrace[$caller]["function"];
+
+        $entity = null;
+        if (array_key_exists("class", $backtrace[$caller])) {
+          $entity = $backtrace[$caller]["class"];
+        }
+
+        $result = [ENTITY => $entity,
+                   MEMBER => $member];
+      }
+    }
+
+    return $result;
   }
 
   // get name of calling function or method
   function _getCallerName($caller = 1) {
     $result = null;
 
-    $backtrace = debug_backtrace();
-
     // extract the caller from the debug backtrace
-    if ((is_array($backtrace)) &&
-        (0 <= $caller) && (count($backtrace) > $caller)) {
-      // retrieve the class name and action type
-      if ((isset($backtrace[$caller]["class"])) &&
-          (isset($backtrace[$caller]["type"]))) {
-        $result .= $backtrace[$caller]["class"].$backtrace[$caller]["type"];
-      }
+    $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $caller+1);
+    if (is_array($backtrace) && array_key_exists($caller, $backtrace) && is_array($backtrace[$caller])) {
+      if (array_key_exists("function", $backtrace[$caller])) {
+        $result = $backtrace[$caller]["function"]."()";
 
-      // retrieve the function or method name
-      if (isset($backtrace[$caller]["function"])) {
-        $result .= $backtrace[$caller]["function"]."()";
-      } else {
-        // reset $result to null if there's no function name
-        $result = null;
-      } 
+        if (array_key_exists("class", $backtrace[$caller]) && array_key_exists("type", $backtrace[$caller])) {
+          $result = $backtrace[$caller]["class"].$backtrace[$caller]["type"].$result;
+        }
+      }
     }
 
     return $result;
@@ -92,16 +102,16 @@
   function _getDefaultHostname() {
     $result = "localhost";
 
-    if (isset($_SERVER["SERVER_NAME"])) {
+    if (array_key_exists("SERVER_NAME", $_SERVER)) {
       // take server-provided ServerName as default
       $result = $_SERVER["SERVER_NAME"];
     } else {
-      if (isset($_SERVER["HTTP_HOST"])) {
+      if (array_key_exists("HTTP_HOST", $_SERVER)) {
         // take provided "Host:" header next
         // remove port number if it's attached to the hostname
         $result = explode(COL, $_SERVER["HTTP_HOST"])[0];
       } else {
-        if (isset($_SERVER["SERVER_ADDR"])) {
+        if (array_key_exists("SERVER_ADDR", $_SERVER)) {
           // or the IP address if the "Host:" header is not present
           $result = $_SERVER["SERVER_ADDR"];
         }
@@ -115,8 +125,8 @@
   function _getDefaultMethod() {
     $result = null;
 
-    if (isset($_SERVER["REQUEST_METHOD"])) {
-      $result = strtoupper($_SERVER["REQUEST_METHOD"]);
+    if (array_key_exists("REQUEST_METHOD", $_SERVER)) {
+      $result = strtoupper(trim($_SERVER["REQUEST_METHOD"]));
     }
 
     return $result;
@@ -126,7 +136,7 @@
   function _getDefaultPort() {
     $result = null;
 
-    if (isset($_SERVER["SERVER_PORT"])) {
+    if (array_key_exists("SERVER_PORT", $_SERVER)) {
       $result = $_SERVER["SERVER_PORT"];
     } else {
       // try to derive the port from the protocol
@@ -148,7 +158,7 @@
   function _getDefaultProtocol() {
     $result = HTTP_PROTOCOL;
 
-    if (isset($_SERVER["HTTPS"])) {
+    if (array_key_exists("HTTPS", $_SERVER)) {
       if (0 !== strcasecmp($_SERVER["HTTPS"], "off")) {
         $result = HTTPS_PROTOCOL;
       }
@@ -161,7 +171,7 @@
   function _getDefaultRootUri() {
     $result = US;
 
-    if (isset($_SERVER["SCRIPT_NAME"])) {
+    if (array_key_exists("SCRIPT_NAME", $_SERVER)) {
       $result = lead(trail(dirname($_SERVER["SCRIPT_NAME"]), US), US);
     }
 
@@ -172,7 +182,7 @@
   function _getDefaultUri() {
     $result = US;
 
-    if (isset($_SERVER["REQUEST_URI"])) {
+    if (array_key_exists("REQUEST_URI", $_SERVER)) {
       $result = lead(urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)), US);
     }
 
@@ -181,7 +191,7 @@
 
   // scan all subdirs of $path and find those that contain a $file
   // include the $file of each subdir that has been found
-  function _loadExtensions($path, $file) {
+  function _loadAddons($path, $file) {
     $result = 0;
 
     if (is_dir($path)) {
@@ -211,9 +221,9 @@
 
   // log information about resource usage
   function _logResourceUsage() {
-    Logging::log("Current execution time: ".(microtime(true)-$_SERVER["REQUEST_TIME_FLOAT"])." sec", Logging::INFO);
-    Logging::log("Current memory usage: ".(memory_get_usage()/1024/1024)." MB", Logging::INFO);
-    Logging::log("Peak memory usage: ".(memory_get_peak_usage()/1024/1024)." MB", Logging::INFO);
+    Logging::log("Current execution time: ".(microtime(true)-$_SERVER["REQUEST_TIME_FLOAT"])." sec", LOGGING_INFO);
+    Logging::log("Current memory usage: ".(memory_get_usage()/1024/1024)." MB", LOGGING_INFO);
+    Logging::log("Peak memory usage: ".(memory_get_peak_usage()/1024/1024)." MB", LOGGING_INFO);
   }
 
   // turn on/off all error reporting

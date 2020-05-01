@@ -3,12 +3,10 @@ user.php
 user/*
 
 # do not ignore the gitkeep files
+!user/addons/.gitkeep
 !user/cache/.gitkeep
 !user/config/.gitkeep
 !user/content/.gitkeep
-!user/handlers/.gitkeep
-!user/plugins/.gitkeep
-!user/themes/.gitkeep
 !user/uploads/.gitkeep
 
 # do not care about custom-provided web files

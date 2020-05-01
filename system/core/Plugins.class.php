@@ -3,12 +3,11 @@
   /**
     This is the Plugins class of the urlau.be CMS core.
 
-    This file contains the Plugins class of the urlau.be CMS core. The system
-    and user plugins are managed through this class. It loads the plugins and
-    activates them depending on the currently required actions.
+    The system and user plugins are managed through this class. It loads the plugins and activates them depending on
+    the currently required actions.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -18,24 +17,46 @@
   // prevent script from getting called directly
   if (!defined("URLAUBE")) { die(""); }
 
-  class Plugins extends BaseConfig {
-
-    // CONSTANTS
-
-    const ENTITY   = "entity";
-    const EVENT    = "event";
-    const FILENAME = "plugin.php";
-    const FUNCTION = "function";
+  class Plugins extends BaseSingleton {
 
     // FIELDS
 
     protected static $active  = null;
-    protected static $config  = null;
     protected static $plugins = [];
+
+    // HELPER FUNCTIONS
+
+    protected static function cleanup(&$entity, &$member, &$event) {
+      $result = false;
+
+      if (_checkFunction($entity, $member)) {
+        if (is_string($event)) {
+          // event is trimmed lowercase
+          $event = strtolower(trim($event));
+
+          // do not allow empty event
+          if (0 >= strlen($event)) {
+            $event = null;
+          }
+        }
+
+        if (is_string($event)) {
+          // all checks and cleanups have passed
+          $result = true;
+        } else {
+          Logging::log("given event has wrong format", Logging::WARN);
+        }
+      } else {
+        Logging::log("given entity or function does not exist", Logging::WARN);
+      }
+
+      return $result;
+    }
+
 
     // GETTER FUNCTIONS
 
-    public static function getActive() {
+    public static function active() {
       return static::$active;
     }
 
@@ -43,8 +64,7 @@
 
     public static function filter() {
       static::$plugins = preparecontent(Plugins::run(FILTER_PLUGINS, true, static::$plugins),
-                                        null,
-                                        [static::ENTITY, static::FUNCTION, static::EVENT]);
+                                        null, [ENTITY, MEMBER, EVENT]);
 
       // make sure that we have an array
       if (!is_array(static::$plugins)) {
@@ -54,34 +74,37 @@
           static::$plugins = [];
         }
       }
+
+      // cleanup the entries
+      foreach (static::$plugins as $key => $value) {
+        // get values from entry
+        $entity = $value->get(ENTITY);
+        $event  = $value->get(EVENT);
+        $member = $value->get(MEMBER);
+
+        if (static::cleanup($entity, $member, $event)) {
+          $value->set(ENTITY, $entity);
+          $value->set(EVENT,  $event);
+          $value->set(MEMBER, $member);
+        } else {
+          unset(static::$plugins[$key]);
+        }
+      }
+      static::$plugins = array_values(static::$plugins);
     }
 
-    public static function load() {
-      // load the user plugins to give them a higher priority
-      _loadExtensions(USER_PLUGINS_PATH, static::FILENAME);
-
-      // load the system plugins
-      _loadExtensions(SYSTEM_PLUGINS_PATH, static::FILENAME);
-    }
-
-    public static function register($entity, $function, $event) {
+    public static function register($entity, $member, $event) {
       $result = false;
 
-      if (_checkMethod($entity, $function)) {
-        if (is_string($event)) {
-          $plugin = new Content();
-          $plugin->set(static::ENTITY,   $entity);
-          $plugin->set(static::FUNCTION, $function);
-          $plugin->set(static::EVENT,    $event);
-          static::$plugins[] = $plugin;
+      if (static::cleanup($entity, $member, $event)) {
+        $plugin = new Content();
+        $plugin->set(ENTITY, $entity);
+        $plugin->set(EVENT,  $event);
+        $plugin->set(MEMBER, $member);
+        static::$plugins[] = $plugin;
 
-          // we're done
-          $result = true;
-        } else {
-          Logging::log("given event has wrong format", Logging::WARN);
-        }
-      } else {
-        Logging::log("given entity or function does not exist", Logging::WARN);
+        // we're done
+        $result = true;
       }
 
       return $result;
@@ -101,45 +124,59 @@
         $arguments = [$arguments];
       }
 
-      foreach (static::$plugins as $plugins_item) {
-        if (0 === strcasecmp(value($plugins_item, static::EVENT), $event)) {
-          // store the last active plugin
-          $lastActive = static::$active;
+      if (is_string($event)) {
+        // event is trimmed lowercase
+        $event = strtolower(trim($event));
 
-          try {
-            // set the active plugin
-            static::$active = value($plugins_item, static::ENTITY);
+        // do not allow empty event
+        if (0 >= strlen($event)) {
+          $event = null;
+        }
+      }
 
-            // call the plugin
-            if ($filter) {
-              // if this is a filter call then reiterate the $result
-              $result = _callMethod(value($plugins_item, static::ENTITY),
-                                    value($plugins_item, static::FUNCTION),
-                                    array_merge([$result], $arguments));
-            } else {
-              // preset the result when at least one plugin is called
-              if (null === $result) {
-                $result = [];
-              }
+      if (is_string($event)) {
+        foreach (static::$plugins as $plugins_item) {
+          if (0 === strcasecmp($plugins_item->get(EVENT), $event)) {
+            // store the last active plugin
+            $lastActive = static::$active;
 
-              // if this isn't a filter call then collect the return values
-              $temp = _callMethod(value($plugins_item, static::ENTITY),
-                                  value($plugins_item, static::FUNCTION),
-                                  $arguments);
+            try {
+              // set the active plugin
+              static::$active = [ENTITY => $plugins_item->get(ENTITY),
+                                 MEMBER => $plugins_item->get(MEMBER)];
 
-              // check if an array has been returned that has to be flattened
-              if (is_array($temp)) {
-                // flatten the array
-                foreach ($temp as $temp_item) {
-                  $result[] = $temp_item;
-                }
+
+              // call the plugin
+              if ($filter) {
+                // if this is a filter call then reiterate the $result
+                $result = _callFunction(static::$active[ENTITY],
+                                        static::$active[MEMBER],
+                                        array_merge([$result], $arguments));
               } else {
-                $result[] = $temp;
+                // preset the result when at least one plugin is called
+                if (null === $result) {
+                  $result = [];
+                }
+
+                // if this isn't a filter call then collect the return values
+                $temp = _callFunction(static::$active[ENTITY],
+                                      static::$active[MEMBER],
+                                      $arguments);
+
+                // check if an array has been returned that has to be flattened
+                if (is_array($temp)) {
+                  // flatten the array
+                  foreach ($temp as $temp_item) {
+                    $result[] = $temp_item;
+                  }
+                } else {
+                  $result[] = $temp;
+                }
               }
+            } finally {
+              // restore the last active plugin
+              static::$active = $lastActive;
             }
-          } finally {
-            // restore the last active plugin
-            static::$active = $lastActive;
           }
         }
       }

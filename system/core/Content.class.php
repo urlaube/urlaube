@@ -3,12 +3,10 @@
   /**
     This is the Content class of the urlau.be CMS core.
 
-    This file contains the Content class of the urlau.be CMS core. Each instance
-    of this class contains the contents of one CMS entry and is used by a theme
-    to render an entry.
+    Each instance of this class contains the contents of one CMS entry and is used by a theme to render an entry.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a0
   */
@@ -53,18 +51,21 @@
       return $result;
     }
 
-    public function get($name) {
+    public function get($key) {
       $result = null;
 
-      // $name should be case-insensitive
-      if (is_string($name)) {
-        $name = strtolower($name);
+      if (is_string($key)) {
+        // $key should be trimmed lowercase
+        $key = strtolower(trim($key));
+
+        // handle empty $key like null
+        if (0 >= strlen($key)) {
+          $key = null;
+        }
       }
 
-      if ($this->isset($name)) {
-        $result = $this->fields[$name];
-      } else {
-        Logging::log("unset value $name requested", Logging::WARN);
+      if ($this->isset($key)) {
+        $result = $this->fields[$key];
       }
 
       return $result;
@@ -74,13 +75,18 @@
       return array_keys($this->fields);
     }
 
-    public function isset($name) {
-      // $name should be case-insensitive
-      if (is_string($name)) {
-        $name = strtolower($name);
+    public function isset($key) {
+      if (is_string($key)) {
+        // $key should be trimmed lowercase
+        $key = strtolower(trim($key));
+
+        // handle empty $key like null
+        if (0 >= strlen($key)) {
+          $key = null;
+        }
       }
 
-      return array_key_exists($name, $this->fields);
+      return array_key_exists($key, $this->fields);
     }
 
     // SETTER FUNCTIONS
@@ -101,47 +107,51 @@
             $result++;
           }
         }
-      } else {
-        Logging::log("given entity is not a content object", Logging::WARN);
       }
 
       return $result;
     }
 
-    public function preset($name, $value) {
-      if (!$this->isset($name)) {
-        $this->set($name, $value);
-      } else {
-        Logging::log("value $name has already been set", Logging::DEBUG);
+    public function preset($key, $value) {
+      if (!$this->isset($key)) {
+        $this->set($key, $value);
       }
 
-      return ($value === $this->get($name));
+      return ($value === $this->get($key));
     }
 
-    public function set($name, $value) {
-      // $name should be case-insensitive
-      if (is_string($name)) {
-        $name = strtolower($name);
+    public function set($key, $value) {
+      if (is_string($key)) {
+        // $key should be trimmed lowercase
+        $key = strtolower(trim($key));
+
+        // handle empty $key like null
+        if (0 >= strlen($key)) {
+          $key = null;
+        }
       }
 
-      $this->fields[$name] = $value;
+      $this->fields[$key] = $value;
 
-      return ($value === $this->get($name));
+      return ($value === $this->get($key));
     }
 
-    public function unset($name) {
-      // $name should be case-insensitive
-      if (is_string($name)) {
-        $name = strtolower($name);
+    public function unset($key) {
+      if (is_string($key)) {
+        // $key should be trimmed lowercase
+        $key = strtolower(trim($key));
+
+        // handle empty $key like null
+        if (0 >= strlen($key)) {
+          $key = null;
+        }
       }
 
-      if ($this->isset($name)) {
-        unset($this->fields[$name]);
-      } else {
-        Logging::log("value $name is already unset", Logging::DEBUG);
+      if ($this->isset($key)) {
+        unset($this->fields[$key]);
       }
 
-      return (!$this->isset($name));
+      return (!$this->isset($key));
     }
 
   }

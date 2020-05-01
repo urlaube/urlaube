@@ -3,12 +3,10 @@
   /**
     These are the recommended constants of the urlau.be CMS core.
 
-    This file contains the recommended constants of the urlau.be CMS core. These
-    are provided to handler, plugin and theme developers so that they can decide
-    on often-used placeholders.
+    These are provided to handler, plugin and theme developers so that they can decide on often-used placeholders.
 
-    @package urlaube\urlaube
-    @version 0.1a12
+    @package urlaube/urlaube
+    @version 0.2a0
     @author  Yahe <hello@yahe.sh>
     @since   0.1a7
   */
@@ -64,14 +62,16 @@
   try_define("BEFORE_SIDEBAR", "before_sidebar"); // should be called by a theme before the sidebar is generated
 
   // define handler priority values
-  try_define("FIXURL",           -50); // used by user handlers before FixUrlHandler is called
-  try_define("FIXURL_HANDLER",   -40); // FixUrlHandler
-  try_define("ADDSLASH",         -30); // used by user handlers before AddSlashHandler is called
-  try_define("ADDSLASH_SYSTEM",  -20); // used by system handlers before AddSlashHandler is called
-  try_define("ADDSLASH_HANDLER", -10); // AddSlashHandler
-  try_define("USER",               0); // used by user handlers before PageHandler is called
-  try_define("PAGE_SYSTEM",       10); // used by system handlers before PageHandler is called
-  try_define("PAGE_HANDLER",      20); // PageHandler
-  try_define("ERROR",             30); // used by user handlers before ErrorHandler is called
-  try_define("ERROR_SYSTEM",      40); // used by system handlers before ErrorHandler is called
-  try_define("ERROR_HANDLER",     50); // ErrorHandler
+  try_define("FIXURL",         -600); // used by user addons before FixUrlAddon is called
+  try_define("FIXURL_ADDON",   -500); // FixUrlAddon
+  try_define("ADDSLASH",       -400); // used by user addons before AddSlashAddon is called
+  try_define("ADDSLASH_CACHE", -300); // used by system cache addon before AddSlashAddon is called
+  try_define("ADDSLASH_SYSTEM",-200); // used by system addons before AddSlashAddon is called
+  try_define("ADDSLASH_ADDON", -100); // AddSlashAddon
+  try_define("USER",              0); // used by user addons before PageAddon is called
+  try_define("PAGE_CACHE",      100); // used by system cache addon before PageAddon is called
+  try_define("PAGE_SYSTEM",     200); // used by system addons before PageAddon is called
+  try_define("PAGE_ADDON",      300); // PageAddon
+  try_define("ERROR",           400); // used by user addons before ErrorAddon is called
+  try_define("ERROR_SYSTEM",    500); // used by system addons before ErrorAddon is called
+  try_define("ERROR_ADDON",     600); // ErrorAddon

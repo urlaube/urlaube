@@ -25,6 +25,71 @@
     protected static abstract function getResult($metadata, &$cachable);
     protected static abstract function prepareMetadata($metadata);
 
+    // HELPER VARIABLE
+
+    protected static $disabledPlugins = null;
+
+    // HELPER FUNCTIONS
+
+    public static function disableFilterContent($plugins) {
+      $result = $plugins;
+
+      // preset variable
+      static::$disabledPlugins = [];
+
+      if (is_array($result)) {
+        foreach ($result as $key => $value) {
+          // do not store the current function locally
+          if ((0 === strcasecmp(FILTER_PLUGINS, value($value, Plugins::EVENT))) &&
+              (0 === strcasecmp(static::class,  value($value, Plugins::ENTITY))) &&
+              (0 === strcasecmp(__FUNCTION__,   value($value, Plugins::FUNCTION)))) {
+            // unregister plugin
+            unset($result[$key]);
+          } elseif (0 === strcasecmp(FILTER_CONTENT, value($value, Plugins::EVENT))) {
+            // store plugin locally
+            static::$disabledPlugins[] = $value;
+
+            // unregister plugin
+            unset($result[$key]);
+          }
+        }
+
+        // renumber result
+        $result = array_values($result);
+      }
+
+      return $result;
+    }
+
+    public static function enableFilterContent($plugins) {
+      $result = $plugins;
+
+      if (is_array($result)) {
+        foreach ($result as $key => $value) {
+          // unregister the currently called function
+          if ((0 === strcasecmp(FILTER_PLUGINS, value($value, Plugins::EVENT))) &&
+              (0 === strcasecmp(static::class,  value($value, Plugins::ENTITY))) &&
+              (0 === strcasecmp(__FUNCTION__,   value($value, Plugins::FUNCTION)))) {
+            // unregister plugin
+            unset($result[$key]);
+          }
+        }
+
+        if (is_array(static::$disabledPlugins)) {
+          // re-register the locally stored plugins
+          foreach (static::$disabledPlugins as $disabledPlugin) {
+            $result[] = $disabledPlugin;
+          }
+          static::$disabledPlugins = null;
+        }
+
+        // renumber result
+        $result = array_values($result);
+      }
+
+      return $result;
+    }
+
     // INTERFACE FUNCTIONS
 
     public static function getContent($metadata, &$pagecount) {
@@ -45,6 +110,10 @@
               $result    = $data[CONTENT];
             }
           } else {
+            // disable FILTER_CONTENT plugins
+            Plugins::register(static::class, "disableFilterContent", FILTER_PLUGINS);
+            Plugins::filter();
+
             $result = preparecontent(static::getResult($metadata, $cachable));
             if (null !== $result) {
               // sort and paginate the content if it is an array
@@ -71,7 +140,14 @@
                 setcache(static::getUri($metadata), [CONTENT => $result, PAGECOUNT => $pagecount], static::class);
               }
             }
+
+            // enable FILTER_CONTENT plugins
+            Plugins::register(static::class, "enableFilterContent", FILTER_PLUGINS);
+            Plugins::filter();
           }
+
+          // filter the retrieved content
+          $result = preparecontent(Plugins::run(FILTER_CONTENT, true, $result));
         }
       }
 

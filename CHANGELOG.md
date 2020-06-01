@@ -8,6 +8,7 @@
 * improved `relocate` plugin so that is renumbers the content array after modifying it
 * updated [Parsedown](https://github.com/erusev/parsedown/) to version 1.7.4
 * updated [Parsedown-Extra](https://github.com/erusev/parsedown-extra/) to version 0.8.1
+* improved `BaseHandler` to cache unfiltered content so that `FILTER_CONTENT` plugins are always executed
 
 ## 0.1a12 (22.09.2019)
 ### Bugfixes

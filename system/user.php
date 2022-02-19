@@ -698,7 +698,7 @@
 
   // check if the given $string represents a false state
   function isfalse($string) {
-    $string = strtolower(trim($string));
+    $string = strtolower(trim((string) $string));
 
     return ((0 === strcmp($string, "0")) ||
             (0 === strcmp($string, "false")) ||
@@ -708,7 +708,7 @@
 
   // check if the given $string represents a true state
   function istrue($string) {
-    $string = strtolower(trim($string));
+    $string = strtolower(trim((string) $string));
 
     return ((0 === strcmp($string, "1")) ||
             (0 === strcmp($string, "ja")) ||

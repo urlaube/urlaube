@@ -1,6 +1,9 @@
 # Changelog
 
 ## 0.1a?? (??.??.????)
+### Bugfixes
+* fix notices introduced with PHP 8.0
+
 ### Features
 * slighty improved `router.php` for local debugging
 * introduced `NOMARKDOWNPARAGRAPHS` to prevent the markdown plugin from creating `<p>` elements around HTML output

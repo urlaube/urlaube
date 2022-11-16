@@ -27,10 +27,18 @@
     // INTERFACE FUNCTIONS
 
     public function serialize() {
+      return $this->__serialize();
+    }
+
+    public function __serialize() {
       return serialize($this->fields);
     }
 
     public function unserialize($serialized) {
+      $this->__unserialize($serialized);
+    }
+
+    public function __unserialize($serialized) {
       // unserialize and check data
       $temp = unserialize($serialized);
       if (is_array($temp)) {

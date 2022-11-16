@@ -293,7 +293,13 @@
 
   // escape HTML in the given $string
   function html($string) {
-    return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, value(Main::class, CHARSET), false);
+    $result = $string;
+
+    if (is_string($result)) {
+      $result = htmlspecialchars($result, ENT_QUOTES | ENT_HTML5, value(Main::class, CHARSET), false);
+    }
+
+    return $result;
   }
 
   // checks if $string starts with $lead
@@ -698,22 +704,34 @@
 
   // check if the given $string represents a false state
   function isfalse($string) {
-    $string = strtolower(trim($string));
+    $result = false;
 
-    return ((0 === strcmp($string, "0")) ||
-            (0 === strcmp($string, "false")) ||
-            (0 === strcmp($string, "nein")) ||
-            (0 === strcmp($string, "no")));
+    if (is_string($string)) {
+      $string = strtolower(trim($string));
+
+      $result = ((0 === strcmp($string, "0"))     ||
+                 (0 === strcmp($string, "false")) ||
+                 (0 === strcmp($string, "nein"))  ||
+                 (0 === strcmp($string, "no")));
+    }
+
+    return $result;
   }
 
   // check if the given $string represents a true state
   function istrue($string) {
-    $string = strtolower(trim($string));
+    $result = false;
 
-    return ((0 === strcmp($string, "1")) ||
-            (0 === strcmp($string, "ja")) ||
-            (0 === strcmp($string, "true")) ||
-            (0 === strcmp($string, "yes")));
+    if (is_string($string)) {
+      $string = strtolower(trim($string));
+
+      $result = ((0 === strcmp($string, "1"))    ||
+                 (0 === strcmp($string, "ja"))   ||
+                 (0 === strcmp($string, "true")) ||
+                 (0 === strcmp($string, "yes")));
+    }
+
+    return $result;
   }
 
   // relocate to the given $uri

@@ -35,7 +35,7 @@
     }
 
     public function unserialize($serialized) {
-      $this->__unserialize(unserialize($data));
+      $this->__unserialize(unserialize($serialized));
     }
 
     public function __unserialize($serialized) {

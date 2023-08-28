@@ -304,18 +304,18 @@
 
   // checks if $string starts with $lead
   function islead($string, $lead) {
-    return ($lead === substr($string, 0, strlen($lead)));
+    return ($lead === substr(($string ?? ""), 0, strlen($lead)));
   }
 
   // checks if $string ends with $trail
   function istrail($string, $trail) {
-    return ($trail === substr($string, -strlen($trail)));
+    return ($trail === substr(($string ?? ""), -strlen($trail)));
   }
 
   // checks if $string starts with $lead
   // if not then $lead is prepended to $string
   function lead($string, $lead) {
-    $result = $string;
+    $result = ($string ?? "");
 
     if ($lead !== substr($result, 0, strlen($lead))) {
       $result = $lead.$result;
@@ -327,7 +327,7 @@
   // checks if $string starts with $lead
   // if it does then $lead is removed from $string
   function nolead($string, $lead) {
-    $result = $string;
+    $result = ($string ?? "");
 
     // repeat until there's no match
     while (0 === strpos($result, $lead)) {
@@ -340,7 +340,7 @@
   // checks if $string ends with $trail
   // if it does then $trail is removed from $string
   function notrail($string, $trail) {
-    $result = $string;
+    $result = ($string ?? "");
 
     // repeat until there's no match
     while ($trail === substr($result, -strlen($trail))) {
@@ -379,7 +379,7 @@
   // checks if $string ends with $trail
   // if not then $trail is appended to $string
   function trail($string, $trail) {
-    $result = $string;
+    $result = ($string ?? "");
 
     if ($trail !== substr($result, -strlen($trail))) {
       $result = $result.$trail;

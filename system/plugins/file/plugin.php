@@ -185,7 +185,7 @@
       $result = null;
 
       // fix $name
-      $name = strtr($name, US, DS);
+      $name = strtr(($name ?? ""), US, DS);
 
       if ($recursive) {
         // try to derive a potential dirname from the given name

@@ -3,6 +3,7 @@
 ## 0.1a?? (??.??.????)
 ### Bugfixes
 * fix notices introduced with PHP 8.0
+* fix notices introduced with PHP 8.2
 
 ### Features
 * slighty improved `router.php` for local debugging

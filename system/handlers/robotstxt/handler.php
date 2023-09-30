@@ -64,6 +64,9 @@
           print(fhtml("User-agent: *".NL.
                       "Disallow:".NL.
                       NL.
+                      "User-agent: ChatGPT-User".NL.
+                      "Disallow: /".NL.
+                      NL.
                       "User-agent: Google-Extended".NL.
                       "Disallow: /".NL.
                       NL.

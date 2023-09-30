@@ -64,6 +64,12 @@
           print(fhtml("User-agent: *".NL.
                       "Disallow:".NL.
                       NL.
+                      "User-agent: Google-Extended".NL.
+                      "Disallow: /".NL.
+                      NL.
+                      "User-agent: GPTBot".NL.
+                      "Disallow: /".NL.
+                      NL.
                       "Sitemap: %s",
                       absoluteurl(SitemapXmlHandler::getUri(new Content()))));
         }

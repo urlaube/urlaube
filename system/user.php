@@ -616,7 +616,7 @@
       $result = ROOTPATH.strtr(nolead($uri, US), US, DS);
     }
 
-    return ;
+    return $result;
   }
 
   // ***** HELPER FUNCTIONS *****

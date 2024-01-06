@@ -27,6 +27,8 @@
 
   // derive user paths
   try_define("USER_CONFIG_PATH",   trail(realpath(USER_PATH), DS)."config".DS);
+  try_define("USER_CONTENT_PATH",  trail(realpath(USER_PATH), DS)."content".DS);
   try_define("USER_HANDLERS_PATH", trail(realpath(USER_PATH), DS)."handlers".DS);
   try_define("USER_PLUGINS_PATH",  trail(realpath(USER_PATH), DS)."plugins".DS);
   try_define("USER_THEMES_PATH",   trail(realpath(USER_PATH), DS)."themes".DS);
+  try_define("USER_UPLOADS_PATH",  trail(realpath(USER_PATH), DS)."uploads".DS);

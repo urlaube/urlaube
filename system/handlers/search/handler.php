@@ -21,9 +21,7 @@
 
     // CONSTANTS
 
-    const SEARCH = "search";
-
-    const MANDATORY = [self::SEARCH];
+    const MANDATORY = [SEARCH];
     const OPTIONAL  = [PAGE => 1];
     const REGEX     = "~^\/".
                       "search\=(?P<search>[0-9A-Za-z\_\-\.]+)\/".
@@ -38,7 +36,7 @@
       // this result may NOT be cached
       $cachable = false;
 
-      $search = explode(DOT, value($metadata, static::SEARCH));
+      $search = explode(DOT, value($metadata, SEARCH));
 
       return callcontent(null, true, false,
                          function ($content) use ($search) {
@@ -50,6 +48,7 @@
                                haskeywords($content, CONTENT, $search) ||
                                haskeywords($content, DATE, $search) ||
                                haskeywords($content, DESCRIPTION, $search) ||
+                               haskeywords($content, SEARCH, $search) ||
                                haskeywords($content, TITLE, $search)) {
                              $result = $content;
                            }
@@ -59,7 +58,7 @@
     }
 
     protected static function prepareMetadata($metadata) {
-      $metadata->set(static::SEARCH, strtolower(value($metadata, static::SEARCH)));
+      $metadata->set(SEARCH, strtolower(value($metadata, SEARCH)));
 
       return $metadata;
     }
@@ -98,11 +97,11 @@
           relocate($fixed.querystring(), false, true);
         } else {
           // prepare the post parameter
-          if (isset($_POST[static::SEARCH])) {
-            $search = preg_replace("~[^0-9A-Za-z\_\-\.]~", "", preg_replace("~\s+~", DOT, $_POST[static::SEARCH]));
+          if (isset($_POST[SEARCH])) {
+            $search = preg_replace("~[^0-9A-Za-z\_\-\.]~", "", preg_replace("~\s+~", DOT, $_POST[SEARCH]));
 
             $metadata = new Content();
-            $metadata->set(static::SEARCH, $search);
+            $metadata->set(SEARCH, $search);
 
             // retrieve URI
             $uri = static::getUri($metadata);

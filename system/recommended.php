@@ -27,6 +27,7 @@
   try_define("DATE",        "date");        // publication date of an entry
   try_define("DESCRIPTION", "description"); // description of an entry
   try_define("PREVIEW",     "preview");     // preview image of an entry
+  try_define("SEARCH",      "search");      // potential search phrases of an entry
   try_define("TITLE",       "title");       // title of an entry
   try_define("UPDATE",      "update");      // date of the last update of an entry
   // URI                                    // uri of an entry
@@ -36,6 +37,7 @@
   try_define("CANONICAL",  "canonical");  // canonical URL of the website
   // CHARSET                              // charset of the website
   try_define("COPYRIGHT",  "copyright");  // copyright disclaimer of the website
+  try_define("CSS",        "css");        // custom CSS of the website
   // DESCRIPTION                          // description of the website
   try_define("FAVICON",    "favicon");    // favicon.ico URL of the website
   try_define("KEYWORDS",   "keywords");   // keywords of the website

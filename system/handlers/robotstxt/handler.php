@@ -64,13 +64,39 @@
           print(fhtml("User-agent: *".NL.
                       "Disallow:".NL.
                       NL.
+                      "User-agent: AdsBot-Google".NL.
+                      "User-agent: Amazonbot".NL.
+                      "User-agent: anthropic-ai".NL.
+                      "User-agent: Applebot".NL.
+                      "User-agent: Applebot-Extended".NL.
+                      "User-agent: AwarioRssBot".NL.
+                      "User-agent: AwarioSmartBot".NL.
+                      "User-agent: Bytespider".NL.
+                      "User-agent: CCBot".NL.
                       "User-agent: ChatGPT-User".NL.
-                      "Disallow: /".NL.
-                      NL.
+                      "User-agent: ClaudeBot".NL.
+                      "User-agent: Claude-Web".NL.
+                      "User-agent: cohere-ai".NL.
+                      "User-agent: DataForSeoBot".NL.
+                      "User-agent: Diffbot".NL.
+                      "User-agent: FacebookBot".NL.
+                      "User-agent: FriendlyCrawler".NL.
                       "User-agent: Google-Extended".NL.
-                      "Disallow: /".NL.
-                      NL.
+                      "User-agent: GoogleOther".NL.
                       "User-agent: GPTBot".NL.
+                      "User-agent: img2dataset".NL.
+                      "User-agent: ImagesiftBot".NL.
+                      "User-agent: magpie-crawler".NL.
+                      "User-agent: Meltwater".NL.
+                      "User-agent: omgili".NL.
+                      "User-agent: omgilibot".NL.
+                      "User-agent: peer39_crawler".NL.
+                      "User-agent: peer39_crawler/1.0".NL.
+                      "User-agent: PerplexityBot".NL.
+                      "User-agent: PiplBot".NL.
+                      "User-agent: scoop.it".NL.
+                      "User-agent: Seekr".NL.
+                      "User-agent: YouBot".NL.
                       "Disallow: /".NL.
                       NL.
                       "Sitemap: %s",

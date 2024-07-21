@@ -40,7 +40,7 @@
       $result = false;
 
       // prepare key
-      $key = hash("sha256", $key);
+      $key = hash("sha256", $key ?? "");
 
       // prepare name
       if (null !== $name) {
@@ -69,7 +69,7 @@
 
     public static function set($key, $value, $name = null) {
       // prepare key
-      $key = hash("sha256", $key);
+      $key = hash("sha256", $key ?? "");
 
       // prepare name
       if (null !== $name) {

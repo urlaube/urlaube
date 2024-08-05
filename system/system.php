@@ -99,7 +99,7 @@
       if (isset($_SERVER["HTTP_HOST"])) {
         // take provided "Host:" header next
         // remove port number if it's attached to the hostname
-        $result = explode(COL, $_SERVER["HTTP_HOST"])[0];
+        $result = parse_url($_SERVER["HTTP_HOST"], PHP_URL_HOST);
       } else {
         if (isset($_SERVER["SERVER_ADDR"])) {
           // or the IP address if the "Host:" header is not present

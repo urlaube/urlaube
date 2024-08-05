@@ -17,6 +17,9 @@
 * support `SEARCH` values in content to improve search results
 * elevate `SEARCH` to a recommended constant and remove `SearchHandler::SEARCH`
 
+### Security
+* improve default hostname parsing
+
 ## 0.1a12 (22.09.2019)
 ### Bugfixes
 * changed execution of system handlers so that the `PageHandler` is called earlier

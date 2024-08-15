@@ -173,7 +173,12 @@
     $result = US;
 
     if (isset($_SERVER["REQUEST_URI"])) {
-      $result = lead(urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)), US);
+      $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+      if (false !== $path) {
+        $result = lead(urldecode($path), US);
+      } else {
+        $result = lead(urldecode($_SERVER["REQUEST_URI"]), US);
+      }
     }
 
     return $result;

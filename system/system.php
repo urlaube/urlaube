@@ -173,8 +173,27 @@
     $result = US;
 
     if (isset($_SERVER["REQUEST_URI"])) {
-      $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-      if (false !== $path) {
+      // try to parse the request URI
+      $path   = parse_url($_SERVER["REQUEST_URI"]);
+      $failed = true;
+
+      // check that parsing didn't lead to wrong results
+      if ((false !== $path) && (array_key_exists("path", $path))) {
+        $failed = false;
+        foreach (["scheme", "host", "port", "user", "pass"] as $key) {
+          $failed = array_key_exists($key, $path);
+          if ($failed) {
+            break;
+          }
+        }
+
+        // we only need the path
+        if (!$failed) {
+          $path = $path["path"];
+        }
+      }
+
+      if (!$failed) {
         $result = lead(urldecode($path), US);
       } else {
         $result = lead(urldecode($_SERVER["REQUEST_URI"]), US);

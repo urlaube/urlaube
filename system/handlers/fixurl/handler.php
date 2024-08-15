@@ -49,6 +49,7 @@
       foreach ($array as $array_item) {
         switch ($array_item) {
           // do nothing
+          case ""  :
           case "." :
             break;
 

@@ -4,6 +4,7 @@
 ### Bugfixes
 * fix notices introduced with PHP 8.0
 * fix notices introduced with PHP 8.2
+* improve `fixurl` handler
 
 ### Features
 * slighty improved `router.php` for local debugging

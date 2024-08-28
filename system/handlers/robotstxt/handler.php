@@ -74,28 +74,40 @@
                       "User-agent: Bytespider".NL.
                       "User-agent: CCBot".NL.
                       "User-agent: ChatGPT-User".NL.
-                      "User-agent: ClaudeBot".NL.
                       "User-agent: Claude-Web".NL.
+                      "User-agent: ClaudeBot".NL.
                       "User-agent: cohere-ai".NL.
                       "User-agent: DataForSeoBot".NL.
                       "User-agent: Diffbot".NL.
                       "User-agent: FacebookBot".NL.
+                      "User-agent: facebookexternalhit".NL.
                       "User-agent: FriendlyCrawler".NL.
                       "User-agent: Google-Extended".NL.
                       "User-agent: GoogleOther".NL.
+                      "User-agent: GoogleOther-Image".NL.
+                      "User-agent: GoogleOther-Video".NL.
                       "User-agent: GPTBot".NL.
-                      "User-agent: img2dataset".NL.
+                      "User-agent: ICC-Crawler".NL.
                       "User-agent: ImagesiftBot".NL.
+                      "User-agent: img2dataset".NL.
                       "User-agent: magpie-crawler".NL.
                       "User-agent: Meltwater".NL.
+                      "User-agent: Meta-ExternalAgent".NL.
+                      "User-agent: Meta-ExternalFetcher".NL.
+                      "User-agent: OAI-SearchBot".NL.
                       "User-agent: omgili".NL.
                       "User-agent: omgilibot".NL.
                       "User-agent: peer39_crawler".NL.
                       "User-agent: peer39_crawler/1.0".NL.
                       "User-agent: PerplexityBot".NL.
+                      "User-agent: PetalBot".NL.
                       "User-agent: PiplBot".NL.
                       "User-agent: scoop.it".NL.
+                      "User-agent: Scrapy".NL.
                       "User-agent: Seekr".NL.
+                      "User-agent: Timpibot".NL.
+                      "User-agent: VelenPublicWebCrawler".NL.
+                      "User-agent: Webzio-Extended".NL.
                       "User-agent: YouBot".NL.
                       "Disallow: /".NL.
                       NL.

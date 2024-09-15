@@ -3,7 +3,9 @@
 
   RewriteBase /
 
-  # disallow access to hidden files
+  # disallow access to hidden files,
+  # exclude Let's Encrypt HTTP-01 challenges from this rule
+  RewriteCond %{REQUEST_URI} !^((\/)?)\.well-known\/acme-challenge\/.+$
   RewriteRule ((^(\/)?)|(\/))\. /index.php [L]
 
   # prevent access to protected paths

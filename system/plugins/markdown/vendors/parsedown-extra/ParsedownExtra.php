@@ -238,7 +238,7 @@ class ParsedownExtra extends Parsedown
     #
     # Setext
 
-    protected function blockSetextHeader($Line, array $Block = null)
+    protected function blockSetextHeader($Line, ?array $Block = null)
     {
         $Block = parent::blockSetextHeader($Line, $Block);
 
@@ -476,11 +476,15 @@ class ParsedownExtra extends Parsedown
 
         $DOMDocument = new DOMDocument;
 
-        # http://stackoverflow.com/q/11309194/200145
-        $elementMarkup = mb_convert_encoding($elementMarkup, 'HTML-ENTITIES', 'UTF-8');
+        # https://www.php.net/manual/en/domdocument.loadhtml.php#95251
+        $DOMDocument->loadHTML('<?xml encoding="UTF-8"?>'.$elementMarkup);
+        foreach ($DOMDocument->childNodes as $Node) {
+            if ($Node->nodeType === XML_PI_NODE) {
+                $DOMDocument->removeChild($Node);
+            }
+        }
 
         # http://stackoverflow.com/q/4879946/200145
-        $DOMDocument->loadHTML($elementMarkup);
         $DOMDocument->removeChild($DOMDocument->doctype);
         $DOMDocument->replaceChild($DOMDocument->firstChild->firstChild->firstChild, $DOMDocument->firstChild);
 

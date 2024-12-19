@@ -243,7 +243,7 @@
   // turn on/off all error reporting
   function _setDebugMode($debug = false) {
     if ($debug) {
-      error_reporting(E_ALL | E_STRICT | E_NOTICE);
+      error_reporting(E_ALL);
     } else {
       error_reporting(0);
     }

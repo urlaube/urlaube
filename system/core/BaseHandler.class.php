@@ -41,7 +41,7 @@
         foreach ($result as $key => $value) {
           // do not store the current function locally
           if ((0 === strcasecmp(FILTER_PLUGINS, value($value, Plugins::EVENT))) &&
-              (0 === strcasecmp(static::class,  value($value, Plugins::ENTITY))) &&
+              (0 === strcasecmp(static::class,  value($value, Plugins::ENTITY) ?? "")) &&
               (0 === strcasecmp(__FUNCTION__,   value($value, Plugins::FUNCTION)))) {
             // unregister plugin
             unset($result[$key]);
@@ -68,7 +68,7 @@
         foreach ($result as $key => $value) {
           // unregister the currently called function
           if ((0 === strcasecmp(FILTER_PLUGINS, value($value, Plugins::EVENT))) &&
-              (0 === strcasecmp(static::class,  value($value, Plugins::ENTITY))) &&
+              (0 === strcasecmp(static::class,  value($value, Plugins::ENTITY) ?? "")) &&
               (0 === strcasecmp(__FUNCTION__,   value($value, Plugins::FUNCTION)))) {
             // unregister plugin
             unset($result[$key]);

@@ -2,9 +2,7 @@
 
 ## 0.1a?? (??.??.????)
 ### Bugfixes
-* fix notices introduced with PHP 8.0
-* fix notices introduced with PHP 8.2
-* fix notices introduced with PHP 8.4
+* fix notices introduced with PHP 8.*
 * improve `fixurl` handler
 * improve `_getDefaultUri()` function
 

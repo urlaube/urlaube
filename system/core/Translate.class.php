@@ -25,7 +25,7 @@
 
     // HELPER FUNCTIONS
 
-    protected static function load($name = null) {
+    protected static function load($name = "") {
       $result = false;
 
       // $language should be case-insensitive
@@ -41,7 +41,7 @@
 
       // check if the named translation is registered
       if (array_key_exists($name, static::$translations)) {
-        if (array_key_exists(null, static::$translations[$name])) {
+        if (array_key_exists("", static::$translations[$name])) {
           // check if the translation has already been loaded
           $result = array_key_exists($language, static::$translations[$name]);
 
@@ -49,7 +49,7 @@
           if (!$result) {
             // iterate through the folder entry
             $translation = [];
-            foreach (static::$translations[$name][null] as $translations_item) {
+            foreach (static::$translations[$name][""] as $translations_item) {
               if (is_file($translations_item.$language)) {
                 // try to read the file
                 $content = file_get_contents($translations_item.$language);
@@ -81,7 +81,7 @@
 
     // RUNTIME FUNCTIONS
 
-    public static function format($string, $name = null, ...$values) {
+    public static function format($string, $name = "", ...$values) {
       $result = $string;
 
       // $language should be case-insensitive
@@ -108,7 +108,7 @@
       return $result;
     }
 
-    public static function get($string, $name = null) {
+    public static function get($string, $name = "") {
       $result = $string;
 
       // $language should be case-insensitive
@@ -135,7 +135,7 @@
       return $result;
     }
 
-    public static function register($folder, $name = null) {
+    public static function register($folder, $name = "") {
       $result = false;
 
       // $name should be case-insensitive
@@ -150,12 +150,12 @@
         }
 
         // create the folder entry
-        if (!array_key_exists(null, static::$translations[$name])) {
-          static::$translations[$name][null] = [];
+        if (!array_key_exists("", static::$translations[$name])) {
+          static::$translations[$name][""] = [];
         }
 
         // set the folder
-        static::$translations[$name][null][] = trail($folder, DS);
+        static::$translations[$name][""][] = trail($folder, DS);
 
         $result = true;
       }

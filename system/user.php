@@ -351,7 +351,7 @@
   }
 
   // get the translation
-  function t($string, $name = null, ...$values) {
+  function t($string, $name = "", ...$values) {
     $result = $string;
 
     if (0 === count($values)) {
@@ -364,7 +364,7 @@
   }
 
   // get the formatted string and call html() on the translation of all $values
-  function tfhtml($string, $name = null, ...$values) {
+  function tfhtml($string, $name = "", ...$values) {
     $result = $string;
 
     // translate everything
